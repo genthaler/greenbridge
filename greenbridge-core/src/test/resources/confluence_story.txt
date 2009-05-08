@@ -1,0 +1,6 @@
+{excerpt}
+As a User I want a widget that saves my quote in progress
+So that I can come back to it later.
+{excerpt}
+[http://akljira001:8080/browse/VOLFOUND-7]
+{children:excerpt=true}
