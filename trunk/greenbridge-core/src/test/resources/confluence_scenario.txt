@@ -1,0 +1,9 @@
+{excerpt}
+Given a account with a balance of (balance)
+When I deposit (deposit)
+Then the new balance will be (newBalance){excerpt}
+|| balance || deposit || newBalance ||
+| 0 | 100 | 100 |
+| 100 | 50 | 150 |
+| \-200 | 50 | \-150 |
+| \-200 | 250 | 50 |
