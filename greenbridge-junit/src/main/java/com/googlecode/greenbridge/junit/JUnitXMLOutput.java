@@ -3,14 +3,14 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.junit.runner.notification.Failure;
-import org.rsquared.annob.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
 
 /**
  *

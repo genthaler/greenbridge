@@ -3,15 +3,15 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.runner.Description;
-import org.rsquared.annob.annotation.ScenarioRef;
-import org.rsquared.annob.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
  *

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,7 +52,7 @@ public class ResultHandler {
 
 
     protected File setupOutputDir() {
-        File f =  new File("target/annob");
+        File f =  new File("target/greenbridge");
         f.mkdirs();
         return f;
     }

@@ -3,13 +3,14 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.annotation;
+package com.googlecode.greenbridge.annotation;
 
+import com.googlecode.greenbridge.annotation.Scenario;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.rsquared.annob.annotation.AMPEDM_128_3.*;
+import static com.googlecode.greenbridge.annotation.AMPEDM_128_3.*;
 /**
  *
  * @author ryan
