@@ -3,8 +3,11 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
+import com.googlecode.greenbridge.junit.RunState;
+import com.googlecode.greenbridge.junit.ScenarioResult;
+import com.googlecode.greenbridge.junit.StoryResults;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +19,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
-import org.rsquared.annob.annotation.AMPEDM_128_3;
-import org.rsquared.annob.annotation.ScenarioRef;
-import org.rsquared.annob.annotation.Story2121;
-import org.rsquared.annob.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.AMPEDM_128_3;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.Story2121;
+import com.googlecode.greenbridge.annotation.StoryRef;
 import static org.junit.Assert.*;
-import org.rsquared.annob.junit.JUnitXMLOutput.Summary;
+import com.googlecode.greenbridge.junit.JUnitXMLOutput.Summary;
 
 /**
  *

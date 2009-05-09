@@ -3,7 +3,9 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.annotation;
+package com.googlecode.greenbridge.annotation;
+
+import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
  *

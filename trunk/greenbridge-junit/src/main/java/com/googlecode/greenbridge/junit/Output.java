@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 import java.io.PrintWriter;
 

@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 
 import java.util.Date;
@@ -14,9 +14,9 @@ import java.util.logging.Logger;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
-import org.rsquared.annob.annotation.Scenario;
-import org.rsquared.annob.annotation.ScenarioRef;
-import org.rsquared.annob.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.Scenario;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
  *

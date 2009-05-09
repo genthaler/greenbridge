@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.rsquared.annob.junit;
+package com.googlecode.greenbridge.junit;
 
 
 import org.easymock.classextension.EasyMock;
@@ -12,8 +12,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
-import org.rsquared.annob.annotation.AMPEDM_128_3;
-import org.rsquared.annob.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.AMPEDM_128_3;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
 import static org.easymock.EasyMock.*;
 /**
  *
