@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.rsquared</groupId>
-  <artifactId>annob</artifactId>
+  <groupId>com.googlecode.greenbridge</groupId>
+  <artifactId>greenbridge-core</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Annob</name>
-  <url>http://maven.apache.org</url>
-  <description>Annob (pronounced an-oh-be) stands for annotation behaviour driven development.
-  How does it work?
-    -The team works on collecting stories and scenarios, and enters them into a repository like a wiki.
-    -Annob reads these stories and scenarios and generates a jar file. This your project adds this jar file to the test dependancies. This jar allows you to annotate
-     your junit tests to identify that the test is testing a story or scenario.
-    -As you run your junit tests, you get a report of how complete your software is against the stories and scenarios.
-    -If the stories and scenarios evolve.</description>
+  <name>Greenbride Core</name>
+  <url>http://code.google.com/p/greenbridge/</url>
+  <description>A behaviour driven development tool bridging confluence, maven and junit. This is the core module.</description>
   <developers>
     <developer>
         <name>Ryan Ramage</name>
@@ -22,8 +16,8 @@
   <inceptionYear>2009</inceptionYear>
   <dependencies>
     <dependency>
-        <groupId>org.rsquared</groupId>
-        <artifactId>annob-junit</artifactId>
+        <groupId>com.googlecode.greenbridge</groupId>
+        <artifactId>greenbridge-junit</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -79,25 +73,6 @@
   </dependencies>
   <build>
             <plugins>
-                <!--
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <configuration>
-                        <descriptors>
-                            <descriptor>src/main/assembly/assembly.xml</descriptor>
-                        </descriptors>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>make-assembly</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>single</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                -->
                 <plugin>
                     <artifactId>maven-eclipse-plugin</artifactId>
                     <version>${maven-eclipse-plugin.version}</version>

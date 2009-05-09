@@ -1,6 +1,6 @@
 package ${packageName};
 
-import org.rsquared.annob.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
  * <#list story.storyNarrative as narrative>${narrative}<p>

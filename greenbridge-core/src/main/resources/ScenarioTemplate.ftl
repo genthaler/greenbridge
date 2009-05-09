@@ -1,6 +1,6 @@
 package ${packageName};
 
-import org.rsquared.annob.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.ScenarioRef;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

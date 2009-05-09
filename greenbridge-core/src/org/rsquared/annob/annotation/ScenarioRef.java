@@ -1,4 +1,4 @@
-package org.rsquared.annob.annotation;
+package com.googlecode.greenbridge.annotation;
 
 /**
 `* All scenarios have to extend this base class.
