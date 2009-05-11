@@ -5,12 +5,16 @@
 
 package com.googlecode.greenbridge.junit;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.junit.runner.notification.Failure;
 import com.googlecode.greenbridge.annotation.ScenarioRef;
+import java.io.FileNotFoundException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +34,24 @@ public class JUnitXMLOutput implements Output {
         writeSummary(results.getStory().name(), summary, stream);
         writeTestCases(results.getScenarioResults(), stream);
         stream.println("</testsuite>");
+    }
+
+    @Override
+    public void write(ScenarioResult result, File basedirectory) {
+        File f = new File(basedirectory, result.getScenario().name() + getExtension());
+        PrintWriter stream;
+        try {
+            stream = new PrintWriter(f);
+            writeHeader(stream);
+            Summary summary = new Summary();
+            summary = addScenarioResult(result, summary);
+            writeSummary(result.getScenario().name(), summary, stream);
+            writeTestCase(result, stream);
+            stream.println("</testsuite>");
+            stream.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ResultHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     protected void writeHeader(PrintWriter stream) {
@@ -116,14 +138,7 @@ public class JUnitXMLOutput implements Output {
             List<ScenarioResult> resultSet = it.next();
             for (Iterator<ScenarioResult> it2 = resultSet.iterator(); it2.hasNext();) {
                 ScenarioResult scenarioResult = it2.next();
-                summary.time+= scenarioResult.getDuration();
-                summary.tests++;
-                if (scenarioResult.getState().equals(RunState.FAILED)) {
-                    summary.failures++;
-                }
-                if (scenarioResult.getState().equals(RunState.PENDING)) {
-                    summary.skipped++;
-                }
+                summary = addScenarioResult(scenarioResult, summary);
             }
         }
         return summary;
@@ -131,7 +146,17 @@ public class JUnitXMLOutput implements Output {
 
 
 
-
+    protected Summary addScenarioResult(ScenarioResult scenarioResult, Summary summary) {
+        summary.time+= scenarioResult.getDuration();
+        summary.tests++;
+        if (scenarioResult.getState().equals(RunState.FAILED)) {
+            summary.failures++;
+        }
+        if (scenarioResult.getState().equals(RunState.PENDING)) {
+            summary.skipped++;
+        }
+        return summary;
+    }
 
 
     protected class Summary {

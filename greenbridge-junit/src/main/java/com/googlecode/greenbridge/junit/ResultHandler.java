@@ -5,9 +5,13 @@
 
 package com.googlecode.greenbridge.junit;
 
+import com.googlecode.greenbridge.annotation.ScenarioRef;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +26,20 @@ public class ResultHandler {
         String name = results.getStory().name();
         writeTextOutput(root, results, name);
         writeXmlOutput(root, results, name);
+        writeScenarioOutput(root, results);
+    }
+
+    protected void writeScenarioOutput(File root, StoryResults results) {
+        JUnitXMLOutput output = new JUnitXMLOutput();
+        Map<ScenarioRef, List<ScenarioResult>> scenarioResults = results.getScenarioResults();
+         for (Iterator<ScenarioRef> it = scenarioResults.keySet().iterator(); it.hasNext();) {
+            ScenarioRef scenarioRef = it.next();
+            List<ScenarioResult> ss = scenarioResults.get(scenarioRef);
+            for (Iterator<ScenarioResult> it2 = ss.iterator(); it2.hasNext();) {
+                ScenarioResult scenarioResult = it2.next();
+                output.write(scenarioResult, root);
+            }
+         }
     }
 
     private void writeXmlOutput(File root, StoryResults results, String name) {
