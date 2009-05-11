@@ -154,6 +154,11 @@
                 <artifactId>wagon-webdav</artifactId>
                 <version>${wagon-webdav.version}</version>
             </extension>
+            <extension>
+                <groupId>org.jvnet.wagon-svn</groupId>
+                <artifactId>wagon-svn</artifactId>
+                <version>1.8</version>
+            </extension>
         </extensions>
         <pluginManagement>
             <plugins>
@@ -287,6 +292,13 @@
             <url>http://download.java.net/maven/2/</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>googlecode</id>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo</url>
+        </repository>
+    </distributionManagement>
    <properties>
         <maven-changes-plugin.version>2.0-beta-3</maven-changes-plugin.version>
         <maven-idea-plugin.version>2.0</maven-idea-plugin.version>

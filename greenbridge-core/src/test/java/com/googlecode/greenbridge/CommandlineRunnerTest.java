@@ -26,7 +26,7 @@ public class CommandlineRunnerTest {
     /**
      * Test of main method, of class CommandlineRunner.
      */
-    
+    @Ignore
     @Test 
     public void testMain() {
         System.out.println("main");
