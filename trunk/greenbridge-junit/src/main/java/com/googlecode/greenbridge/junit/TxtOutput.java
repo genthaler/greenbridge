@@ -5,6 +5,7 @@
 
 package com.googlecode.greenbridge.junit;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -66,5 +67,10 @@ public class TxtOutput implements Output {
         }
         stream.println("");
         
+    }
+
+    @Override
+    public void write(ScenarioResult result, File basedirectory) {
+        // ignore this for now.
     }
 }
