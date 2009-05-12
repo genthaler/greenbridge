@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import com.googlecode.greenbridge.annotation.ScenarioRef;
 import com.googlecode.greenbridge.annotation.StoryRef;
+import java.util.ArrayList;
 
 /**
  *
@@ -70,7 +71,7 @@ public class TxtOutput implements Output {
     }
 
     @Override
-    public void write(ScenarioResult result, File basedirectory) {
-        // ignore this for now.
+    public File write(ScenarioResult result, File basedirectory) {
+        return null;
     }
 }
