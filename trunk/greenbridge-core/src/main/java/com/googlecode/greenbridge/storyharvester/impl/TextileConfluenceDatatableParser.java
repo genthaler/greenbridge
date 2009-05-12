@@ -49,7 +49,6 @@ public class TextileConfluenceDatatableParser extends DocumentBuilder {
         }
         if (type.equals(BlockType.TABLE_ROW)) {
             if (headerFound) {
-                System.out.println("New Row");
                 currentRow = new HashMap<String, String>();
                 datatable.getDatatable().add(currentRow);
                 currentColumn = 0;
@@ -72,12 +71,10 @@ public class TextileConfluenceDatatableParser extends DocumentBuilder {
     @Override
     public void characters(String text) {
         if(currentBlock.equals(BlockType.TABLE_CELL_HEADER)) {
-            System.out.println("Found header: " + text.trim());
             cellHeaderNames.add(text.trim());
         }
         if(currentBlock.equals(BlockType.TABLE_CELL_NORMAL)) {
             String columnName = cellHeaderNames.get(currentColumn);
-            System.out.println("Found cell " + columnName + ": " + text.trim());
             currentRow.put(columnName, text.trim());
         }
     }
