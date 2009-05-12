@@ -20,8 +20,9 @@ public interface Output {
      * Allow the output to produce something on the scenario granularity.
      * @param result The scenario result
      * @param basedirectory the base output directory
+     * @return the file created
      */
-    void write(ScenarioResult result, File basedirectory);
+    File write(ScenarioResult result, File basedirectory);
     void write(StoryResults results, PrintWriter stream);
 
 }

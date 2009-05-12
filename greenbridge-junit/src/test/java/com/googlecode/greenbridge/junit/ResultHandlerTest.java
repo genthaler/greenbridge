@@ -6,8 +6,7 @@
 package com.googlecode.greenbridge.junit;
 
 import java.io.File;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -25,14 +24,12 @@ public class ResultHandlerTest {
      */
     @Test
     public void testHandleResults() {
-        File root = new File("target/greenbridge");
-        root.mkdir();
 
         System.out.println("handleResults");
         StoryResults results = StoryResultsFactory.createMockResults();
         ResultHandler instance = new ResultHandler();
-        File result = instance.setupOutputDir();
-        instance.writeScenarioOutput(root, results);
-        assertTrue(result.exists());   
+        File root = instance.setupScenarioOutputDir();
+        List<File> files = instance.writeScenarioOutput(root, results);
+        assertEquals(1, files.size());
     }
 }

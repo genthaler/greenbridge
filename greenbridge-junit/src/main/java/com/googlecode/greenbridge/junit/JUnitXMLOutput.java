@@ -37,7 +37,7 @@ public class JUnitXMLOutput implements Output {
     }
 
     @Override
-    public void write(ScenarioResult result, File basedirectory) {
+    public File write(ScenarioResult result, File basedirectory) {
         File f = new File(basedirectory, result.getScenario().name() + getExtension());
         PrintWriter stream;
         try {
@@ -52,6 +52,7 @@ public class JUnitXMLOutput implements Output {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ResultHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return f;
     }
 
     protected void writeHeader(PrintWriter stream) {

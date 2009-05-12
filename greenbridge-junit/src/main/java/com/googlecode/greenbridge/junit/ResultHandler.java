@@ -9,6 +9,7 @@ import com.googlecode.greenbridge.annotation.ScenarioRef;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,24 +23,28 @@ import java.util.logging.Logger;
 public class ResultHandler {
     public void handleResults(StoryResults results) {
         
-        File root = setupOutputDir();
+        File story_root = setupStoryOutputDir();
+        File scenario_root = setupScenarioOutputDir();
         String name = results.getStory().name();
-        writeTextOutput(root, results, name);
-        writeXmlOutput(root, results, name);
-        writeScenarioOutput(root, results);
+        writeTextOutput(story_root, results, name);
+        writeXmlOutput(story_root, results, name);
+        writeScenarioOutput(scenario_root, results);
     }
 
-    protected void writeScenarioOutput(File root, StoryResults results) {
+    protected List<File> writeScenarioOutput(File root, StoryResults results) {
         JUnitXMLOutput output = new JUnitXMLOutput();
+        List<File> files = new ArrayList<File>();
         Map<ScenarioRef, List<ScenarioResult>> scenarioResults = results.getScenarioResults();
-         for (Iterator<ScenarioRef> it = scenarioResults.keySet().iterator(); it.hasNext();) {
+        for (Iterator<ScenarioRef> it = scenarioResults.keySet().iterator(); it.hasNext();) {
             ScenarioRef scenarioRef = it.next();
             List<ScenarioResult> ss = scenarioResults.get(scenarioRef);
             for (Iterator<ScenarioResult> it2 = ss.iterator(); it2.hasNext();) {
                 ScenarioResult scenarioResult = it2.next();
-                output.write(scenarioResult, root);
+                File result_file = output.write(scenarioResult, root);
+                files.add(result_file);
             }
          }
+        return files;
     }
 
     private void writeXmlOutput(File root, StoryResults results, String name) {
@@ -69,8 +74,14 @@ public class ResultHandler {
     }
 
 
-    protected File setupOutputDir() {
-        File f =  new File("target/greenbridge");
+    protected File setupStoryOutputDir() {
+        File f =  new File("target/greenbridge/stories");
+        f.mkdirs();
+        return f;
+    }
+
+    protected File setupScenarioOutputDir() {
+        File f =  new File("target/greenbridge/scenarios");
         f.mkdirs();
         return f;
     }
