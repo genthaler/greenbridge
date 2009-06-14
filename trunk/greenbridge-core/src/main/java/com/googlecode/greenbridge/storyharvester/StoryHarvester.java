@@ -6,7 +6,6 @@
 package com.googlecode.greenbridge.storyharvester;
 
 import java.util.List;
-import com.googlecode.greenbridge.StoryNarrative;
 
 /**
  *
@@ -14,6 +13,6 @@ import com.googlecode.greenbridge.StoryNarrative;
  */
 public interface StoryHarvester {
 
-    public List<StoryNarrative> gather();
+    public List<StoryNarrative> gather() throws Exception;
 
 }

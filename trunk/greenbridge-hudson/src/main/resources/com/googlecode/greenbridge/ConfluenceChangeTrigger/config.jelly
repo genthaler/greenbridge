@@ -1,0 +1,21 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <!--
+    This jelly script is used for per-project configuration.
+    See global.jelly for a general discussion about jelly script.
+  -->
+  <f:entry title="Endpoint" field="confluenceEndpoint" help="This is the xmlrpc endpoint for confluence. eg: http://confluence.host.com/rpc/xmlrpc" >
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Username" field="confluenceUsername" help="The username to use to access confluence. Make sure they have permissions to view all the pages.">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Password" field="confluencePassword" help="The password to use to access confluence. Make sure they have permissions to view all the pages.">
+    <f:password  />
+  </f:entry>
+  <f:entry title="Space ID" field="confluenceSpace" help="The confluence space.">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="Page" field="confluencePage" help="The confluence page as the root.">
+    <f:textbox />
+  </f:entry>
+</j:jelly>

@@ -1,0 +1,24 @@
+
+d:\devel\greenbridge\greenbridge-core>set MAVEN_OPTS=-Xmx1024m -Xms1024m -DisDevMachine=true  
+[INFO] Scanning for projects...
+[INFO] Searching repository for plugin with prefix: 'deploy'.
+WAGON_VERSION: 1.0-beta-2
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Greenbride Core
+[INFO]    task-segment: [deploy:deploy-file] (aggregator-style)
+[INFO] ------------------------------------------------------------------------
+[INFO] [deploy:deploy-file]
+[INFO] Retrieving previous build number from inhouse.snapshot
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD ERROR
+[INFO] ------------------------------------------------------------------------
+[INFO] Error retrieving previous build number for artifact 'com.test:stories:jar': repository metadata for: 'snapshot com.test:stories:1.0-SNAPSHOT' could not be retrieved from repository: inhouse.snapshot due to an error: Error transferring file
+
+host
+[INFO] ------------------------------------------------------------------------
+[INFO] For more information, run Maven with the -e switch
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 7 seconds
+[INFO] Finished at: Mon May 11 22:34:16 NZST 2009
+[INFO] Final Memory: 5M/1016M
+[INFO] ------------------------------------------------------------------------
