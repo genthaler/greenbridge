@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-greenbridge-plugin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <versioning>
+    <latest>1.0-SNAPSHOT</latest>
+    <versions>
+      <version>1.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20090614121202</lastUpdated>
+  </versioning>
+</metadata>
