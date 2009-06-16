@@ -1,7 +1,3 @@
-#How to get started with Greenbridge
-
-= Getting Started =
-
 == 1. Prerequisites ==
 
 -Greenbridge requires Maven2
@@ -12,7 +8,7 @@
 
 *2.a Confluence*
 
-Make sure that that the confluence xml-rpc interface is enabled. See here for more details.
+Make sure that that the confluence xml-rpc interface is enabled.
 Setup a tree structure of pages that look like the following:
 {{{
     -ApplicationStories
