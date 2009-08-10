@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapters>
+  <chapter starttime="2:20">
+      <title>tag1</title>
+  </chapter>
+  <chapter starttime="2:40" endtime="3:00">
+      <title>tag2</title>
+  </chapter>
+</chapters>

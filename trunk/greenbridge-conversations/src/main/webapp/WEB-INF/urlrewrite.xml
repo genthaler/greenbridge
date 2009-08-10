@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN" "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite>
+    <rule>
+        <from>/conversation$</from>
+        <to last="true">/conversation/list.do</to>
+	</rule>
+    <rule>
+        <from>/tag$</from>
+        <to last="true">/tag/list.do</to>
+	</rule>
+    <rule>
+        <from>/tag/([A-Za-z0-9]+)$</from>
+        <to last="true">/searchGeneralTag.do?tagName=$1</to>
+	</rule>
+	<rule>
+        <from>/conversation/([0-9]+)/$</from>
+        <to last="true">/conversation/view.do?id=$1</to>
+	</rule>
+     <rule>
+        <from>/conversation/([0-9]+)$</from>
+        <to last="true">/conversation/view.do?id=$1</to>
+	</rule>
+ 	<rule>
+        <from>/conversation/([0-9]+)/time/([0-9]+)$</from>
+        <to last="true">/conversation/viewTime.do?id=$1&amp;time=$2</to>
+	</rule>
+    <rule>
+        <from>/conversation/upload/freemind$</from>
+        <to last="true">/conversation/upload/freemind.do</to>
+	</rule>
+</urlrewrite>
