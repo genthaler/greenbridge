@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+  <!-- Spring mvc beans i.e. controllers, lookups  -->
+  <bean id="tagManager" class="com.googlecode.greenbridge.conversations.manager.impl.MockTagManager" />
+  <bean id="chapterToolParser" class="com.googlecode.greenbridge.conversations.manager.impl.ChapterToolXMLTagParserStrategy" >
+      <constructor-arg ref="tagManager"/>
+  </bean>
+
+  <bean id="freemindTagConverter" class="com.googlecode.greenbridge.conversations.manager.impl.DefaultFreemindNodeToMediaTag">
+      <constructor-arg ref="tagManager"/>
+  </bean>
+
+  <bean id="freemindParser" class="com.googlecode.greenbridge.conversations.manager.impl.FreemindXmlTagParserStrategy">
+      <constructor-arg ref="tagManager" />
+      <constructor-arg ref="freemindTagConverter" />
+  </bean>
+
+  <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+  <bean id="conversationManager" class="com.googlecode.greenbridge.conversations.manager.impl.ConversationManagerMock" >
+      <constructor-arg  ref="freemindParser" />
+      <constructor-arg  ref="chapterToolParser" />
+  </bean>
+
+  <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+  <bean id="storeMediaStrategy" class="com.googlecode.greenbridge.conversations.web.StoreMediaStrategyImpl" >
+    <constructor-arg value="${ofla.dir}" />
+  </bean>
+
+  <bean name="/tag/**" class="com.googlecode.greenbridge.conversations.web.TagController" >
+      <constructor-arg ref="tagManager" /> 
+  </bean>
+
+  <bean name="/conversation/**" class="com.googlecode.greenbridge.conversations.web.ConversationController" >
+      <constructor-arg ref="conversationManager" />
+      <constructor-arg ref="storeMediaStrategy" />
+  </bean>
+
+  <bean name="/search**" class="com.googlecode.greenbridge.conversations.web.SearchController" >
+      <constructor-arg ref="conversationManager" />
+  </bean>
+
+
+  <!--
+    View resolver. Has custom view to support theme based page resolution.
+  -->
+  <bean id="internalResourceViewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="order" value="1" />
+    <property name="viewClass"
+      value="org.springframework.web.servlet.view.JstlView" />
+    <property name="prefix" value="/WEB-INF/jsp/" />
+    <property name="suffix" value=".jsp" />
+  </bean>
+
+  <!-- Message bundle sources	-->
+  <bean id="messageSource"
+    class="org.springframework.context.support.ResourceBundleMessageSource">
+    <property name="basenames">
+      <list>
+        <value>bundles.message
+        </value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- Declare the Resolver -->
+  <bean id="localeResolver"
+    class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+</beans>
