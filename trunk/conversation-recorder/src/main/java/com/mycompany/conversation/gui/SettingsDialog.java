@@ -12,6 +12,11 @@
 package com.mycompany.conversation.gui;
 
 import com.mycompany.conversation.PropertiesStorage;
+import java.util.Arrays;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import org.jdesktop.swingx.JXErrorPane;
+
 
 /**
  *
@@ -19,19 +24,20 @@ import com.mycompany.conversation.PropertiesStorage;
  */
 public class SettingsDialog extends javax.swing.JDialog {
 
-    private PropertiesStorage storage;
+    final private PropertiesStorage storage;
 
     /** Creates new form SettingsDialog */
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        storage = null;
         initComponents();
     }
 
 
     /** Creates new form SettingsDialog */
-    public SettingsDialog(PropertiesStorage storage, javax.swing.JDialog parent, boolean modal) {
+    public SettingsDialog(PropertiesStorage prop_storage, javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
-        this.storage = storage;
+        this.storage = prop_storage;
         initComponents();
         addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -39,6 +45,35 @@ public class SettingsDialog extends javax.swing.JDialog {
                     }
                 });
          ffmpegTextField.setText(storage.loadProperty("ffmpegcmd"));
+         String bitrate = storage.loadProperty("bitrate");
+         if (bitrate == null) bitrate = "24";
+         bitrateComboBox.setSelectedItem(bitrate);
+
+         String frequency = storage.loadProperty("frequency");
+         if (frequency == null) frequency = "24000";
+         frequencyComboBox.setSelectedItem(frequency);
+
+         ffmpegEditorPane.addHyperlinkListener(new HyperlinkListener() {
+
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent hle) {
+                if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+                    storage.showURL("http://lame.buanzo.com.ar/");
+                }
+            }
+        });
+    }
+
+    private boolean acceptable(String bitrate, String frequency) {
+        long br = Long.parseLong(bitrate);
+        long fq = Long.parseLong(frequency);
+        if (fq == 44100 && br >= 48) return true;
+        if (fq == 11025 && br <= 20) return true;
+        if (fq == 22050) {
+            long[] valid = {24,32,40,48,56};
+            if (Arrays.binarySearch(valid, br) >=0 ) return true;
+        }
+        return false;
     }
     /** This method is called from within the constructor to
      * initialize the form.
@@ -53,6 +88,14 @@ public class SettingsDialog extends javax.swing.JDialog {
         ffmpegTextField = new javax.swing.JTextField();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        bitrateComboBox = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        frequencyComboBox = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        ffmpegEditorPane = new javax.swing.JEditorPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -74,22 +117,63 @@ public class SettingsDialog extends javax.swing.JDialog {
             }
         });
 
+        jLabel2.setText("bitrate");
+
+        bitrateComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "128", "112", "96", "80", "64", "56", "48", "40", "32", "24", "20", "18", "16", "8" }));
+        bitrateComboBox.setSelectedIndex(6);
+
+        jLabel3.setText("kbps");
+
+        jLabel4.setText("frequency");
+
+        frequencyComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "44100", "22050", "11025" }));
+        frequencyComboBox.setSelectedIndex(1);
+
+        jLabel5.setText("Hz");
+
+        jScrollPane1.setBorder(null);
+
+        ffmpegEditorPane.setBorder(null);
+        ffmpegEditorPane.setContentType("text/html");
+        ffmpegEditorPane.setEditable(false);
+        ffmpegEditorPane.setText("<html>\r\n  <head>\r\n\r\n  </head>\r\n  <body>\r\n    Need ffmpeg? Get it <a href=\"\">here</a>\n  </body>\r\n</html>\r\n");
+        jScrollPane1.setViewportView(ffmpegEditorPane);
+        ffmpegEditorPane.getAccessibleContext().setAccessibleDescription("text/html");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jLabel1)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(cancelButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(okButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(63, 63, 63)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(ffmpegTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ffmpegTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(frequencyComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bitrateComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel3)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(cancelButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(okButton)))
+                        .addContainerGap(169, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -99,11 +183,26 @@ public class SettingsDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(ffmpegTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(okButton)
-                    .addComponent(cancelButton))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(okButton)
+                            .addComponent(cancelButton))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(bitrateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(frequencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5))
+                        .addGap(35, 35, 35))))
         );
 
         pack();
@@ -111,7 +210,14 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         storage.storeProperty("ffmpegcmd", ffmpegTextField.getText());
-        dispose();
+        String bitrate = (String) bitrateComboBox.getSelectedItem();
+        String frequency = (String) frequencyComboBox.getSelectedItem();
+        if (acceptable(bitrate, frequency)) {
+            storage.storeProperty("bitrate", bitrate);
+            storage.storeProperty("frequency", frequency);
+             dispose();
+        }
+        else JXErrorPane.showFrame(new IllegalArgumentException("The bitrate and frequency settings cant work together for flash."));       
 }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -136,9 +242,17 @@ public class SettingsDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox bitrateComboBox;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JEditorPane ffmpegEditorPane;
     private javax.swing.JTextField ffmpegTextField;
+    private javax.swing.JComboBox frequencyComboBox;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton okButton;
     // End of variables declaration//GEN-END:variables
 

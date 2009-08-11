@@ -34,6 +34,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import org.jdesktop.swingx.JXErrorPane;
 
 /**
@@ -57,7 +59,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
     }
 
     /** Creates new form RecordingStatusDialog */
-    public RecordingStatusDialog(ConversationController controller, PropertiesStorage propStorage, java.awt.Frame parent, boolean modal) {
+    public RecordingStatusDialog(ConversationController controller, final PropertiesStorage propStorage, java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         updateLength = new Timer(1000, new updateLengthThread());
         this.propStorage = propStorage;
@@ -65,7 +67,18 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         initComponents();
         controller.addAudioRecordingListener(this);
         controller.addUploadListener(this);
-        
+        uploadURLEditorPane.addHyperlinkListener(new HyperlinkListener() {
+            @Override
+            public void hyperlinkUpdate(HyperlinkEvent hle) {
+               if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+                    propStorage.showURL(hle.getURL().toString());
+                }
+            }
+        });
+        String uploadServerUrl = propStorage.loadProperty("uploadServerUrl");
+        if (uploadServerUrl != null) {
+            serverComboBox.setSelectedItem(uploadServerUrl);
+        }
     }
 
 
@@ -91,8 +104,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         taskProgressBar.setEnabled(false);
         overallProgressBar.setEnabled(false);
         uploadCancelButton.setEnabled(false);
-        conversationURLTextField.setEnabled(false);
-        conversationURLTextField.setText("");
+        uploadURLEditorPane.setText("");
         uploadPanel.setEnabled(false);
     }
 
@@ -108,8 +120,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         taskProgressBar.setEnabled(false);
         overallProgressBar.setEnabled(false);
         uploadCancelButton.setEnabled(false);
-        conversationURLTextField.setEnabled(false);
-        conversationURLTextField.setText("");
+        uploadURLEditorPane.setText("");
         uploadPanel.setEnabled(false);
     }
 
@@ -128,8 +139,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         taskProgressBar.setEnabled(false);
         overallProgressBar.setEnabled(false);
         uploadCancelButton.setEnabled(false);
-        conversationURLTextField.setEnabled(false);
-        conversationURLTextField.setText("");
+        uploadURLEditorPane.setText("");
         uploadPanel.setEnabled(true);
     }
 
@@ -175,7 +185,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
 
     private void uploadComplete(String uploadURL) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        uploadURLEditorPane.setText(createUploadHtml(uploadURL));
     }
 
 
@@ -194,11 +204,12 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         uploadButton = new javax.swing.JButton();
         taskProgressBar = new javax.swing.JProgressBar();
         overallProgressBar = new javax.swing.JProgressBar();
-        conversationURLTextField = new javax.swing.JTextField();
         uploadCancelButton = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        uploadURLEditorPane = new javax.swing.JEditorPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         recordingStartedLabel = new javax.swing.JLabel();
@@ -234,8 +245,6 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
             }
         });
 
-        conversationURLTextField.setText("http://localhost:8080/greenbridge/conversation/434");
-
         uploadCancelButton.setText("Cancel");
 
         jLabel8.setText("Task");
@@ -243,6 +252,12 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         jLabel9.setText("Overall");
 
         jLabel7.setText("URL");
+
+        jScrollPane1.setBorder(null);
+
+        uploadURLEditorPane.setContentType("text/html");
+        uploadURLEditorPane.setEditable(false);
+        jScrollPane1.setViewportView(uploadURLEditorPane);
 
         javax.swing.GroupLayout uploadPanelLayout = new javax.swing.GroupLayout(uploadPanel);
         uploadPanel.setLayout(uploadPanelLayout);
@@ -270,11 +285,11 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                                     .addComponent(taskProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(uploadCancelButton))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadPanelLayout.createSequentialGroup()
-                                .addGap(5, 5, 5)
+                            .addGroup(uploadPanelLayout.createSequentialGroup()
+                                .addGap(13, 13, 13)
                                 .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(conversationURLTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         uploadPanelLayout.setVerticalGroup(
@@ -295,11 +310,11 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                         .addGroup(uploadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(overallProgressBar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.TRAILING))))
-                .addGap(18, 18, 18)
-                .addGroup(uploadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(conversationURLTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(uploadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Audio Recording"));
@@ -405,7 +420,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(uploadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -447,8 +462,13 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
             protected void done() {
                 try {
                     String location = get();
-                    conversationURLTextField.setText(location);
+                    uploadURLEditorPane.setText(createUploadHtml(location));
                     uploadButton.setEnabled(true);
+                    taskProgressBar.setStringPainted(false);
+                    taskProgressBar.setIndeterminate(false);
+                    taskProgressBar.setValue(100);
+                    overallProgressBar.setValue(100);
+                    propStorage.storeProperty("uploadServerUrl", (String)serverComboBox.getSelectedItem());
                 } catch (Exception ex) {
                     Logger.getLogger(RecordingStatusDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -457,6 +477,10 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
         }
 
+
+    private String createUploadHtml(String url) {
+        return "<html><a href=\"" + url + "\">" + url + "</a></html>";
+    }
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         updateLength.stop();
@@ -509,7 +533,6 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
-    private javax.swing.JTextField conversationURLTextField;
     private javax.swing.JMenu editSettingsMenu;
     private javax.swing.JMenuItem editSettingsMenuItem;
     private javax.swing.JLabel jLabel1;
@@ -520,6 +543,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel otherRecordingLabel;
     private javax.swing.JProgressBar overallProgressBar;
     private javax.swing.JLabel recordingLengthLabel;
@@ -531,6 +555,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
     private javax.swing.JButton uploadButton;
     private javax.swing.JButton uploadCancelButton;
     private javax.swing.JPanel uploadPanel;
+    private javax.swing.JEditorPane uploadURLEditorPane;
     // End of variables declaration//GEN-END:variables
 
 

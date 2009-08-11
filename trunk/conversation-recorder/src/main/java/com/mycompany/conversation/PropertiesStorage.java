@@ -5,7 +5,6 @@
 
 package com.mycompany.conversation;
 
-import java.util.Map;
 
 /**
  *
@@ -15,5 +14,6 @@ public interface PropertiesStorage {
 
     public void storeProperty(String property, String value);
     public String loadProperty(String property);
+    public void showURL(String url);
 
 }
