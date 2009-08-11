@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 import javax.sound.sampled.LineUnavailableException;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -49,6 +49,7 @@ public class ConversationControllerImpl implements ConversationController {
 
 
     public void startRecording() throws LineUnavailableException {
+        documentStorage.saveCurrentDocument();
         Date start = new Date();
         documentStorage.setStartDate(start);
 
@@ -80,7 +81,7 @@ public class ConversationControllerImpl implements ConversationController {
         fireUploadChange("Uploading to Server...", 35);
 
         String location = uploadData(server, mp3, documentStorage.getFileLocation());
-        fireUploadComplete(location);
+        documentStorage.setUploadURL(location);
         return location;
     }
 
@@ -98,6 +99,12 @@ public class ConversationControllerImpl implements ConversationController {
         HttpClient client = new HttpClient();
         client.getHttpConnectionManager().getParams().setConnectionTimeout(60000);
         int status = client.executeMethod(post);
+        String location;
+        Header locationHeader = post.getResponseHeader("location");
+        if (locationHeader != null) {
+            location = locationHeader.getValue();
+            return location;
+        }
         if (status == HttpStatus.SC_OK) {
             return "/success";
         }
@@ -107,11 +114,18 @@ public class ConversationControllerImpl implements ConversationController {
 
     private File convertToMP3(File outputFile) throws InterruptedException, IOException {
         String ffmpegcmd = properties.loadProperty("ffmpegcmd");
-        //long bitrate = Long.parseLong(properties.loadProperty("bitrate"));
-        //long frequency = Long.parseLong(properties.loadProperty("frequency"));
-        long bitrate = 24000L;
-        long frequency = 22050L;
-
+        long bitrate;
+        try {
+            bitrate = Long.parseLong(properties.loadProperty("bitrate")) * 1000;
+        } catch (Exception e) {
+            bitrate = 24000L;
+        }
+        long frequency;
+        try {
+            frequency = Long.parseLong(properties.loadProperty("frequency"));
+        } catch (Exception e) {
+            frequency = 22050L;
+        }
 
         File mp3 = getFileForDocument(outputFile, ".mp3");
 
@@ -144,6 +158,10 @@ public class ConversationControllerImpl implements ConversationController {
     @Override
     public void addUploadListener(UploadListener listener) {
         this.uploadListener = listener;
+        String uploadURL = documentStorage.getUploadURL();
+        if (uploadURL != null ) {
+            fireUploadComplete(uploadURL);
+        }
     }
 
     @Override
@@ -164,6 +182,7 @@ public class ConversationControllerImpl implements ConversationController {
         state.setMinorTaskIndeterminate(false);
         state.setMinorTaskPercentComplete(100);
         state.setOverallPercentComplete(100);
+        state.setUploadURL(url);
         fireUploadChange(state);
     }
 

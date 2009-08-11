@@ -41,7 +41,7 @@ public class SimpleAudioRecorder extends Thread {
     public void startRecording(File file) {
         if (m_line != null || (m_line != null &&  m_line.isOpen())) return;
         try {
-            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 8000.0F, 16, 1, 2, 8000.0F, false);
+            AudioFormat audioFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 1, 2, 44100.0F, false);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
             m_line = (TargetDataLine) AudioSystem.getLine(info);
             m_line.open(audioFormat);
