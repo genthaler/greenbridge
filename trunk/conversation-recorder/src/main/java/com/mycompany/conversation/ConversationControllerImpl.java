@@ -55,7 +55,11 @@ public class ConversationControllerImpl implements ConversationController {
 
         File outputFile =  getFileForDocument(documentStorage.getFileLocation(), ".wav");
         SimpleAudioRecorder recorder = SimpleAudioRecorder.getInstance();
-        recorder.startRecording(outputFile);
+
+        String selectedMixerIndex = properties.loadProperty("selectedMixerIndex");
+        if (selectedMixerIndex == null) selectedMixerIndex = "default";
+
+        recorder.startRecording(outputFile, selectedMixerIndex, 0);
         AudioRecordingState state = new AudioRecordingState();
         state.setRecordingStarted(documentStorage.getStartDate());
         state.setRecordingStopped(null);
@@ -93,6 +97,16 @@ public class ConversationControllerImpl implements ConversationController {
           new FilePart("audio", mp3),
           new FilePart("document", document)
         };
+
+        String tagStartOffset = properties.loadProperty("tagStartOffset");
+        if (tagStartOffset != null) {
+            post.addParameter("tagStartOffset", tagStartOffset);
+        }
+
+        String tagDuration = properties.loadProperty("tagDuration");
+        if (tagDuration != null) {
+            post.addParameter("tagDuration", tagDuration);
+        }
 
         post.setRequestEntity(new MultipartRequestEntity(fileparts, post.getParams()));
 
