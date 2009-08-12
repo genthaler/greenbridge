@@ -12,7 +12,12 @@
 package com.mycompany.conversation.gui;
 
 import com.mycompany.conversation.PropertiesStorage;
+import com.mycompany.conversation.SimpleAudioRecorder;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import org.jdesktop.swingx.JXErrorPane;
@@ -25,11 +30,13 @@ import org.jdesktop.swingx.JXErrorPane;
 public class SettingsDialog extends javax.swing.JDialog {
 
     final private PropertiesStorage storage;
+    private DefaultComboBoxModel mixerModel = new DefaultComboBoxModel();
 
     /** Creates new form SettingsDialog */
     public SettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         storage = null;
+        buildMixerList();
         initComponents();
     }
 
@@ -38,12 +45,18 @@ public class SettingsDialog extends javax.swing.JDialog {
     public SettingsDialog(PropertiesStorage prop_storage, javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
         this.storage = prop_storage;
+        buildMixerList();
         initComponents();
         addWindowListener(new java.awt.event.WindowAdapter() {
                     public void windowClosing(java.awt.event.WindowEvent e) {
                         dispose();
                     }
                 });
+
+          String selectedMixerIndex = storage.loadProperty("selectedMixerIndex");
+          if (selectedMixerIndex == null) selectedMixerIndex = "default";
+          mixerComboBox.setSelectedItem(selectedMixerIndex);
+
          ffmpegTextField.setText(storage.loadProperty("ffmpegcmd"));
          String bitrate = storage.loadProperty("bitrate");
          if (bitrate == null) bitrate = "24";
@@ -62,7 +75,33 @@ public class SettingsDialog extends javax.swing.JDialog {
                 }
             }
         });
+
+        try {
+            Integer tagStartOffset = Integer.parseInt(storage.loadProperty("tagStartOffset"));
+            tagStartOffsetSpinner.setValue(tagStartOffset);
+        } catch (Exception e) { // ignore
+        }
+        try {
+            Integer tagDuration = Integer.parseInt(storage.loadProperty("tagDuration"));
+            tagDurationSpinner.setValue(tagDuration);
+        } catch (Exception e) { // ignore
+        }
+
     }
+
+    private void buildMixerList() {
+        mixerModel.addElement("default");
+        mixerModel.addElement("last");
+        List<String> mixers = SimpleAudioRecorder.dumpMixers();
+        for (String mixer : mixers) {
+            mixerModel.addElement(mixer);
+        }
+    }
+
+    public ComboBoxModel getMixerModel() {
+        return mixerModel;
+    }
+
 
     private boolean acceptable(String bitrate, String frequency) {
         long br = Long.parseLong(bitrate);
@@ -96,6 +135,16 @@ public class SettingsDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         ffmpegEditorPane = new javax.swing.JEditorPane();
+        mixerComboBox = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        mixerInfoEditorPane = new javax.swing.JEditorPane();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        tagStartOffsetSpinner = new javax.swing.JSpinner();
+        tagDurationSpinner = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -138,7 +187,30 @@ public class SettingsDialog extends javax.swing.JDialog {
         ffmpegEditorPane.setEditable(false);
         ffmpegEditorPane.setText("<html>\r\n  <head>\r\n\r\n  </head>\r\n  <body>\r\n    Need ffmpeg? Get it <a href=\"\">here</a>\n  </body>\r\n</html>\r\n");
         jScrollPane1.setViewportView(ffmpegEditorPane);
-        ffmpegEditorPane.getAccessibleContext().setAccessibleDescription("text/html");
+
+        mixerComboBox.setModel(getMixerModel());
+        mixerComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mixerComboBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Audio Source");
+
+        mixerInfoEditorPane.setEditable(false);
+        jScrollPane2.setViewportView(mixerInfoEditorPane);
+
+        jLabel7.setText("Tag Start Offset");
+
+        jLabel8.setText("seconds");
+
+        jLabel9.setText("Tag Duration");
+
+        jLabel10.setText("seconds");
+
+        tagStartOffsetSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(10), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        tagDurationSpinner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(20), Integer.valueOf(0), null, Integer.valueOf(1)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,62 +219,88 @@ public class SettingsDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(cancelButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(okButton))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(63, 63, 63)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ffmpegTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(frequencyComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(bitrateComboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(330, Short.MAX_VALUE)
+                        .addComponent(cancelButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(okButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel3)))
+                            .addComponent(mixerComboBox, 0, 362, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(169, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(22, 22, 22)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(211, 211, 211)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel7))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(tagDurationSpinner)
+                                    .addComponent(tagStartOffsetSpinner)
+                                    .addComponent(frequencyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(bitrateComboBox, 0, 89, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel8)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(16, 16, 16)
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(ffmpegTextField)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(ffmpegTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mixerComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ffmpegTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(okButton)
-                            .addComponent(cancelButton))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(bitrateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(frequencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(35, 35, 35))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(bitrateComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(frequencyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel8)
+                    .addComponent(tagStartOffsetSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10)
+                    .addComponent(tagDurationSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(okButton)
+                    .addComponent(cancelButton))
+                .addContainerGap())
         );
 
         pack();
@@ -210,6 +308,15 @@ public class SettingsDialog extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         storage.storeProperty("ffmpegcmd", ffmpegTextField.getText());
+        String selectedMixerIndex = (String) mixerComboBox.getSelectedItem();
+        storage.storeProperty("selectedMixerIndex", selectedMixerIndex);
+
+        Integer tagStartOffset = (Integer) tagStartOffsetSpinner.getValue();
+        storage.storeProperty("tagStartOffset", tagStartOffset.toString());
+
+        Integer tagDuration = (Integer) tagDurationSpinner.getValue();
+        storage.storeProperty("tagDuration", tagDuration.toString());
+
         String bitrate = (String) bitrateComboBox.getSelectedItem();
         String frequency = (String) frequencyComboBox.getSelectedItem();
         if (acceptable(bitrate, frequency)) {
@@ -223,6 +330,18 @@ public class SettingsDialog extends javax.swing.JDialog {
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void mixerComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mixerComboBoxActionPerformed
+        String selectedMixerIndex = "default";
+        int index = mixerComboBox.getSelectedIndex();
+        if (index == 1) selectedMixerIndex = "last";
+        if (index > 1) {
+            index = index - 2;
+            selectedMixerIndex = index + "";
+        }
+        String lineInfo = SimpleAudioRecorder.dumpLineInfo(selectedMixerIndex);
+        mixerInfoEditorPane.setText(lineInfo);
+    }//GEN-LAST:event_mixerComboBoxActionPerformed
 
     /**
     * @param args the command line arguments
@@ -248,12 +367,22 @@ public class SettingsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField ffmpegTextField;
     private javax.swing.JComboBox frequencyComboBox;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JComboBox mixerComboBox;
+    private javax.swing.JEditorPane mixerInfoEditorPane;
     private javax.swing.JButton okButton;
+    private javax.swing.JSpinner tagDurationSpinner;
+    private javax.swing.JSpinner tagStartOffsetSpinner;
     // End of variables declaration//GEN-END:variables
 
 }
