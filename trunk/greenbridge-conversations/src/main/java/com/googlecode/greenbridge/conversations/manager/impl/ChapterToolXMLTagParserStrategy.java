@@ -36,7 +36,7 @@ public class ChapterToolXMLTagParserStrategy implements XmlTagParserStrategy{
         return  reader.read(stream);
     }
     @Override
-    public List<MediaTag> getTags(Document doc, Long project_id) throws Exception {
+    public List<MediaTag> getTags(Document doc, Long project_id, Integer tagStartOffset, Integer tagDuration) throws Exception {
         List<MediaTag> mediaTags = new ArrayList<MediaTag>();
         Element e = doc.getRootElement();
         List chapters = e.elements("chapter");

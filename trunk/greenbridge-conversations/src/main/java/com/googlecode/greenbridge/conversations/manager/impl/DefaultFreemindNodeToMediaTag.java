@@ -32,11 +32,11 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
 
 
     @Override
-    public MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id) {
+    public MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id, Integer tagStartOffset, Integer tagDuration) {
         MediaTag tag = new MediaTag();
         setName(tag, node, project_id);
-        setStartTime(tag, node, meetingStart);
-        setEndTime(tag,node, meetingStart);
+        setStartTime(tag, node, meetingStart, tagStartOffset);
+        setEndTime(tag,node, meetingStart, tagDuration);
         setExtraInfo(tag, node);
         return tag;
     }
@@ -64,14 +64,17 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
     }
 
 
-    protected void setStartTime(MediaTag tag, Element node, Date meetingStart) {
+    protected void setStartTime(MediaTag tag, Element node, Date meetingStart, Integer tagStartOffset) {
         String longText = node.attributeValue("CREATED");
         Date tagStart = new Date(Long.parseLong(longText));
         long startOffset = (tagStart.getTime() - meetingStart.getTime()) /1000;
+        if (tagStartOffset != null && tagStartOffset >= startOffset) {
+            startOffset = startOffset - tagStartOffset;
+        }
         tag.setStartTime(startOffset);
     }
 
-    protected void setEndTime(MediaTag tag, Element node, Date meetingStart) {
+    protected void setEndTime(MediaTag tag, Element node, Date meetingStart, Integer tagDuration) {
         long oldestTagInBranch = treeWalkOldest(node);
         long endOffset = (oldestTagInBranch - meetingStart.getTime() + endOffsetConstant) / 1000;
         tag.setEndTime(endOffset);

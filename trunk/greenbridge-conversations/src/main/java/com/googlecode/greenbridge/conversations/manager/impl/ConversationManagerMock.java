@@ -117,8 +117,8 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
         c.setMedia(medias);
 
         String project  = freemindParser.getProject(doc);
-        Long project_id = projectManager.findProjectByName(project);
-        List<MediaTag> mediaTags = freemindParser.getTags(doc, project_id);
+        Long project_id = null; //projectManager.findProjectByName(project);
+        List<MediaTag> mediaTags = freemindParser.getTags(doc, project_id, conversationDetails.getTagStartOffset(), conversationDetails.getTagDuration());
         for (MediaTag mediaTag : mediaTags) {
             mediaTag.setId(internalCount++);
         }
@@ -147,7 +147,7 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
         medias.add(m);
         c.setMedia(medias);
         Document doc = tagParser.parseDocument(conversationDetails.getAppleChapterXMLStream());
-        List<MediaTag> mediaTags = tagParser.getTags(doc, conversationDetails.getProject_id());
+        List<MediaTag> mediaTags = tagParser.getTags(doc, conversationDetails.getProject_id(), null, null);
         m.setMediaTags(mediaTags);
         Utils.setAllMediaTagsMedia(mediaTags, m);
 
