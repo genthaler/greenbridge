@@ -76,7 +76,11 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
 
     protected void setEndTime(MediaTag tag, Element node, Date meetingStart, Integer tagDuration) {
         long oldestTagInBranch = treeWalkOldest(node);
-        long endOffset = (oldestTagInBranch - meetingStart.getTime() + endOffsetConstant) / 1000;
+        long localEndOfffset = endOffsetConstant;
+        if (tagDuration != null) {
+            localEndOfffset = tagDuration * 1000;
+        }
+        long endOffset = (oldestTagInBranch - meetingStart.getTime() + localEndOfffset) / 1000;
         tag.setEndTime(endOffset);
     }
 
