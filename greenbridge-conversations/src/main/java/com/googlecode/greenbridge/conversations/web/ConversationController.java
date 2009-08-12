@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -133,7 +134,10 @@ public class ConversationController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/conversation/upload/freemind.do")
-    public final String uploadFreemind(HttpServletRequest request, ModelMap model) throws Exception {
+    public final String uploadFreemind(HttpServletRequest request,
+            @RequestParam(value="tagStartOffset",required=false) Integer tagStartOffset,
+            @RequestParam(value="tagDuration",required=false) Integer tagDuration,
+            ModelMap model) throws Exception {
         if(request instanceof MultipartHttpServletRequest){
                 MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
                 MultipartFile conversation_data = req.getFile("audio");
@@ -143,6 +147,8 @@ public class ConversationController {
                 FreemindConversationDetails details = new FreemindConversationDetails();
                 details.setFreemindXMLStream(tags_xml.getInputStream());
                 details.setMediaUrl(url);
+                details.setTagStartOffset(tagStartOffset);
+                details.setTagDuration(tagDuration);
                 Conversation conversation = conversationManager.newConversation(details);
                 return "redirect:../" + conversation.getId() ;
 

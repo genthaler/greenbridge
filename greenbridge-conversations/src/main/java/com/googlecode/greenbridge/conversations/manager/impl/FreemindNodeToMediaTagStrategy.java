@@ -15,6 +15,6 @@ import org.dom4j.Element;
  */
 public interface FreemindNodeToMediaTagStrategy {
 
-     public MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id) ;
+     public MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id, Integer tagStartOffset, Integer tagDuration) ;
 
 }

@@ -37,12 +37,12 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
 
 
     @Override
-    public List<MediaTag> getTags(Document doc, Long project_id) throws Exception {
+    public List<MediaTag> getTags(Document doc, Long project_id,Integer tagStartOffset, Integer tagDuration) throws Exception {
         List<MediaTag> mediaTags = new ArrayList<MediaTag>();
         Date meetingStart = getMeetingStart(doc);
         List<Element> elements = findElementsWithCreatedBetweenMeetingTime(meetingStart, getMeetingEnd(doc), doc);
         for (Element element : elements) {
-            MediaTag tag = createMediaTagFromNode(element, meetingStart, project_id);
+            MediaTag tag = createMediaTagFromNode(element, meetingStart, project_id,tagStartOffset,tagDuration);
             mediaTags.add(tag);
         }
         return mediaTags;
@@ -75,8 +75,8 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
      * @param node
      * @return
      */
-    protected MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id) {
-            MediaTag mediaTag = converter.createMediaTagFromNode(node, meetingStart,project_id);
+    protected MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id, Integer tagStartOffset, Integer tagDuration) {
+            MediaTag mediaTag = converter.createMediaTagFromNode(node, meetingStart,project_id, tagStartOffset, tagDuration);
             return mediaTag;
     }
 

@@ -12,6 +12,8 @@ import java.io.InputStream;
  * @author ryan
  */
 public class FreemindConversationDetails {
+    private Integer tagStartOffset;
+    private Integer tagDuration;
     private InputStream freemindXMLStream;
     private String mediaUrl;
 
@@ -41,6 +43,34 @@ public class FreemindConversationDetails {
      */
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
+    }
+
+    /**
+     * @return the tagStartOffset
+     */
+    public Integer getTagStartOffset() {
+        return tagStartOffset;
+    }
+
+    /**
+     * @param tagStartOffset the tagStartOffset to set
+     */
+    public void setTagStartOffset(Integer tagStartOffset) {
+        this.tagStartOffset = tagStartOffset;
+    }
+
+    /**
+     * @return the tagDuration
+     */
+    public Integer getTagDuration() {
+        return tagDuration;
+    }
+
+    /**
+     * @param tagDuration the tagDuration to set
+     */
+    public void setTagDuration(Integer tagDuration) {
+        this.tagDuration = tagDuration;
     }
     
 }
