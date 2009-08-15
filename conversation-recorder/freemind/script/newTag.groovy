@@ -1,39 +1,36 @@
-javax.swing.JOptionPane.showMessageDialog(null, "Test! ");
-poss = c.model.registry.attributes.getElement('Tag').getValues();
-for (i in poss) {
-	javax.swing.JOptionPane.showMessageDialog(null, "Test! " + i);
+
+
+
+tags = c.model.registry.attributes.getDefaultComboBoxModel("tag");
+dialog = new com.mycompany.conversation.gui.NewTagDialog( c.frame.getJFrame(), true, tags);
+dialog.setLocationRelativeTo(null);
+dialog.setVisible(true);
+if (dialog.tagAndDescription != null) {
+    tagDetails = dialog.tagAndDescription;
+    c.getController().obtainFocusForSelected();
+
+    action = c.NEW_SIBLING_BEHIND
+    if (node == c.getController().getView().getSelected()) {
+        action = c.NEW_CHILD
+    }
+
+    //child = c.newChild.addNew(c.getController().getView().getSelected().getModel(), action, null)
+    child = c.newChild.addNewNode()
+    if (tagDetails.description != null && !"".equals(tagDetails.description)) {
+        child.setText(tagDetails.description);
+        child.createAttributeTableModel();
+        if (child.getAttributes()==null || child.getAttributes().getRowCount()==0) {
+            child.createAttributeTableModel();
+        };
+        child.getAttributes().insertRow(0 , 'tag', tagDetails.tag);
+        
+    } else {
+        child.setText( tagDetails.tag);
+        println('child text: ' + child.getText())
+    }
+    history = new freemind.modes.HistoryInformation(tagDetails.tagDate, tagDetails.tagDate);
+    child.setHistoryInformation(history)
+    c.nodeStructureChanged(node);
+
 }
 
-javax.swing.JOptionPane.showMessageDialog(null, "Test! ");
-
-String s = (String)javax.swing.JOptionPane.showInputDialog(
-                    null,
-                    "Complete the sentence:\n",
-                    "Customized Dialog",
-                    javax.swing.JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    poss,
-                    null);
-
-
-javax.swing.JOptionPane.showMessageDialog(null, "6! ");
-
-
-c.getController().obtainFocusForSelected();
-child = c.newChild.addNew(c.getController().getView().getSelected().getModel(), c.NEW_CHILD, null)
-child.createAttributeTableModel() 
-if (child.getAttributes()==null || child.getAttributes().getRowCount()==0) {
-	child.createAttributeTableModel();
-};
-child.getAttributes().insertRow(0 , 'tag', 'Alpha-2');
-
-
-
-//javax.swing.JOptionPane.showMessageDialog(null, "Test! " + c.getController().getView().getSelected().getText());
-
-
-
-//def i = node.childrenUnfolded(); 
-//while (i.hasNext()) { d = i.next(); d.setBackgroundColor(java.awt.Color.WHITE); }; 
-//c.nodeStructureChanged();
-//javax.swing.JOptionPane.showMessageDialog(null, "Start! ");
