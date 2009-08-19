@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>greenbridge-confluence</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Greenbride Confluence</name>
   <url>http://code.google.com/p/greenbridge/</url>
   <description>A behaviour driven development tool bridging confluence, maven and junit. This is the confluence module.</description>
@@ -18,7 +18,7 @@
     <dependency>
         <groupId>com.googlecode.greenbridge</groupId>
         <artifactId>greenbridge-core</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </dependency>
     <dependency>
         <groupId>org.codehaus.swizzle</groupId>
@@ -295,13 +295,29 @@
             <name>Java.net Repository for Maven</name>
             <url>http://download.java.net/maven/2/</url>
         </repository>
+        <repository>
+          <id>greenbridge-googlecode</id>
+          <name>Greenbridge Repository</name>
+          <url>http://greenbridge.googlecode.com/svn/repo/maven-repo</url>
+          <releases>
+           <enabled>true</enabled>
+           <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+           <enabled>false</enabled>
+          </snapshots>
+        </repository>
     </repositories>
     <distributionManagement>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>googlecode</id>
-            <url>svn:https://greenbridge.googlecode.com/svn/repo</url>
+            <id>greenbridge-googlecode</id>
+            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
         </repository>
+        <snapshotRepository>
+            <id>greenbridge-googlecode-snapshot</id>
+            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
     </distributionManagement>
    <properties>
         <maven-changes-plugin.version>2.0-beta-3</maven-changes-plugin.version>
