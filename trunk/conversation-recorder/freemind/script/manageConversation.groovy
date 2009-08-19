@@ -64,11 +64,48 @@ class FreeMindPropertiesStorage implements  com.mycompany.conversation.Propertie
 	}
 }
 
-		p_storage = new FreeMindPropertiesStorage(c);
-		d_storage = new FreeMindNodeDocumentStorage(node);
-		c_controller = new com.mycompany.conversation.ConversationControllerImpl(d_storage, p_storage);
-		dialog = new com.mycompany.conversation.gui.RecordingStatusDialog(c_controller, p_storage,  null, false);
-		dialog.setVisible(true);
+class AudioListener implements com.mycompany.conversation.AudioRecordingListener {
+    def c;
+
+    public AudioListener(c) {
+		this.c = c;
+	}
+
+    public void recordingChanged(com.mycompany.conversation.AudioRecordingState state) {
+        if (state.recordingStarted == null) {
+            
+        }
+        if (state.recordingStarted && !state.recordingStopped) {
+            def icon = new javax.swing.ImageIcon("plugins/script/record.png")
+            def started = new javax.swing.JLabel(icon);
+            started.setText("REC");
+            started.setForeground(java.awt.Color.RED)
+            def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
+            glass.setVisible(true);
+            glass.setLayout(null);
+            glass.add(started);
+            started.setBounds(c.frame.getJFrame().getWidth() - 62, 40 , 50, 50);
+        }
+        if (state.recordingStarted && state.recordingStopped) {
+            def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
+            glass.setVisible(false);
+            glass.removeAll();
+        }
+    }
+}
+
+
+
+
+p_storage = new FreeMindPropertiesStorage(c);
+d_storage = new FreeMindNodeDocumentStorage(node);
+listener = new AudioListener(c);
+c_controller = new com.mycompany.conversation.ConversationControllerImpl(d_storage, p_storage);
+c_controller.addAudioRecordingListener(listener);
+dialog = new com.mycompany.conversation.gui.RecordingStatusDialog(c_controller, p_storage,  null, false);
+dialog.setLocationRelativeTo(null);
+dialog.setVisible(true);
+        
       
 
 

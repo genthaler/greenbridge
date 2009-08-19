@@ -8,7 +8,9 @@ package com.mycompany.conversation;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.sound.sampled.LineUnavailableException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -26,13 +28,14 @@ public class ConversationControllerImpl implements ConversationController {
 
     private PropertiesStorage properties;
     private DocumentStorage documentStorage;
-    private AudioRecordingListener audioListener;
+    private List<AudioRecordingListener> audioListeners;
     private UploadListener uploadListener;
 
 
     public ConversationControllerImpl(DocumentStorage storage, PropertiesStorage properties) {
         this.documentStorage = storage;
         this.properties = properties;
+        this.audioListeners = new ArrayList<AudioRecordingListener>();
         
     }
 
@@ -158,13 +161,13 @@ public class ConversationControllerImpl implements ConversationController {
 
     // Right now, only a one to one broadcast! will change if needed
     public void addAudioRecordingListener(AudioRecordingListener listener) {
-        this.audioListener = listener;
+        this.audioListeners.add(listener);
         AudioRecordingState state = findPersistedAudioRecordingState();
         fireAudioChange(state);
     }
 
     public void removerAudioRecordingListener(AudioRecordingListener listener) {
-        this.audioListener = null;
+        this.audioListeners.remove(listener);
         AudioRecordingState state = findPersistedAudioRecordingState();
         fireAudioChange(state);
     }
@@ -184,8 +187,8 @@ public class ConversationControllerImpl implements ConversationController {
     }
 
     private void fireAudioChange(AudioRecordingState state) {
-        if (audioListener != null) {
-            audioListener.recordingChanged(state);
+        for (AudioRecordingListener audioRecordingListener : audioListeners) {
+            audioRecordingListener.recordingChanged(state);
         }
     }
 
