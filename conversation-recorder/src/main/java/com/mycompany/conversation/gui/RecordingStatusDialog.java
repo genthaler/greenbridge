@@ -506,6 +506,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
     private void editSettingsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSettingsMenuItemActionPerformed
          SettingsDialog dialog = new SettingsDialog(propStorage,this, true);
+         dialog.setLocationRelativeTo(null);
          dialog.setVisible(true);
 }//GEN-LAST:event_editSettingsMenuItemActionPerformed
 
