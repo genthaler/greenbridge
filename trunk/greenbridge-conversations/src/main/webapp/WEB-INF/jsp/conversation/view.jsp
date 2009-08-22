@@ -2,9 +2,8 @@
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp"/>
 <script type="text/javascript">
     dojo.require("dijit.TitlePane");
-    dojo.require("dojox.form.RangeSlider");
 </script>
-<script type="text/javascript" src="${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer-3.1.1.min.js"></script>
+<script type="text/javascript" src="<c:url value='/scripts/flowplayer/flowplayer-3.1.1.min.js' />"></script>
 <script>
     function play(sliderId) {
         var min = dijit.byId(sliderId).getValue()[0];
@@ -17,7 +16,7 @@
         $f("fms").seek(min);
     }
 
-    setInterval("updatePlayhead()", 1000);
+    setInterval("updatePlayhead()", 500);
 
     function updatePlayhead() {
         var playerStatus = $f("fms").getStatus();
@@ -39,15 +38,13 @@
 
 
     <c:if test="${not empty conversation}">
-	<h2 style="margin-top: 2px;"><img src="${pageContext.servletContext.servletContextName}/images/balloon-left.png"/> ${conversation.name}</h2>
+	<h2 style="margin-top: 2px;"><img src="<c:url value='/images/balloon-left.png' />"/> ${conversation.name}</h2>
         <br/>
         <div id="conversation_description">
             <label for="_name">Description:</label>
             <div class="box" id="_description">${conversation.description}</div>
         </div>
         <br/>
-        <img src="${pageContext.servletContext.servletContextName}/images/tag--plus.png" alt="Add a tag at the current time" />
-        
            <div id="fms" style="border: 1px; height: 60px; width: 575px; left: -10px; position:relative">
             </div>
         <div id="taglist" >
@@ -55,15 +52,20 @@
            <c:forEach var="mediaTag" items="${mediaTags}" varStatus="tagId" >
                <div style="">
                 ${mediaTag.tag.tagName}
-                    <input type="image" src="${pageContext.servletContext.servletContextName}/images/control.png" onclick="play('${mediaTag.id}-slider');" />
-                     <img src="${pageContext.servletContext.servletContextName}/images/tag--pencil.png" alt="Edit this tag" />
-                    <img src="${pageContext.servletContext.servletContextName}/images/tag--minus.png" alt="Remove this tag" />
+                    <input type="image" src="<c:url value='/images/control.png' />" onclick="play('${mediaTag.id}-slider');" />
+                     <img src="<c:url value='/images/tag--pencil.png' />" alt="Edit this tag" />
+                    <img src="<c:url value='/images/tag--minus.png' />" alt="Remove this tag" />
 
-                    <a href="${pageContext.servletContext.servletContextName}/conversation/${conversation.id}/time/${mediaTag.startTime}" title="permalink">
-                        <img src="${pageContext.servletContext.servletContextName}/images/chain.png" alt="permalink"/>
+                    <a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">
+                        <img src="<c:url value='/images/chain.png' />" alt="permalink"/>
                     </a>
                     <div >
-                        <span id="${mediaTag.id}-slider" dojoType="dojox.form.HorizontalRangeSlider"
+
+                        
+
+
+
+                        <span id="${mediaTag.id}-slider" 
                                  discreteValues="${mediaTag.media.mediaLength}" showButtons="false"
                                  maximum="${mediaTag.media.mediaLength}" value="${mediaTag.startTime},${mediaTag.endTime}">
                         </span>
@@ -73,7 +75,7 @@
         </div>
 		<!-- this will install flowplayer inside previous A- tag. -->
 		<script>
-			$f("fms", "${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer-3.1.1.swf", {
+			$f("fms", "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", {
 				clip: {
 					provider: 'influxis',
 					streams: [
@@ -93,7 +95,7 @@
                        borderRadius: '0px'
                      },
                      time: {
-                         url: '${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer.controls-3.1.1.swf',
+                         url: '<c:url value='/scripts/flowplayer/flowplayer.controls-3.1.1.swf' />',
                          backgroundColor: '#FFFFFF',
                          backgroundGradient: 'low',
                          top: 0,
@@ -106,7 +108,7 @@
                      },
 					// here is our rtpm plugin configuration
 					influxis: {
-						url: '${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer.rtmp-3.1.0.swf',
+						url: '<c:url value='/scripts/flowplayer/flowplayer.rtmp-3.1.0.swf' />',
 
 						// netConnectionUrl defines where the streams are found
 						netConnectionUrl: 'rtmp://localhost:1935/oflaDemo'
