@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -150,7 +149,7 @@ public class ConversationController {
                 details.setTagStartOffset(tagStartOffset);
                 details.setTagDuration(tagDuration);
                 Conversation conversation = conversationManager.newConversation(details);
-                return "redirect:../" + conversation.getId() ;
+                return "redirect:/conversation/" + conversation.getId() ;
 
         }
         return "conversation/uploadForm";

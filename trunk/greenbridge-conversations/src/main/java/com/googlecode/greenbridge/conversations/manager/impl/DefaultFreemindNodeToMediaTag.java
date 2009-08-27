@@ -68,7 +68,7 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
         String longText = node.attributeValue("CREATED");
         Date tagStart = new Date(Long.parseLong(longText));
         long startOffset = (tagStart.getTime() - meetingStart.getTime()) /1000;
-        if (tagStartOffset != null && tagStartOffset >= startOffset) {
+        if (tagStartOffset != null && tagStartOffset <= startOffset) {
             startOffset = startOffset - tagStartOffset;
         }
         tag.setStartTime(startOffset);

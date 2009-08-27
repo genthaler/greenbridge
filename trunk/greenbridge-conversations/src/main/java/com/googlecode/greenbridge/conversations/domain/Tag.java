@@ -3,36 +3,20 @@ package com.googlecode.greenbridge.conversations.domain;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
-import org.hibernate.validator.NotNull;
 
-@Entity
 public class Tag implements Serializable {
 
 
-    @javax.persistence.Id
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-    @javax.persistence.Column(name = "id")
     private java.lang.Long id;
 
-    @NotNull
     private String tagName;
 
     private String tagClass;
 
 
-    @ManyToOne
-    @JoinColumn
     private Project tagGroup;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tag")
     private List<MediaTag> mediaTags = new ArrayList<MediaTag>();
 
     public java.lang.Long getId() {

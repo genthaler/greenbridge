@@ -50,31 +50,30 @@ div .box {
 #wrap {
 	margin:0 auto;
   	position:relative;
-  	float:center;  	
-  	top: 0px;
+  	top: -10px;
   	left:0px;
-  	width:800px;
   	text-align:left;  	
 
 }
 #main {
   	margin:0 auto;
   	position:relative;
-  	float:right;  	
-  	top: 35px;
-  	left:0px;
-  	width:550px;
-  	height:550px; 
+  	float:left;
+  	top: -5px;
+  	left:20px;
   	text-align:left;
+    width: 70%;
 }
 
-
+#banner {
+    margin-left: 10px;
+}
 
 
 .footer {
 	background:#fff;
 	border:none;
-	margin-top:20px;
+	margin-top:40px;
 	border-top:1px solid #999999;
 	width:100%;
 }
@@ -195,9 +194,7 @@ li ul li ul {
 /* table elements */
 
 table {
-	background: #EEEEEE;
-	margin: 2px 0 0 0;
-	border: 1px solid #BBBBBB;
+
 	border-collapse: collapse;
 }
 
@@ -315,9 +312,9 @@ fieldset th {
     background: #eee;
   	position:relative;
   	float:left;  	
-  	top: 35px;
+  	top: 15px;
   	left:0px;
-  	width:200px;
+  	width:180px;
 }
 
 #menu ul{
@@ -358,3 +355,128 @@ fieldset th {
 	color: #648C1D;
 	background: #fff;
 }
+
+#conversation-menu {
+    border-bottom: 1px solid #CCCCCC;
+    position: relative;
+    top: -15px;
+    z-index: 2;
+}
+
+#fms {
+    margin-top: 18px;
+}
+
+.tag-menu-selected {
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    border-top: solid 1px #CCCCCC;
+    border-bottom: solid 2px white;
+    background-color: white;
+    color: #777777;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+}
+
+.tag-menu {
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    border-top: solid 1px white;
+    border-bottom: solid 1px #CCCCCC;
+    background-color: #CCCCCC;
+    color: #777777;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+}
+
+.tag-menu-hover {
+    border-left: solid 1px #CCCCCC;
+    border-right: solid 1px #CCCCCC;
+    border-top: solid 1px green;
+    border-bottom: solid 1px #CCCCCC;
+    background-color: #DDDDDD;
+    color: #777777;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3px;
+    cursor:pointer;
+}
+
+#tag-table td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+
+.conversation-attribute {
+    margin-left: 16px;
+}
+
+
+.tagrow {
+  border-top: 1px solid green;
+  padding: 0px;
+}
+
+.tagtd {
+    padding: 0px;
+}
+
+
+.tagdiv {
+    border: 1px solid ;
+    height: 17px;
+    background-color:green;
+    cursor:default;
+}
+.tagdiv-over {
+    border: 1px solid ;
+    height: 17px;
+    background-color:#7db223;
+    cursor:pointer;
+}
+.taglabel {
+
+    color:black;
+    font-weight:bold;
+}
+
+.tagdescription {
+    font-size:10px;
+    padding-left: 10px;
+}
+
+.tagactions {
+    font-size:10px;
+    padding-left: 10px;
+}
+
+.lasttagrow {
+        margin-bottom: 17px;
+}
+
+.tagactions button {
+    font-size:10px;
+}
+
+.tagactions a {
+    font-size:10px;
+}
+
+
+
+.deleted {
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+

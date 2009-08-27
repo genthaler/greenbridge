@@ -11,10 +11,10 @@ import com.googlecode.greenbridge.conversations.domain.Tag;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.tuckey.web.filters.urlrewrite.utils.StringUtils;
 
 
 /**
@@ -54,7 +54,7 @@ public class ChapterToolXMLTagParserStrategy implements XmlTagParserStrategy{
         long startTime = Utils.getTimeInMilliseconds(start);
         mediaTag.setStartTime(startTime);
         String end = chapter.attributeValue("endtime");
-        if (StringUtils.isNotEmpty(end)) {
+        if (!StringUtils.isBlank(end)) {
             long endTime = Utils.getTimeInMilliseconds(end);
             mediaTag.setEndTime(endTime);
         }

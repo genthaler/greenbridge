@@ -20,7 +20,6 @@
 
 <script type="text/javascript">
     dojo.require("dijit.TitlePane");
-    dojo.require("dojox.form.RangeSlider");
 </script>
 <script type="text/javascript" src="${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer-3.1.1.min.js"></script>
 <script></script>
@@ -33,7 +32,7 @@
         <div class="tagList">
             <ul>
                 <c:forEach items="${globalTags}" var="tag">
-                    <li><a href="${pageContext.servletContext.servletContextName}/tag/${tag.tagName}">${tag.tagName}</a>
+                    <li><a href="<c:url value='/tag/${tag.tagName}' />">${tag.tagName}</a>
 
                     </li>
                 </c:forEach>
@@ -43,7 +42,7 @@
 
     <div style="margin-bottom: 15px;">
         <b>Project Tags</b> -
-        <a href="${pageContext.servletContext.servletContextName}/project/form">Add A Project</a>
+        <a href="<c:url value='/project/form' />">Add A Project</a>
     </div>
     <div style="margin-left: 15px;">
         <c:forEach items="${projects}" var="project">

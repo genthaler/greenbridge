@@ -1,36 +1,23 @@
 package com.googlecode.greenbridge.conversations.domain;
 
-import javax.persistence.Entity;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import org.hibernate.validator.NotNull;
 
-@Entity
+
 public class Conversation implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(nullable=false)
+
     private Long id;
 
-    @NotNull
     private String name;
 
     private String description;
 
     private String category;
 
-    @NotNull
-    @Temporal(javax.persistence.TemporalType.DATE)
+
     private Date startTime;
 
     
@@ -42,10 +29,8 @@ public class Conversation implements Serializable {
     }
 
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conversation")
     private Set<Attendee> attendees = new HashSet<Attendee>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "conversation")
     private Set<Media> media = new HashSet<Media>();
 
     public java.lang.String getName() {

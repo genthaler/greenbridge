@@ -102,7 +102,7 @@ public class FreemindXmlTagParserStrategyTest {
         List<Element> elements = instance.findElementsWithCreatedBetweenMeetingTime(startDate, endDate, doc);
         assertEquals(2, elements.size());
 
-        List<MediaTag> tags = instance.getTags(doc, null);
+        List<MediaTag> tags = instance.getTags(doc, null, 0, 0);
         assertEquals(2, tags.size());
     }
 
