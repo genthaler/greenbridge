@@ -1,32 +1,18 @@
 package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import org.hibernate.validator.NotNull;
 
-@Entity
 public class Attendee implements Serializable {
 
 
-    @javax.persistence.Id
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-    @javax.persistence.Column(name = "id")
     private Long id;
 
 
 
     private Boolean present;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn
     private Person person;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn
     private Conversation conversation;
 
 

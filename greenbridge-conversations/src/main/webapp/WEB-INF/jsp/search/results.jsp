@@ -9,9 +9,8 @@
 
 <script type="text/javascript">
     dojo.require("dijit.TitlePane");
-    dojo.require("dojox.form.RangeSlider");
 </script>
-<script type="text/javascript" src="${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer-3.1.1.min.js"></script>
+<script type="text/javascript" src="<c:url value='/scripts/flowplayer/flowplayer-3.1.1.min.js' />"></script>
 <script></script>
 
     Results ${pagination.resultsPageStartRange} - ${pagination.resultsPageEndRange} of ${pagination.totalResults}.
@@ -29,13 +28,13 @@
           <td><fmt:formatDate value="${mediaTagSummary.mediaTagCalculatedTimestamp}" pattern="HH:mm:ss"/><br/>
               <fmt:formatDate value="${mediaTagSummary.mediaTagCalculatedTimestamp}" pattern="dd/MM/yyyy"/>
           </td>
-          <td><a href="${pageContext.servletContext.servletContextName}/conversation/${mediaTagSummary.conversationId}">${mediaTagSummary.conversationName}</a></td>
-          <td><a href="${pageContext.servletContext.servletContextName}/conversation/${mediaTagSummary.conversationId}/time/${mediaTagSummary.tagStartTime}">${mediaTagSummary.mediaTagName}</a></td>
+          <td><a href="<c:url value='/conversation/${mediaTagSummary.conversationId}' />">${mediaTagSummary.conversationName}</a></td>
+          <td><a href="<c:url value='/conversation/${mediaTagSummary.conversationId}/time/${mediaTagSummary.tagStartTime}' />">${mediaTagSummary.mediaTagName}</a></td>
           <td>${mediaTagSummary.tagStartTime} - ${mediaTagSummary.tagEndTime}</td>
           <td><div id="mediatag-${mediaTagSummary.mediaTagId}" style="display:block;width:130px;height:30px;"></div></td>
 
         <script>
-            $f("mediatag-${mediaTagSummary.mediaTagId}", "${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer-3.1.1.swf", {
+            $f("mediatag-${mediaTagSummary.mediaTagId}", "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", {
             clip: {
                 autoPlay: false,
                 provider: 'influxis',
@@ -56,11 +55,11 @@
                    fullscreen: false
                  },
                 influxis: {
-                    url: '${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer.rtmp-3.1.0.swf',
+                    url: '<c:url value='/scripts/flowplayer/flowplayer.rtmp-3.1.0.swf' />',
                     netConnectionUrl: 'rtmp://localhost:1935/oflaDemo'
                 },
                  audio: {
-                    url: '${pageContext.servletContext.servletContextName}/scripts/flowplayer/flowplayer.audio-3.1.0.swf'
+                    url: '<c:url value='/scripts/flowplayer/flowplayer.audio-3.1.0.swf' />'
                 }
             }
         });

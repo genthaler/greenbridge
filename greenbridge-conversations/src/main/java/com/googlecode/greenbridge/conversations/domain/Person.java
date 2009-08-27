@@ -1,19 +1,11 @@
 package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
 import java.util.Set;
 import java.util.HashSet;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
-import org.hibernate.validator.NotNull;
 
-@Entity
 public class Person implements Serializable {
 
-    @javax.persistence.Id
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-    @javax.persistence.Column(name = "id")
     private java.lang.Long id;
 
 
@@ -21,10 +13,8 @@ public class Person implements Serializable {
 
     private String lastName;
 
-    @NotNull
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     private Set<Attendee> conversations = new HashSet<Attendee>();
 
     public java.lang.Long getId() {

@@ -11,7 +11,7 @@
         <to last="true">/tag/list.do</to>
 	</rule>
     <rule>
-        <from>/tag/([A-Za-z0-9]+)$</from>
+        <from>/tag/([A-Za-z0-9_-]+)$</from>
         <to last="true">/searchGeneralTag.do?tagName=$1</to>
 	</rule>
 	<rule>

@@ -60,7 +60,42 @@ public class DefaultFreemindNodeToMediaTagTest {
         long meeting_start = 1248757600609l;
         long tag_start = 1248757670609l;
         long expected = (tag_start - meeting_start) / 1000;
-        instance.setStartTime(mediaTag, nodes.get(0), new Date(meeting_start));
+        instance.setStartTime(mediaTag, nodes.get(0), new Date(meeting_start), null);
+        assertEquals(expected, (long)mediaTag.getStartTime());
+    }
+
+
+    @Test
+    public void testThatTheStartOffsetIsCorrectWithAOffset() {
+        MediaTag mediaTag = new MediaTag();
+        MockTagManager mockTagManager = new MockTagManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+
+        long meeting_start = 1248757600609l;
+        long tag_start = 1248757670609l;
+        long expected = (tag_start - meeting_start) / 1000;
+
+        Integer userSpecifiedStartOffset = 10; // seconds
+        expected = expected - userSpecifiedStartOffset;
+
+        instance.setStartTime(mediaTag, nodes.get(0), new Date(meeting_start), userSpecifiedStartOffset);
+        assertEquals(expected, (long)mediaTag.getStartTime());
+    }
+
+    @Test
+    public void testThatTheStartOffsetIsCorrectWithAOffsetThatIsLargerThatTheTagStart() {
+        MediaTag mediaTag = new MediaTag();
+        MockTagManager mockTagManager = new MockTagManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+
+        long meeting_start = 1248757600609l;
+        long tag_start = 1248757670609l;
+        long expected = (tag_start - meeting_start) / 1000;
+
+        Integer userSpecifiedStartOffset = 80; // seconds
+
+
+        instance.setStartTime(mediaTag, nodes.get(0), new Date(meeting_start), userSpecifiedStartOffset);
         assertEquals(expected, (long)mediaTag.getStartTime());
     }
 
@@ -74,7 +109,7 @@ public class DefaultFreemindNodeToMediaTagTest {
         long meeting_start = 1248757600609l;
         long tag_start = 1248757670609l;
         long expected = (tag_start - meeting_start + instance.getEndOffsetConstant()) / 1000;
-        instance.setEndTime(mediaTag, nodes.get(0), new Date(meeting_start));
+        instance.setEndTime(mediaTag, nodes.get(0), new Date(meeting_start), null);
         assertEquals(expected, (long)mediaTag.getEndTime());
     }
 
@@ -87,7 +122,7 @@ public class DefaultFreemindNodeToMediaTagTest {
         long meeting_start = 1248757600609l;
         long child_tag_start = 1248759999993l;
         long expected = (child_tag_start - meeting_start + instance.getEndOffsetConstant()) / 1000;
-        instance.setEndTime(mediaTag, nodes.get(2), new Date(meeting_start));
+        instance.setEndTime(mediaTag, nodes.get(2), new Date(meeting_start), null);
         assertEquals(expected, (long)mediaTag.getEndTime());
     }
 

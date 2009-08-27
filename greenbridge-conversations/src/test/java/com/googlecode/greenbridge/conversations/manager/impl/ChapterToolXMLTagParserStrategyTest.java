@@ -36,7 +36,7 @@ public class ChapterToolXMLTagParserStrategyTest {
         MockTagManager mockTagManager = new MockTagManager();
         ChapterToolXMLTagParserStrategy instance = new ChapterToolXMLTagParserStrategy(mockTagManager);
         Document d = instance.parseDocument(xml);
-        List<MediaTag> result = instance.getTags(d, null);
+        List<MediaTag> result = instance.getTags(d, null, null, null);
         assertEquals(2, result.size());
         Iterator i = result.iterator();
         MediaTag tag = (MediaTag) i.next();

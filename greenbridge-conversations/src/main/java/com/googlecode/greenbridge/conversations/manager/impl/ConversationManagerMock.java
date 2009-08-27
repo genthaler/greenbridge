@@ -8,6 +8,7 @@ package com.googlecode.greenbridge.conversations.manager.impl;
 import com.googlecode.greenbridge.conversations.domain.Conversation;
 import com.googlecode.greenbridge.conversations.domain.Media;
 import com.googlecode.greenbridge.conversations.domain.MediaTag;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
 import com.googlecode.greenbridge.conversations.domain.Tag;
 import com.googlecode.greenbridge.conversations.manager.AppleChapterConversationDetails;
 import com.googlecode.greenbridge.conversations.manager.ConversationManager;
@@ -50,12 +51,12 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
         Conversation c = new Conversation();
         c.setId(internalCount++);
         c.setName("Project1 kickoff");
-        c.setDescription("All attedning:");
+        c.setDescription("A meeting to kickoff this project. Most attending are familiar with it, so it should not be too difficult");
         c.setStartTime(new Date());
 
         Media m = new Media();
         m.setConversation(c);
-        m.setMediaLength(361L);
+        m.setMediaLength(61L);
         m.setUrl("test3.mp3");
         m.setMediaType(1);
         Set<Media> medias = new HashSet<Media>();
@@ -77,13 +78,20 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
             mediaTag.setStartTime(10L);
             mediaTag.setEndTime(20L);
             mediaTags.add(mediaTag);
+            List<MediaTagExtraInfo> extraInfos = new ArrayList<MediaTagExtraInfo>();
+            MediaTagExtraInfo icon = new MediaTagExtraInfo();
+            icon.setProp("icon");
+            icon.setEntry("clock");
+            icon.setMediaTag(mediaTag);
+            extraInfos.add(icon);
+            mediaTag.setMediaTagExtraInfos(extraInfos);
         }
         {
             MediaTag mediaTag = new MediaTag();
             mediaTag.setId(2L);
             mediaTag.setMedia(m);
             mediaTag.setTag(t);
-            mediaTag.setStartTime(105L);
+            mediaTag.setStartTime(35L);
             mediaTag.setEndTime(132L);
             mediaTags.add(mediaTag);
         }

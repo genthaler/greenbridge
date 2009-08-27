@@ -18,7 +18,12 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2</version>
         </dependency>
-	    <dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
 	    	<groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.2</version>
@@ -44,11 +49,6 @@
 	      <version>1.9.0.0</version>
 	    </dependency>
 		<dependency>
-            <groupId>nz.co.vero.common</groupId>
-            <artifactId>validation-support</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>2.5.5</version>
@@ -57,16 +57,6 @@
 			<groupId>org.springframework.webflow</groupId>
 			<artifactId>org.springframework.js</artifactId>
             <version>2.0.2.RELEASE</version>
-		</dependency>
-		<dependency>
-        	<groupId>org.springmodules</groupId>
-            <artifactId>spring-modules-validation</artifactId>
-			<version>0.9</version>
-        </dependency>
-		<dependency>
-			<groupId>opensymphony</groupId>
-			<artifactId>sitemesh</artifactId>
-			<version>2.3</version>
 		</dependency>
         <dependency>
             <groupId>org.tuckey</groupId>
@@ -256,31 +246,6 @@
 		      		<migrationSqlOutputFile>${project.build.directory}/liquibase/renewSQL.sql</migrationSqlOutputFile>
 		    	</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>unpack dojo</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>org.dojotoolkit</groupId>
-									<artifactId>dojo</artifactId>
-									<version>1.2.3</version>
-									<type>zip</type>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>src/main/webapp/scripts/dojo</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <configuration>

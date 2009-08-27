@@ -1,26 +1,15 @@
 package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.JoinColumn;
-import org.hibernate.validator.NotNull;
 
-@Entity
 public class MediaTagExtraInfo implements Serializable {
 
-    @javax.persistence.Id
-    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO)
-    @javax.persistence.Column(name = "id")
     private java.lang.Long id;
 
     private String prop;
 
     private String entry;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn
     private MediaTag mediaTag;
 
     public java.lang.Long getId() {

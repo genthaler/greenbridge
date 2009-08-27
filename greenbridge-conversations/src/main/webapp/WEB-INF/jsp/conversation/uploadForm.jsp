@@ -10,7 +10,7 @@
 </script>
 
 <form action="add.do" method="post" enctype="multipart/form-data">
-<h2 style="margin-top: 2px;"><img src="${pageContext.servletContext.servletContextName}/images/balloon--arrow.png"/> Upload Conversation</h2>
+<h2 style="margin-top: 2px;"><img src="<c:url value='/images/balloon--arrow.png' />"/> Upload Conversation</h2>
     <div id="roo_conversation">
         <label for="_name">Name:</label>
         <input type="text" cssStyle="width:250px" id="_name" maxlength="30" name="name" path="name" size="0"/>
