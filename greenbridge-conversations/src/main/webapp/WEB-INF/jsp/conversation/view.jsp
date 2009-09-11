@@ -3,7 +3,10 @@
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp"/>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="gb" %>
 <script type="text/javascript">
-    dojo.require("dijit.TitlePane");
+      dojo.require("dijit.TitlePane");
+      dojo.require("dijit.form.ComboBox");
+      dojo.require("dojo.data.ItemFileReadStore");
+      dojo.require("dijit.form.Slider");
 </script>
 <script type="text/javascript" src="<c:url value='/scripts/flowplayer/flowplayer-3.1.1.min.js' />"></script>
 <script>
@@ -77,9 +80,17 @@
 
     function deleteTag(tagId) {
         if(confirm("Are you sure you want to delete this tag?")) {
-            console.log("Deleting " + tagId);
-            showTagDelete(tagId);
-            console.log("done");
+            dojo.xhrGet( {
+                url: "<c:url value='/conversation/tag/delete.do' />?id=" + tagId,
+                handleAs: "text",
+                load: function(tagId) {
+                    showTagDelete(tagId);
+                },
+                error: function(error) {
+                    alert("Problem deleting");
+                }
+            });
+            
         }
     }
 
@@ -101,6 +112,72 @@
 
     }
 
+    function updateTagDialog(data) {
+        dijit.byId("tagName").setValue(data.name);
+        dijit.byId("sliderMin").setValue(data.startTime);
+        dijit.byId("sliderMax").setValue(data.endTime);
+        dojo.byId("shortDescription").value = data.shortDescription;
+    }
+
+    function addTag() {
+        var playerStatus = $f("fms").getStatus();
+        dijit.byId("tagName").setValue(null);
+        dijit.byId("sliderMin").setValue(playerStatus.time);
+        dijit.byId("sliderMax").setValue(playerStatus.time + 10);
+        dojo.byId("shortDescription").value = "";
+        dojo.byId("editTagForm").action = "<c:url value='/conversation/tag/new.do' />?conversation=${conversation.id}";
+        var playhead_left =  ((playerStatus.time / ${media.mediaLength}) * 400);
+        dojo.style("editPlayhead", "left", playhead_left );
+        dijit.byId("tagDialog").show();
+
+    }
+
+    function showTagDialog(tagId) {
+        dojo.xhrGet( {
+                url: "<c:url value='/conversation/tag/view-json.do' />?conversation=${conversation.id}&id=" + tagId,
+                handleAs: "json",
+                load: function(data) {
+                    updateTagDialog(data);
+                },
+                error: function(error) {
+                    alert("Problem getting tag details");
+                }
+            });
+
+        dojo.byId("editTagForm").action = "<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&id=" + tagId;
+        $f("fms").pause();
+        var playerStatus = $f("fms").getStatus();
+        var playhead_left =  ((playerStatus.time / ${media.mediaLength}) * 400);
+        dojo.style("editPlayhead", "left", playhead_left );
+        dijit.byId("tagDialog").show();
+    }
+
+    function moveEditSliders() {
+        var time    = dijit.byId("sliderMin").value;
+        var endTime = dijit.byId("sliderMax").value;
+        var left    =  ((time / ${media.mediaLength}) * 400) ;
+
+        var length  = (((endTime / ${media.mediaLength}) * 400)) - left;
+        console.log("left: " + left);
+        dojo.style("editSpan", "marginLeft", left );
+        dojo.style("editSpan", "width", length );
+        dojo.style("newEndTime", "left", length + 10)
+        console.log("left: " + left + " length: " + length);
+        dojo.byId("newStartTime").innerHTML = Math.round(time);
+        dojo.byId("newEndTime").innerHTML = Math.round(endTime);
+    }
+
+
+    function inspectApplet() {
+        var tag_ms = document.freemindApplet.getView().getSelected().getModel().getHistoryInformation().getCreatedAt().getTime();
+        console.log("TagMS: " + tag_ms);
+        var meetingStart = ${conversation.startTime.time};
+        console.log("MeetingMS: " + meetingStart);
+        var offset = (tag_ms - meetingStart) / 1000;
+        console.log("Offset: " + offset);
+        play(offset);
+       //Thu Aug 13 11:30:59 NZST 2009
+    }
 
 </script>
     <style>
@@ -124,6 +201,7 @@
                  <span id="map-menu-item" class="tag-menu" onclick="selectMap()" onmouseover="overTab(this)" onmouseout="outTab(this)">Map</span>
         </div>
         <div id="tag-content" style="width: 660px; ">
+            <button onclick="addTag()">Add Tag</button>
             <!--<div id="playhead" style="width:1px; height:200px; background-color:#BBBBBB; position:absolute; left: 168px; z-index:1"></div>-->
             <div id="playhead" style="width:1px; height:1px; background-color:#BBBBBB; position:absolute; left: 157px; z-index:1"></div>
             <table id="tag-table" cellpadding="0" cellspacing="0">
@@ -136,80 +214,75 @@
                         <gb:tag-icons mediaTag="${mediaTag}"/>
                     </td>
                     <td width="500" class="tagtd">
-                        <div class="tagdiv" class="tagdiv" style="<gb:tag-duration maxwidth="500" mediaTag="${mediaTag}" />" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(${mediaTag.startTime});"></div>
+                        <div class="tagdiv"  style="<gb:tag-duration maxwidth="500" mediaTag="${mediaTag}" />" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(${mediaTag.startTime});"></div>
                     </td>    
                 </tr>
                 <tr id="tag-${mediaTag.id}-row2">
                     <td colspan="3" >
+                        <gb:tag-shortDescriptiion mediaTag="${mediaTag}" />
+
+
                         <div class="tagactions">
-                             <button onclick="editTag(${mediaTag.id})">Edit</button> <button onclick="deleteTag(${mediaTag.id})">Delete</button>
+                             <button onclick="showTagDialog(${mediaTag.id})">Edit</button> <button onclick="deleteTag(${mediaTag.id})">Delete</button>
                              [<a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">link</a>]
                              [<a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">all</a>]<br/><br/>
                         </div>
                     </td>
                 </tr>
               </c:forEach>
-                <tr  class="tagrow">
-                    <td width="100" class="taglabel">
-                        Follow-up
-                    </td>
-                    <td width="60">
-                        <img src="<c:url value='/images/fm/icons/flag.png'/>">
-                        <img src="<c:url value='/images/fm/icons/clock.png'/>">
-                    </td>
-                    <td width="500" class="tagtd">
-                        <div class="tagdiv" class="tagdiv" style="width: 100px; margin-left: 0px;" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(0);"></div>
-                    </td>
-                    
-                </tr>
-                <tr>
-                    <td colspan="3" >
-                        <div class="tagdescription">
-                            Attendee: Ryan
-                        </div>
-                        <div class="tagdescription">
-                            Here is the description for this tag. It can be really long winded. There is nothing we can do about it.
-                        </div>
-                        <div class="tagactions">
-                             <button>Edit</button> <button>Delete</button> [<a href="conversation/2/time/30">link</a>] [<a href="conversation/tag/Follow-up">all</a>]<br/><br/>
-                        </div>
-                    </td>
-                </tr>
-                <!-- Next row -->
-                <tr  class="tagrow">
-                    <td width="100" class="taglabel">
-                        Parking-lot
-                    </td>
-                    <td width="60">
-                        <img src="<c:url value='/images/fm/icons/pencil.png'/>">
-                    </td>
-                    <td width="500" class="tagtd">
-                        <div id="tag-1" class="tagdiv" class="tagdiv" style="width: 100px; margin-left: 400px;" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(49);"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                         <div class="tagactions">
-                                <button>Edit</button> <button>Delete</button> [<a href="conversation/2/time/30">link</a>] [<a href="conversation/tag/Follow-up">all</a>]
-                         </div>
-                    </td>
-                </tr>
             </table>
         </div>
         <div id="freemind" style="display: none;">
-            <applet code="freemind.main.FreeMindApplet.class" archive="/greenbridge/scripts/freemind/freemindbrowser.jar" width="100%" height="100%">
+            <button onclick="inspectApplet()">Play Selected</button>
+            <applet name="freemindApplet" code="freemind.main.FreeMindApplet.class" archive="<c:url value='/scripts/freemind/freemindbrowser.jar' />" width="100%" height="100%" >
                 <param name="type" value="application/x-java-applet;version=1.4"/>
                 <param name="scriptable" value="true"/>
                 <param name="modes" value="freemind.modes.browsemode.BrowseMode"/>
-                <param name="browsemode_initial_map" value="http://localhost:8080/greenbridge/scripts/freemind/map.mm"/>
+                <param name="browsemode_initial_map" value="${pageContext.request.scheme}://${pageContext.request.serverName}:${pageContext.request.serverPort}<c:url value='/freemind/${conversation.freemindUrl}' />"/>
                 <param name="initial_mode" value="Browse"/>
                 <param name="selection_method" value="selection_method_direct"/>
             </applet>
         </div>
 
+        <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/scripts/tags.txt' />"/>
+        <div id="tagDialog" dojoType="dijit.Dialog" title="Tag Details">
+            <form id="editTagForm" method="post" action="<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&id=1">
+                <div id="test" style="background-color:white;">
+                    <label for="_name">Tag:</label>
+                     <input dojoType="dijit.form.ComboBox"  store="TagStore" searchAttr="name" id="tagName" name="name"  autocomplete="true"  />
+                    <br/>
+                    <br/>
+
+
+
+                    <label for="_editSlider">Start:</label>
+                    <span id="sliderMin" name="startTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="9" onChange="moveEditSliders()"></span>
+                      <br/>
+                    <label for="_editSlider">End:</label>
+                    <span id="sliderMax" name="endTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="19" onChange="moveEditSliders()"></span>
+                      <br/>
+                      <div style="height:14px; margin-left:125px; margin-right:22px;">
+                        <div style="float:left; position:relative; width: 400px; height: 14px; border:1px solid green;">
+                            <div id="editSpan" class="tagdiv"  style="margin-left: 100px; width:60px; height:13px;" >
+                                <div  id="newStartTime" style="position:relative; margin-right: 3px; left:-30px;">0:12</div>
+                                <span id="newEndTime" style="position:relative; top:-15px; margin-left: 3px; left: 70px;">0:22</span>
+                            </div>
+                            <div id="editPlayhead" style="width:1px; height:20px; top:-20px; background-color:#222222; position:relative; left: 157px; z-index:1" ></div>
+                        </div>
+                    </div>
+                    <br/>
+                    <label for="_editSlider">Description:</label>
+                    <textarea id="shortDescription" name="shortDescription" dojoType="dijit.form.Textarea" style="width:425px;"></textarea>
+                    <br/>
+                    <br/>
+
+                    <input dojotype="dijit.form.Button" type="submit" name="changeTag" value="Save"/>
+                </div>
+            </form>
+        </div>
 		<!-- this will install flowplayer inside previous A- tag. -->
 		<script>
-			$f("fms", "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", {
+			$f("fms", {src: "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", wmode: 'transparent'}, {
 				clip: {
 					provider: 'influxis',
 					streams: [

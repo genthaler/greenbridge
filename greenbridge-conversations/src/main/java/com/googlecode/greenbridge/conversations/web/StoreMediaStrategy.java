@@ -5,6 +5,7 @@
 
 package com.googlecode.greenbridge.conversations.web;
 
+import java.io.File;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,5 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface StoreMediaStrategy {
 
     String store(MultipartFile media) throws IOException;
+    File getStoredReferenceAsFile(String ref);
 
 }

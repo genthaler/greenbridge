@@ -73,6 +73,14 @@
 <!--        </form-login-config>-->
 <!--    </login-config>-->
 
+    <servlet>
+        <servlet-name>FolderResourceServlet</servlet-name>
+        <servlet-class>com.googlecode.greenbridge.conversations.web.FolderResourceServlet</servlet-class>
+        <init-param>
+            <param-name>folder</param-name>
+            <param-value>D:/apps/freemind_data</param-value>
+        </init-param>
+    </servlet>
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
         <url-pattern>*.do</url-pattern>
@@ -89,7 +97,10 @@
         <servlet-name>resources</servlet-name>
         <url-pattern>/resources/*</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>FolderResourceServlet</servlet-name>
+        <url-pattern>/freemind/*</url-pattern>
+    </servlet-mapping>
     <security-role>
         <role-name>user</role-name>
     </security-role>

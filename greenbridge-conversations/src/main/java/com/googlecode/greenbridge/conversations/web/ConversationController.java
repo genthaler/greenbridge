@@ -7,6 +7,8 @@ import com.googlecode.greenbridge.conversations.manager.AppleChapterConversation
 import com.googlecode.greenbridge.conversations.manager.ConversationManager;
 import com.googlecode.greenbridge.conversations.manager.ConversationSearchResults;
 import com.googlecode.greenbridge.conversations.manager.FreemindConversationDetails;
+import com.googlecode.greenbridge.conversations.manager.TagUpdateDetails;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,12 +20,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  *
@@ -35,13 +39,15 @@ public class ConversationController {
 
     private ConversationManager conversationManager;
     private StoreMediaStrategy storeMedia;
+    private StoreMediaStrategy freemindStore;
     private SimpleDateFormat sdf;
     private int defaultPageSize = 20;
     private int defaultOffset = 1;
 
-    public ConversationController(ConversationManager conversationManager, StoreMediaStrategy storeMedia) {
+    public ConversationController(ConversationManager conversationManager, StoreMediaStrategy storeMedia, StoreMediaStrategy freemingStore) {
         this.conversationManager = conversationManager;
         this.storeMedia = storeMedia;
+        this.freemindStore = freemingStore;
         this.sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         
     }
@@ -141,10 +147,14 @@ public class ConversationController {
                 MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
                 MultipartFile conversation_data = req.getFile("audio");
                 String url = storeMedia.store(conversation_data);
+
+
                 MultipartFile tags_xml = req.getFile("document");
+                String freemindUrl = freemindStore.store(tags_xml);
 
                 FreemindConversationDetails details = new FreemindConversationDetails();
-                details.setFreemindXMLStream(tags_xml.getInputStream());
+                details.setFreemindUrl(freemindUrl);
+                details.setFreemindXMLStream(new FileInputStream(freemindStore.getStoredReferenceAsFile(freemindUrl)));
                 details.setMediaUrl(url);
                 details.setTagStartOffset(tagStartOffset);
                 details.setTagDuration(tagDuration);
@@ -191,7 +201,56 @@ public class ConversationController {
     }
 
 
+    /**
+     * Delete a tag from a conversation
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/view-json.do")
+    public final ModelAndView viewTagAsJson(
+            @RequestParam("conversation") Long conversationId,
+            @RequestParam("id") Long tagId) {
+        TagUpdateDetails tag = conversationManager.loadTag(conversationId, tagId);
+        ModelAndView mav = new ModelAndView(new GenericJSONView(tag));
+        return mav;
+    }
 
 
+    /**
+     * Delete a tag from a conversation
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/delete.do")
+    public final String deleteTag(@RequestParam("id") Long tagId, HttpServletRequest request, ModelMap model) {
+        conversationManager.deleteTag(tagId);
+        model.put("tagId", tagId);
+        return "tags/onDelete";
+    }
+
+
+
+    /**
+     * Edit a tag from a conversation
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/conversation/tag/edit.do")
+    public final String editTag(
+            @RequestParam("conversation") Long conversationId,
+            @RequestParam("id") Long tagId,
+            @ModelAttribute TagUpdateDetails tag,
+            HttpServletRequest request, ModelMap model) {
+        conversationManager.updateTag(conversationId, tagId, tag);
+        model.put("tagId", tagId);
+        return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();
+    }
+
+     /**
+     * Create a tag for a conversation
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/conversation/tag/new.do")
+    public final String newTag(
+            @RequestParam("conversation") Long conversationId,
+            @ModelAttribute TagUpdateDetails tag,
+            HttpServletRequest request, ModelMap model) {
+
+        conversationManager.addTag(conversationId, tag);
+        return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();
+    }
 
 }

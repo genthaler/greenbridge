@@ -16,9 +16,8 @@ public class Conversation implements Serializable {
     private String description;
 
     private String category;
-
-
     private Date startTime;
+    private String freemindUrl;
 
     
     public Media findFirstMedia() {
@@ -95,6 +94,20 @@ public class Conversation implements Serializable {
      */
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * @return the freemindUrl
+     */
+    public String getFreemindUrl() {
+        return freemindUrl;
+    }
+
+    /**
+     * @param freemindUrl the freemindUrl to set
+     */
+    public void setFreemindUrl(String freemindUrl) {
+        this.freemindUrl = freemindUrl;
     }
 
 

@@ -20,6 +20,7 @@ import com.googlecode.greenbridge.conversations.manager.MediaTagManager;
 import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
 import com.googlecode.greenbridge.conversations.manager.MediaTagSummary;
 import com.googlecode.greenbridge.conversations.manager.ProjectManager;
+import com.googlecode.greenbridge.conversations.manager.TagUpdateDetails;
 import com.googlecode.greenbridge.conversations.manager.Utils;
 import java.util.ArrayList;
 import java.util.Date;
@@ -84,6 +85,13 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
             icon.setEntry("clock");
             icon.setMediaTag(mediaTag);
             extraInfos.add(icon);
+
+            MediaTagExtraInfo sd = new MediaTagExtraInfo();
+            sd.setProp("shortDescription");
+            sd.setEntry("A cool thing that we are doing");
+            sd.setMediaTag(mediaTag);
+            extraInfos.add(sd);
+
             mediaTag.setMediaTagExtraInfos(extraInfos);
         }
         {
@@ -114,6 +122,7 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
         c.setId(internalCount++);
         c.setName(freemindParser.getMeetingName(doc));
         c.setStartTime(freemindParser.getMeetingStart(doc));
+        c.setFreemindUrl(conversationDetails.getFreemindUrl());
 
         Media m = new Media();
         m.setConversation(c);
@@ -219,6 +228,87 @@ public class ConversationManagerMock implements ConversationManager, MediaTagMan
     @Override
     public MediaTagSearchResults searchForAttendeeTags(long personId, String tagName, String tagGroupName, Integer offset, Integer limit) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+
+    @Override
+    public TagUpdateDetails loadTag(long conversationId, long tagId) {
+        return convert(findTag(conversationId, tagId));
+    }
+
+    protected MediaTag findTag(long conversationId, long tagId) {
+        Conversation c = conversations.get(conversationId);
+        for (MediaTag tag : c.findFirstMedia().getMediaTags()) {
+            if (tag.getId() == tagId) return tag;
+        }
+        return null;
+    }
+
+    private TagUpdateDetails convert(MediaTag tag) {
+        if (tag == null) return null;
+        TagUpdateDetails details = new TagUpdateDetails();
+        details.setName(tag.getTag().getTagName());
+        details.setStartTime((double)tag.getStartTime());
+        details.setEndTime((double)tag.getEndTime());
+        for(MediaTagExtraInfo extra : tag.getMediaTagExtraInfos()) {
+            if ("shortDescription".equals(extra.getProp())) details.setShortDescription(extra.getEntry());
+        }
+        return details;
+
+    }
+
+    @Override
+    public void deleteTag(Long tagId) {
+        System.out.println("Delete tag: " + tagId);
+    }
+
+    @Override
+    public Long addTag(Long conversationId, TagUpdateDetails details) {
+        Conversation c = conversations.get(conversationId);
+
+        MediaTag tag = new MediaTag();
+        Tag t = new Tag();
+        t.setId(internalCount++);
+        t.setTagName(details.getName());
+        List<MediaTag> mediaTags = new ArrayList<MediaTag>();
+        t.setMediaTags(mediaTags);
+
+        mediaTags.add(tag);
+
+        tag.setId(internalCount++);
+        tag.setStartTime((long)details.getStartTime());
+        tag.setEndTime((long)details.getEndTime());
+        tag.setMedia(c.findFirstMedia());
+        tag.setTag(t);
+        MediaTagExtraInfo sd = new MediaTagExtraInfo();
+        sd.setProp("shortDescription");
+        sd.setEntry(details.getShortDescription());
+        sd.setMediaTag(tag);
+        tag.getMediaTagExtraInfos().add(sd);
+        c.findFirstMedia().getMediaTags().add(tag);
+
+        return tag.getId();
+    }
+
+    @Override
+    public void updateTag(Long conversationId, Long tagId, TagUpdateDetails details) {
+        MediaTag tag = findTag(conversationId, tagId);
+        tag.setStartTime((long)details.getStartTime());
+        tag.setEndTime((long)details.getEndTime());
+        boolean foundShort = false;
+        for(MediaTagExtraInfo extra : tag.getMediaTagExtraInfos()) {
+            if ("shortDescription".equals(extra.getProp())) {
+                extra.setEntry(details.getShortDescription());
+                foundShort = true;
+            }
+        }
+        if (!foundShort) {
+            MediaTagExtraInfo sd = new MediaTagExtraInfo();
+            sd.setProp("shortDescription");
+            sd.setEntry(details.getShortDescription());
+            sd.setMediaTag(tag);
+            tag.getMediaTagExtraInfos().add(sd);
+        }
     }
 
 

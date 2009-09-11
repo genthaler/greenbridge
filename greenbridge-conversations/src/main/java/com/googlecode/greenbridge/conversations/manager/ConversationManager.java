@@ -18,7 +18,10 @@ public interface ConversationManager {
     public Conversation newConversation(AppleChapterConversationDetails conversationDetails) throws Exception;
     public Conversation newConversation(FreemindConversationDetails conversationDetails) throws Exception;
     public ConversationSearchResults listAllConversations(Integer offset, Integer limit) throws Exception;
-
+    public Long addTag(Long conversationId, TagUpdateDetails details);
+    public void updateTag(Long conversationId, Long tagId, TagUpdateDetails details);
+    public void deleteTag(Long tagId);
+    public TagUpdateDetails loadTag(long conversationId, long tagId);
 
 
 }
