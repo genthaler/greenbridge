@@ -48,7 +48,7 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
      * @throws java.lang.AssertionError if the best name is nt a valid tag name.
      */
     protected void setName(MediaTag mediaTag, Element node, Long project_id)  throws AssertionError {
-        XPath xpath = node.createXPath("attribute[@NAME='Tag']");
+        XPath xpath = node.createXPath("attribute[@NAME='tag']");
         Element tagAttribute = (Element)xpath.selectSingleNode(node);
         if (tagAttribute != null) {
             String name =tagAttribute.attributeValue("VALUE");

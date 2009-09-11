@@ -33,6 +33,10 @@ public class StoreMediaStrategyImpl implements StoreMediaStrategy {
         return prefix + "/" + uuid + suffix;
     }
 
+    public File getStoredReferenceAsFile(String ref) {
+        return new File(rootStorageDir.toString() + "/" +  ref);
+    }
+
 
 
 }

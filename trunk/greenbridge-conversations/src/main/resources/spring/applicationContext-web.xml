@@ -32,7 +32,9 @@
   <bean id="storeMediaStrategy" class="com.googlecode.greenbridge.conversations.web.StoreMediaStrategyImpl" >
     <constructor-arg value="${ofla.dir}" />
   </bean>
-
+  <bean id="storeFreemindStrategy" class="com.googlecode.greenbridge.conversations.web.StoreMediaStrategyImpl" >
+    <constructor-arg value="${freemind.dir}" />
+  </bean>
   <bean name="/tag/**" class="com.googlecode.greenbridge.conversations.web.TagController" >
       <constructor-arg ref="tagManager" /> 
   </bean>
@@ -40,6 +42,7 @@
   <bean name="/conversation/**" class="com.googlecode.greenbridge.conversations.web.ConversationController" >
       <constructor-arg ref="conversationManager" />
       <constructor-arg ref="storeMediaStrategy" />
+      <constructor-arg ref="storeFreemindStrategy" />
   </bean>
 
   <bean name="/search**" class="com.googlecode.greenbridge.conversations.web.SearchController" >
@@ -73,4 +76,14 @@
   <!-- Declare the Resolver -->
   <bean id="localeResolver"
     class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+    <bean id="db4oserver" class="org.springmodules.db4o.ObjectServerFactoryBean">
+        <property name="databaseFile" value="${db.dir}"/>
+        <property name="port" value="0"/>
+    </bean>
+
+    <bean id="remoteServerContainer" class="org.springmodules.db4o.ObjectContainerFactoryBean">
+         <property name="server" ref="db4oserver"/>
+    </bean>
+
 </beans>
