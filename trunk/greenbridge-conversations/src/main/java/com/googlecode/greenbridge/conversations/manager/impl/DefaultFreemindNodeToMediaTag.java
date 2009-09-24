@@ -32,9 +32,9 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
 
 
     @Override
-    public MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id, Integer tagStartOffset, Integer tagDuration) {
+    public MediaTag createMediaTagFromNode(Element node, Date meetingStart, String template_id, Integer tagStartOffset, Integer tagDuration) {
         MediaTag tag = new MediaTag();
-        setName(tag, node, project_id);
+        setName(tag, node, template_id);
         setStartTime(tag, node, meetingStart, tagStartOffset);
         setEndTime(tag,node, meetingStart, tagDuration);
         setExtraInfo(tag, node);
@@ -47,17 +47,17 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
      * @param node
      * @throws java.lang.AssertionError if the best name is nt a valid tag name.
      */
-    protected void setName(MediaTag mediaTag, Element node, Long project_id)  throws AssertionError {
-        XPath xpath = node.createXPath("attribute[@NAME='tag']");
+    protected void setName(MediaTag mediaTag, Element node, String template_id)  throws AssertionError {
+        XPath xpath = node.createXPath("attribute[translate(@NAME, 'TAG', 'tag') ='tag']");
         Element tagAttribute = (Element)xpath.selectSingleNode(node);
         if (tagAttribute != null) {
             String name =tagAttribute.attributeValue("VALUE");
-            Tag tag = tagManager.findTagByName(name, project_id);
+            Tag tag = tagManager.findTagByNameOrCreate(name, template_id);
             mediaTag.setTag(tag);
         } else {
             //The tag does not exist. Try just the text
             String name = node.attributeValue("TEXT");
-            Tag tag = tagManager.findTagByName(name, project_id);
+            Tag tag = tagManager.findTagByNameOrCreate(name, template_id);
             mediaTag.setTag(tag); 
         }
         
@@ -72,6 +72,10 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
             startOffset = startOffset - tagStartOffset;
         }
         tag.setStartTime(startOffset);
+
+        Date tagDate = new Date(meetingStart.getTime() + startOffset);
+        tag.setDate(tagDate);
+
     }
 
     protected void setEndTime(MediaTag tag, Element node, Date meetingStart, Integer tagDuration) {

@@ -15,15 +15,15 @@
         <to last="true">/searchGeneralTag.do?tagName=$1</to>
 	</rule>
 	<rule>
-        <from>/conversation/([0-9]+)/$</from>
+        <from>/conversation/([a-z0-9_-]+)/$</from>
         <to last="true">/conversation/view.do?id=$1</to>
 	</rule>
      <rule>
-        <from>/conversation/([0-9]+)$</from>
+        <from>/conversation/([a-z0-9_-]+)$</from>
         <to last="true">/conversation/view.do?id=$1</to>
 	</rule>
  	<rule>
-        <from>/conversation/([0-9]+)/time/([0-9]+)$</from>
+        <from>/conversation/([a-z0-9_-]+)/time/([0-9]+)$</from>
         <to last="true">/conversation/viewTime.do?id=$1&amp;time=$2</to>
 	</rule>
     <rule>

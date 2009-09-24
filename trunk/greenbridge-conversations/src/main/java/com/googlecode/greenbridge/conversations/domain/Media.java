@@ -3,15 +3,11 @@ package com.googlecode.greenbridge.conversations.domain;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.List;
 
 
 public class Media implements Serializable {
 
-
-    private java.lang.Long id;
 
     private String url;
 
@@ -23,13 +19,6 @@ public class Media implements Serializable {
 
     private Conversation conversation;
 
-    public java.lang.Long getId() {
-        return this.id;
-    }
-
-    public void setId(java.lang.Long id) {
-        this.id = id;
-    }
 
     private List<MediaTag> mediaTags = new ArrayList<MediaTag>();
 

@@ -31,8 +31,8 @@ public class TagController {
         List<Tag> globalTags = tagManager.listAllGlobalTags();
         model.addAttribute("globalTags", globalTags);
 
-        List<Project> projects = tagManager.listAllProjectsWithTags();
-        model.addAttribute("projects", projects);
+        //List<Project> projects = tagManager.listAllProjectsWithTags();
+        //model.addAttribute("projects", projects);
         return "tags/list";
     }
 

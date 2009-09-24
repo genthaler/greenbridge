@@ -22,7 +22,7 @@ public interface FullConversationTagParsingStratgey extends XmlTagParserStrategy
 
     String getMeetingName(Document doc);
 
-    String getProject(Document doc);
+    String getTemplateID(Document doc);
 
     Date getMeetingStart(Document doc) throws ParseException;
 

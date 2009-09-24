@@ -15,12 +15,12 @@ import java.util.List;
  */
 public interface TagManager {
 
-    
-    public Tag findTagByName(String name, Long project_id);
+   
 
-    public Tag findTagByName(String name, String project);
+    public Tag findTagByName(String name, String templateID);
 
     public List<Tag> listAllGlobalTags();
 
     public List<Project> listAllProjectsWithTags();
+    public Tag findTagByNameOrCreate(String name, String templateID);
 }

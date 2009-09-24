@@ -25,6 +25,6 @@ public interface XmlTagParserStrategy {
      * @return
      * @throws java.lang.Exception
      */
-    public List<MediaTag> getTags(Document doc, Long project_id, Integer tagStartOffset, Integer tagDuration) throws Exception;
+    public List<MediaTag> getTags(Document doc, String template_id, Integer tagStartOffset, Integer tagDuration) throws Exception;
 
 }

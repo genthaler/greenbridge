@@ -7,7 +7,11 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
   <!-- Spring mvc beans i.e. controllers, lookups  -->
-  <bean id="tagManager" class="com.googlecode.greenbridge.conversations.manager.impl.MockTagManager" />
+  <bean id="tagManager" class="com.googlecode.greenbridge.conversations.manager.impl.TagManagerImpl" >
+    <property name="dao" ref="conversationDao" />
+    <property name="slugGenerator" ref="slugger" />
+
+  </bean>
   <bean id="chapterToolParser" class="com.googlecode.greenbridge.conversations.manager.impl.ChapterToolXMLTagParserStrategy" >
       <constructor-arg ref="tagManager"/>
   </bean>
@@ -22,7 +26,12 @@
   </bean>
 
   <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
-  <bean id="conversationManager" class="com.googlecode.greenbridge.conversations.manager.impl.ConversationManagerMock" >
+
+  <bean id="slugger" class="com.googlecode.greenbridge.conversations.manager.impl.SluggerImpl" />
+
+  <bean id="conversationManager" class="com.googlecode.greenbridge.conversations.manager.impl.ConversationManagerImpl" >
+      <constructor-arg  ref="conversationDao" />
+      <constructor-arg  ref="slugger" />
       <constructor-arg  ref="freemindParser" />
       <constructor-arg  ref="chapterToolParser" />
   </bean>
@@ -85,5 +94,7 @@
     <bean id="remoteServerContainer" class="org.springmodules.db4o.ObjectContainerFactoryBean">
          <property name="server" ref="db4oserver"/>
     </bean>
-
+    <bean id="conversationDao" class="com.googlecode.greenbridge.conversations.dao.Db4oConversationDao">
+        <property name="objectContainer" ref="remoteServerContainer" />
+    </bean>
 </beans>

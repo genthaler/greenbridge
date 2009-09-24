@@ -12,11 +12,11 @@ import java.util.Date;
  * @author ryan
  */
 public class MediaTagSummary {
-    private long mediaTagId;
+    private String mediaTagId;
     private String mediaTagName;
     private String mediaUrl;
     private Date mediaTagCalculatedTimestamp;
-    private long conversationId;
+    private String conversationId;
     private String conversationName;
     private long conversationTotalLength;
     private long tagStartTime;
@@ -25,14 +25,14 @@ public class MediaTagSummary {
     /**
      * @return the mediaTagId
      */
-    public long getMediaTagId() {
+    public String getMediaTagId() {
         return mediaTagId;
     }
 
     /**
      * @param mediaTagId the mediaTagId to set
      */
-    public void setMediaTagId(long mediaTagId) {
+    public void setMediaTagId(String mediaTagId) {
         this.mediaTagId = mediaTagId;
     }
 
@@ -67,14 +67,14 @@ public class MediaTagSummary {
     /**
      * @return the conversationId
      */
-    public long getConversationId() {
+    public String getConversationId() {
         return conversationId;
     }
 
     /**
      * @param conversationId the conversationId to set
      */
-    public void setConversationId(long conversationId) {
+    public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
     }
 

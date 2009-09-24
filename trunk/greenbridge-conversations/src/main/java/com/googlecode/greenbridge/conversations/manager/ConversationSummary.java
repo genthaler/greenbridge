@@ -13,25 +13,14 @@ import java.util.Date;
  */
 public class ConversationSummary {
 
-    private Long id;
+    private String id;
+    private String slug;
     private String name;
     private Date date;
     private long duration;
     
 
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
 
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the name
@@ -73,5 +62,33 @@ public class ConversationSummary {
      */
     public void setDuration(long duration) {
         this.duration = duration;
+    }
+
+    /**
+     * @return the slug
+     */
+    public String getSlug() {
+        return slug;
+    }
+
+    /**
+     * @param slug the slug to set
+     */
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 }

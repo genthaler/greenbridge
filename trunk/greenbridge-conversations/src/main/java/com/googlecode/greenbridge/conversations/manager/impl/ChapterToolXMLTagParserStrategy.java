@@ -36,19 +36,19 @@ public class ChapterToolXMLTagParserStrategy implements XmlTagParserStrategy{
         return  reader.read(stream);
     }
     @Override
-    public List<MediaTag> getTags(Document doc, Long project_id, Integer tagStartOffset, Integer tagDuration) throws Exception {
+    public List<MediaTag> getTags(Document doc, String template_id, Integer tagStartOffset, Integer tagDuration) throws Exception {
         List<MediaTag> mediaTags = new ArrayList<MediaTag>();
         Element e = doc.getRootElement();
         List chapters = e.elements("chapter");
         for (Object object : chapters) {
-            MediaTag mediaTag = parseChapter((Element) object, project_id);
+            MediaTag mediaTag = parseChapter((Element) object, template_id);
             mediaTags.add(mediaTag);
         }
         return mediaTags;
     }
     
 
-    public MediaTag parseChapter(Element chapter, Long project) {
+    public MediaTag parseChapter(Element chapter, String template_id) {
         MediaTag mediaTag = new MediaTag();
         String start = chapter.attributeValue("starttime");
         long startTime = Utils.getTimeInMilliseconds(start);
@@ -62,7 +62,7 @@ public class ChapterToolXMLTagParserStrategy implements XmlTagParserStrategy{
             mediaTag.setEndTime(startTime);
         }
         String title = chapter.elementText("title");
-        Tag tag = tagManager.findTagByName(title, project);
+        Tag tag = tagManager.findTagByName(title, template_id);
         mediaTag.setTag(tag);
         return mediaTag;
     }

@@ -4,21 +4,13 @@ import java.io.Serializable;
 
 public class MediaTagExtraInfo implements Serializable {
 
-    private java.lang.Long id;
-
     private String prop;
 
     private String entry;
 
     private MediaTag mediaTag;
 
-    public java.lang.Long getId() {
-        return this.id;
-    }
 
-    public void setId(java.lang.Long id) {
-        this.id = id;
-    }
     public java.lang.String getProp() {
         return this.prop;
     }

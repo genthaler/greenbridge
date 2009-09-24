@@ -1,11 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.googlecode.greenbridge.conversations.domain;
-
-import java.util.Map;
 
 /**
  *
@@ -14,9 +8,8 @@ import java.util.Map;
 public class RemoteProject extends Project {
 
     private String url;
-    private Class  syncClass;
     private long   refeshRateInSeconds;
-    private Map    clazzProperties;
+    private String groovyScript;
 
     /**
      * @return the url
@@ -32,19 +25,6 @@ public class RemoteProject extends Project {
         this.url = url;
     }
 
-    /**
-     * @return the syncClass
-     */
-    public Class getSyncClass() {
-        return syncClass;
-    }
-
-    /**
-     * @param syncClass the syncClass to set
-     */
-    public void setSyncClass(Class syncClass) {
-        this.syncClass = syncClass;
-    }
 
     /**
      * @return the refeshRateInSeconds
@@ -60,18 +40,20 @@ public class RemoteProject extends Project {
         this.refeshRateInSeconds = refeshRateInSeconds;
     }
 
+
+
     /**
-     * @return the clazzProperties
+     * @return the groovyScript
      */
-    public Map getClazzProperties() {
-        return clazzProperties;
+    public String getGroovyScript() {
+        return groovyScript;
     }
 
     /**
-     * @param clazzProperties the clazzProperties to set
+     * @param groovyScript the groovyScript to set
      */
-    public void setClazzProperties(Map clazzProperties) {
-        this.clazzProperties = clazzProperties;
+    public void setGroovyScript(String groovyScript) {
+        this.groovyScript = groovyScript;
     }
 
 }

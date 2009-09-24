@@ -37,12 +37,12 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
 
 
     @Override
-    public List<MediaTag> getTags(Document doc, Long project_id,Integer tagStartOffset, Integer tagDuration) throws Exception {
+    public List<MediaTag> getTags(Document doc, String template_id,Integer tagStartOffset, Integer tagDuration) throws Exception {
         List<MediaTag> mediaTags = new ArrayList<MediaTag>();
         Date meetingStart = getMeetingStart(doc);
         List<Element> elements = findElementsWithCreatedBetweenMeetingTime(meetingStart, getMeetingEnd(doc), doc);
         for (Element element : elements) {
-            MediaTag tag = createMediaTagFromNode(element, meetingStart, project_id,tagStartOffset,tagDuration);
+            MediaTag tag = createMediaTagFromNode(element, meetingStart, template_id,tagStartOffset,tagDuration);
             mediaTags.add(tag);
         }
         return mediaTags;
@@ -75,8 +75,8 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
      * @param node
      * @return
      */
-    protected MediaTag createMediaTagFromNode(Element node, Date meetingStart, Long project_id, Integer tagStartOffset, Integer tagDuration) {
-            MediaTag mediaTag = converter.createMediaTagFromNode(node, meetingStart,project_id, tagStartOffset, tagDuration);
+    protected MediaTag createMediaTagFromNode(Element node, Date meetingStart, String template_id, Integer tagStartOffset, Integer tagDuration) {
+            MediaTag mediaTag = converter.createMediaTagFromNode(node, meetingStart,template_id, tagStartOffset, tagDuration);
             return mediaTag;
     }
 
@@ -123,7 +123,7 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
         return new Date(Long.parseLong(longText));
     }
 
-    @Override
+
     public String getProject(Document doc) {
         XPath xpath = DocumentHelper.createXPath("/map/node/attribute[@NAME='project']");
         Element project = (Element) xpath.selectSingleNode(doc);
@@ -133,6 +133,16 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
         else {
             return null;
         }
+    }
+
+    @Override
+    public String getTemplateID(Document doc) {
+        XPath xpath = DocumentHelper.createXPath("/map/attribute_registry/attribute_name[@NAME='templateID']/attribute_value");
+        Element templateID = (Element) xpath.selectSingleNode(doc);
+        if (templateID == null) {
+            return null;
+        }
+        return templateID.attributeValue("VALUE");
     }
 
 

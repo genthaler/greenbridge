@@ -5,10 +5,6 @@ import java.io.Serializable;
 public class Attendee implements Serializable {
 
 
-    private Long id;
-
-
-
     private Boolean present;
 
     private Person person;
@@ -16,13 +12,6 @@ public class Attendee implements Serializable {
     private Conversation conversation;
 
 
-    public java.lang.Long getId() {
-        return this.id;
-    }
-
-    public void setId(java.lang.Long id) {
-        this.id = id;
-    }
 
     public java.lang.Boolean getPresent() {
         return this.present;

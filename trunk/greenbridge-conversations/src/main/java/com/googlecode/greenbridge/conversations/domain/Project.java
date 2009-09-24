@@ -1,25 +1,14 @@
 package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
-import java.util.Set;
-import java.util.HashSet;
 
 public class Project implements Serializable {
 
-    private java.lang.Long id;
-
-
-    public java.lang.Long getId() {
-        return this.id;
-    }
-
-    public void setId(java.lang.Long id) {
-        this.id = id;
-    }
-
+    private String id;
     private String name;
+    private String description;
 
-    private Set<Tag> tags = new HashSet<Tag>();
+
 
     public java.lang.String getName() {
         return this.name;
@@ -29,11 +18,34 @@ public class Project implements Serializable {
         this.name = name;
     }
 
-    public java.util.Set<Tag> getTags() {
-        return this.tags;
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
     }
 
-    public void setTags(java.util.Set<Tag> tags) {
-        this.tags = tags;
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
     }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
+
 }
