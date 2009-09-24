@@ -9,7 +9,8 @@ import java.io.Serializable;
 public class Conversation implements Serializable {
 
 
-    private Long id;
+    private String id;
+    private String slug;
 
     private String name;
 
@@ -82,19 +83,6 @@ public class Conversation implements Serializable {
         this.media = media;
     }
 
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * @return the freemindUrl
@@ -108,6 +96,34 @@ public class Conversation implements Serializable {
      */
     public void setFreemindUrl(String freemindUrl) {
         this.freemindUrl = freemindUrl;
+    }
+
+    /**
+     * @return the slug
+     */
+    public String getSlug() {
+        return slug;
+    }
+
+    /**
+     * @param slug the slug to set
+     */
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
 

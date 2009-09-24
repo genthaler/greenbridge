@@ -2,12 +2,15 @@ package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MediaTag implements Serializable {
 
-    private Long id;
 
+    private String id;
+
+    private Date date;
 
     private Long startTime;
 
@@ -61,13 +64,35 @@ public class MediaTag implements Serializable {
         this.media = media;
     }
 
-    public Long getId() {
+    /**
+     * @return the id
+     */
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    /**
+     * @param id the id to set
+     */
+    public void setId(String id) {
         this.id = id;
     }
+
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+
 
 
 }

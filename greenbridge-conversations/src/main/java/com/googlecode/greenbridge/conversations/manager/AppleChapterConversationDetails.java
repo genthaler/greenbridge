@@ -21,7 +21,7 @@ public class AppleChapterConversationDetails {
     private String description;
     private InputStream appleChapterXMLStream;
     private String mediaUrl;
-    private Long project_id;
+    private String template_id;
     private List<Integer> attendeePersonIDs = new ArrayList();
 
     /**
@@ -111,15 +111,15 @@ public class AppleChapterConversationDetails {
     /**
      * @return the project_id
      */
-    public Long getProject_id() {
-        return project_id;
+    public String getTempateID() {
+        return template_id;
     }
 
     /**
      * @param project_id the project_id to set
      */
-    public void setProject_id(Long project_id) {
-        this.project_id = project_id;
+    public void setTemplateID(String template_id) {
+        this.template_id = template_id;
     }
     
 

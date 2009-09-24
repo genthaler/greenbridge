@@ -3,6 +3,7 @@ package com.googlecode.greenbridge.conversations.web;
 import com.googlecode.greenbridge.conversations.domain.Conversation;
 import com.googlecode.greenbridge.conversations.domain.Media;
 import com.googlecode.greenbridge.conversations.domain.MediaTag;
+import com.googlecode.greenbridge.conversations.domain.Tag;
 import com.googlecode.greenbridge.conversations.manager.AppleChapterConversationDetails;
 import com.googlecode.greenbridge.conversations.manager.ConversationManager;
 import com.googlecode.greenbridge.conversations.manager.ConversationSearchResults;
@@ -12,7 +13,9 @@ import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -36,6 +39,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ConversationController {
     private final Logger log = Logger.getLogger(ConversationController.class);
+    private static final String TAG_EXISTING = "existing";
+    private static final String TAG_NEW      = "new";
+
 
     private ConversationManager conversationManager;
     private StoreMediaStrategy storeMedia;
@@ -82,8 +88,8 @@ public class ConversationController {
      * View a conversation by an ID
      */
     @RequestMapping(method = RequestMethod.GET, value = "/conversation/view.do")
-    public final String view(@RequestParam("id") long conversationId, HttpServletRequest request, ModelMap model) {
-        Conversation conversation = conversationManager.findConversation(conversationId);
+    public final String view(@RequestParam("id") String conversationId, HttpServletRequest request, ModelMap model) {
+        Conversation conversation = conversationManager.findById(conversationId);
         return commonView(conversation, 0, model);
     }
 
@@ -91,8 +97,8 @@ public class ConversationController {
      * View a conversation by an ID, start playback at a tag position
      */
     @RequestMapping(method = RequestMethod.GET, value = "/conversation/viewTime.do")
-    public final String viewBookmark(@RequestParam("id") long conversationId, @RequestParam("time") long time,  ModelMap model) {
-        Conversation conversation = conversationManager.findConversation(conversationId);
+    public final String viewBookmark(@RequestParam("id") String conversationId, @RequestParam("time") long time,  ModelMap model) {
+        Conversation conversation = conversationManager.findById(conversationId);
         List<MediaTag> tagsSelected = findMediaTagsAtTime(conversation, time);
         model.addAttribute("tagsSelected", tagsSelected);
         return commonView(conversation, time, model);
@@ -206,21 +212,38 @@ public class ConversationController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/view-json.do")
     public final ModelAndView viewTagAsJson(
-            @RequestParam("conversation") Long conversationId,
-            @RequestParam("id") Long tagId) {
-        TagUpdateDetails tag = conversationManager.loadTag(conversationId, tagId);
+            @RequestParam("conversation") String conversationId,
+            @RequestParam("mediaTagId") String mediaTagId) {
+        TagUpdateDetails tag = conversationManager.loadTag(conversationId, mediaTagId);
         ModelAndView mav = new ModelAndView(new GenericJSONView(tag));
         return mav;
     }
 
 
+        /**
+     * Delete a tag from a conversation
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/json.do")
+    public final ModelAndView viewAllTagsAsJson(
+            @RequestParam(required=false,value="q") String tagName) {
+
+        System.out.println("Request for q: " + tagName);
+
+        Map<String,String> data = conversationManager.findAllTags();
+
+        DojoDatastore store = new DojoDatastore(data);
+        ModelAndView mav = new ModelAndView(DojoDatastoreView.SHARED_VIEW);
+        mav.addObject(DojoDatastoreView.KEY, store);
+        return mav;
+    }
+
     /**
      * Delete a tag from a conversation
      */
     @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/delete.do")
-    public final String deleteTag(@RequestParam("id") Long tagId, HttpServletRequest request, ModelMap model) {
-        conversationManager.deleteTag(tagId);
-        model.put("tagId", tagId);
+    public final String deleteMediaTag(@RequestParam("mediaTagId") String mediaTagId, HttpServletRequest request, ModelMap model) {
+        conversationManager.deleteTag(mediaTagId);
+        model.put("tagId", mediaTagId);
         return "tags/onDelete";
     }
 
@@ -230,13 +253,23 @@ public class ConversationController {
      * Edit a tag from a conversation
      */
     @RequestMapping(method = RequestMethod.POST, value = "/conversation/tag/edit.do")
-    public final String editTag(
-            @RequestParam("conversation") Long conversationId,
-            @RequestParam("id") Long tagId,
+    public final String editMediaTag(
+            @RequestParam("conversation") String conversationId,
+            @RequestParam("mediaTagId") String mediaTagId,
+            @RequestParam("tagType") String tagType,
+            @RequestParam(value="newTagName",required=false) String newTagName,
+            @RequestParam(value="projectId", required=false) String projectId,
             @ModelAttribute TagUpdateDetails tag,
             HttpServletRequest request, ModelMap model) {
-        conversationManager.updateTag(conversationId, tagId, tag);
-        model.put("tagId", tagId);
+
+        if (TAG_NEW.equals(tagType)) {
+            tag.setTagId(null);
+            tag.setTagName(newTagName);
+            tag.setTagProjectId(projectId);
+
+        }
+        conversationManager.updateTag(conversationId, mediaTagId, tag);
+        model.put("tagId", mediaTagId);
         return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();
     }
 
@@ -244,11 +277,19 @@ public class ConversationController {
      * Create a tag for a conversation
      */
     @RequestMapping(method = RequestMethod.POST, value = "/conversation/tag/new.do")
-    public final String newTag(
-            @RequestParam("conversation") Long conversationId,
+    public final String newMediaTag(
+            @RequestParam("conversation") String conversationId,
+            @RequestParam("tagType") String tagType,
+            @RequestParam(value="newTagName",required=false) String newTagName,
+            @RequestParam(value="projectId", required=false) String projectId,
             @ModelAttribute TagUpdateDetails tag,
             HttpServletRequest request, ModelMap model) {
 
+        if (TAG_NEW.equals(tagType)) {
+            tag.setTagId(null);
+            tag.setTagName(newTagName);
+            tag.setTagProjectId(projectId);
+        }
         conversationManager.addTag(conversationId, tag);
         return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();
     }

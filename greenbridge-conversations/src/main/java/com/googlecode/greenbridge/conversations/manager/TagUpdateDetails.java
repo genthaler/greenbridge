@@ -13,7 +13,9 @@ import java.util.Map;
  * @author ryan
  */
 public class TagUpdateDetails {
-    private String name;
+    private String tagId;
+    private String tagName;
+    private String tagProjectId;
     private double startTime;
     private double endTime;
     private String shortDescription;
@@ -21,19 +23,7 @@ public class TagUpdateDetails {
     private List<String> icons;
     private Map<String,String> extraAttributes;
 
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
 
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * @return the startTime
@@ -117,5 +107,47 @@ public class TagUpdateDetails {
      */
     public void setExtraAttributes(Map<String, String> extraAttributes) {
         this.extraAttributes = extraAttributes;
+    }
+
+    /**
+     * @return the tagId
+     */
+    public String getTagId() {
+        return tagId;
+    }
+
+    /**
+     * @param tagId the tagId to set
+     */
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
+    }
+
+    /**
+     * @return the tagName
+     */
+    public String getTagName() {
+        return tagName;
+    }
+
+    /**
+     * @param tagName the tagName to set
+     */
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
+    /**
+     * @return the tagProjectId
+     */
+    public String getTagProjectId() {
+        return tagProjectId;
+    }
+
+    /**
+     * @param tagProjectId the tagProjectId to set
+     */
+    public void setTagProjectId(String tagProjectId) {
+        this.tagProjectId = tagProjectId;
     }
 }

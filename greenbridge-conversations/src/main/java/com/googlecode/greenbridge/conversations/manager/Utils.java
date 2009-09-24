@@ -73,11 +73,7 @@ public class Utils {
    }
 
 
-   public static final void setAllMediaTagsMedia(List<MediaTag> mediaTags, Media media) {
-       for (MediaTag mediaTag : mediaTags) {
-           mediaTag.setMedia(media);
-       }
-   }
+
 
 
 

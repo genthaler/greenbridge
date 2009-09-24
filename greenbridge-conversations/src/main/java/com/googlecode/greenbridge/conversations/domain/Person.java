@@ -6,8 +6,8 @@ import java.util.HashSet;
 
 public class Person implements Serializable {
 
-    private java.lang.Long id;
 
+    private String id;
 
     private String firstName;
 
@@ -17,13 +17,7 @@ public class Person implements Serializable {
 
     private Set<Attendee> conversations = new HashSet<Attendee>();
 
-    public java.lang.Long getId() {
-        return this.id;
-    }
 
-    public void setId(java.lang.Long id) {
-        this.id = id;
-    }
 
     public java.lang.String getFirstName() {
         return this.firstName;
@@ -55,6 +49,20 @@ public class Person implements Serializable {
 
     public void setConversations(java.util.Set<Attendee> conversations) {
         this.conversations = conversations;
+    }
+
+    /**
+     * @return the uname
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @param uname the uname to set
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
 

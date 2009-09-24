@@ -4,8 +4,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="gb" %>
 <script type="text/javascript">
       dojo.require("dijit.TitlePane");
-      dojo.require("dijit.form.ComboBox");
+      dojo.require("dijit.form.FilteringSelect");
       dojo.require("dojo.data.ItemFileReadStore");
+      dojo.require("dijit.form.TextBox");
       dojo.require("dijit.form.Slider");
 </script>
 <script type="text/javascript" src="<c:url value='/scripts/flowplayer/flowplayer-3.1.1.min.js' />"></script>
@@ -32,6 +33,23 @@
 //        console.log("time: " + playerStatus.time );
         dojo.style("playhead", "left", left );
         dojo.style("playhead", "height", taglist_height + 20);
+    }
+
+    function showExistingTag() {
+        console.log("show existing tag");
+        dojo.style("existingTagDiv", "display", "block" );
+        dojo.fadeIn({node: "existingTagDiv"}).play();
+        dojo.fadeOut({node: "newTagDiv"}).play();
+        dojo.style("newTagDiv", "display", "none" );
+    }
+
+    function showNewTag() {
+        console.log("show new tag");
+        dijit.byId("tagName").setValue(null);
+        dojo.style("newTagDiv", "display", "block" );
+        dojo.fadeIn({node: "newTagDiv"}).play();
+        dojo.fadeOut({node: "existingTagDiv"}).play();
+        dojo.style("existingTagDiv", "display", "none" );
     }
 
     function selectMap() {
@@ -78,10 +96,10 @@
         dojo.addClass(id, "tagdiv");
     }
 
-    function deleteTag(tagId) {
+    function deleteTag(mediaTagId) {
         if(confirm("Are you sure you want to delete this tag?")) {
             dojo.xhrGet( {
-                url: "<c:url value='/conversation/tag/delete.do' />?id=" + tagId,
+                url: "<c:url value='/conversation/tag/delete.do' />?mediaTagId=" + mediaTagId,
                 handleAs: "text",
                 load: function(tagId) {
                     showTagDelete(tagId);
@@ -95,15 +113,15 @@
     }
 
 
-    function showTagDelete(tagId) {
+    function showTagDelete(mediaTagId) {
         //tag-${mediaTag.id}-row1tag-${mediaTag.id}-row1
-        var tag = dojo.byId("tag-" + tagId + "-row2");
+        var tag = dojo.byId("tag-" + mediaTagId + "-row2");
         //console.dir(tag);
-        dojo.fadeOut({node: "tag-" + tagId + "-row2"}).play();
+        dojo.fadeOut({node: "tag-" + mediaTagId + "-row2"}).play();
         dojo.fadeOut({
-            node: "tag-" + tagId + "-row1",
+            node: "tag-" + mediaTagId + "-row1",
             onEnd: function() {
-                var nodeIDs = ["#tag-" + tagId + "-row2", "#tag-" + tagId + "-row1"];
+                var nodeIDs = ["#tag-" + mediaTagId + "-row2", "#tag-" + mediaTagId + "-row1"];
                 dojo.forEach(nodeIDs, "dojo.query(item).orphan();");
             }
 
@@ -112,8 +130,14 @@
 
     }
 
+    function tagChanged() {
+        console.log(dijit.byId("tagName").getValue() + " for tag");
+    }
+
     function updateTagDialog(data) {
-        dijit.byId("tagName").setValue(data.name);
+         // TODO - how to set dojo name/value
+        dijit.byId("tagName").setValue( data.tagId);
+        dijit.byId("tagName").setDisplayedValue(data.tagName);
         dijit.byId("sliderMin").setValue(data.startTime);
         dijit.byId("sliderMax").setValue(data.endTime);
         dojo.byId("shortDescription").value = data.shortDescription;
@@ -132,9 +156,9 @@
 
     }
 
-    function showTagDialog(tagId) {
+    function showTagDialog(mediaTagId) {
         dojo.xhrGet( {
-                url: "<c:url value='/conversation/tag/view-json.do' />?conversation=${conversation.id}&id=" + tagId,
+                url: "<c:url value='/conversation/tag/view-json.do' />?conversation=${conversation.id}&mediaTagId=" + mediaTagId,
                 handleAs: "json",
                 load: function(data) {
                     updateTagDialog(data);
@@ -144,12 +168,13 @@
                 }
             });
 
-        dojo.byId("editTagForm").action = "<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&id=" + tagId;
+        dojo.byId("editTagForm").action = "<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&mediaTagId=" + mediaTagId;
         $f("fms").pause();
         var playerStatus = $f("fms").getStatus();
         var playhead_left =  ((playerStatus.time / ${media.mediaLength}) * 400);
         dojo.style("editPlayhead", "left", playhead_left );
         dijit.byId("tagDialog").show();
+
     }
 
     function moveEditSliders() {
@@ -223,7 +248,7 @@
 
 
                         <div class="tagactions">
-                             <button onclick="showTagDialog(${mediaTag.id})">Edit</button> <button onclick="deleteTag(${mediaTag.id})">Delete</button>
+                             <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
                              [<a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">link</a>]
                              [<a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">all</a>]<br/><br/>
                         </div>
@@ -233,7 +258,7 @@
             </table>
         </div>
         <div id="freemind" style="display: none;">
-            <button onclick="inspectApplet()">Play Selected</button>
+            <button onclick="inspectApplet()">Play Selected</button> <span>This is the original upload. It does not reflect the changes made after upload.</span>
             <applet name="freemindApplet" code="freemind.main.FreeMindApplet.class" archive="<c:url value='/scripts/freemind/freemindbrowser.jar' />" width="100%" height="100%" >
                 <param name="type" value="application/x-java-applet;version=1.4"/>
                 <param name="scriptable" value="true"/>
@@ -244,12 +269,21 @@
             </applet>
         </div>
 
-        <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/scripts/tags.txt' />"/>
+        <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/conversation/tag/json.do' />"/>
         <div id="tagDialog" dojoType="dijit.Dialog" title="Tag Details">
             <form id="editTagForm" method="post" action="<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&id=1">
                 <div id="test" style="background-color:white;">
-                    <label for="_name">Tag:</label>
-                     <input dojoType="dijit.form.ComboBox"  store="TagStore" searchAttr="name" id="tagName" name="name"  autocomplete="true"  />
+                    <label for="tagType">Tag:</label>
+
+                    <input type="radio" name="tagType" value="existing" onclick="showExistingTag()" /> Existing
+                    <input type="radio" name="tagType" value="new" onclick="showNewTag()" /> New
+                    <div id="existingTagDiv" style="margin-left: 100px;">
+                        <input dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagName" name="tagId"  autocomplete="true" onChange="tagChanged()" />
+                    </div>
+                    <div id="newTagDiv" style="margin-left: 100px; display: none;">
+                        <label for="newTagName">Name:</label> <input type="text" dojoType="dijit.form.TextBox" name="newTagName" id="newTag" value="" /><br/>
+                        <label for="newTagProject">Project:</label> <input dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagProject" name="projectId"  autocomplete="true"  /><br/>
+                    </div>
                     <br/>
                     <br/>
 
