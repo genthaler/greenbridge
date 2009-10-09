@@ -202,7 +202,7 @@ public class SettingsDialog extends javax.swing.JDialog {
 
         jLabel7.setText("Tag Start Offset");
 
-        jLabel8.setText("seconds");
+        jLabel8.setText("- seconds");
 
         jLabel9.setText("Tag Duration");
 

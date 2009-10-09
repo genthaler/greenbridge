@@ -15,6 +15,7 @@ import javax.sound.sampled.LineUnavailableException;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.multipart.FilePart;
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
@@ -81,11 +82,11 @@ public class ConversationControllerImpl implements ConversationController {
 
     public String uploadConversation(String server) throws InterruptedException, IOException {
         File outputFile =  getFileForDocument(documentStorage.getFileLocation(), ".wav");
-        fireUploadChange("Coverting to MP3...", 5);
+        fireUploadChange("Coverting to MP3...", 60);
         File mp3 = convertToMP3(outputFile);
-        fireUploadChange("Saving document...", 30);
+        fireUploadChange("Saving document...", 70);
         documentStorage.saveCurrentDocument();
-        fireUploadChange("Uploading to Server...", 35);
+        fireUploadChange("Uploading to Server...", 90);
 
         String location = uploadData(server, mp3, documentStorage.getFileLocation());
         documentStorage.setUploadURL(location);
@@ -101,15 +102,26 @@ public class ConversationControllerImpl implements ConversationController {
           new FilePart("document", document)
         };
 
+        NameValuePair[] params =  new NameValuePair[2];
         String tagStartOffset = properties.loadProperty("tagStartOffset");
         if (tagStartOffset != null) {
-            post.addParameter("tagStartOffset", tagStartOffset);
+            NameValuePair offset = new NameValuePair("tagStartOffset", tagStartOffset);
+            params[0] = offset;
+        } else {
+            NameValuePair offset = new NameValuePair("tagStartOffset", "10");
+            params[0] = offset;
         }
-
         String tagDuration = properties.loadProperty("tagDuration");
         if (tagDuration != null) {
-            post.addParameter("tagDuration", tagDuration);
+            NameValuePair duration = new NameValuePair("tagDuration", tagDuration);
+            params[1] = duration;
+        } else {
+            NameValuePair duration = new NameValuePair("tagDuration", "20");
+            params[1] = duration;
         }
+
+        post.setQueryString(params);
+
 
         post.setRequestEntity(new MultipartRequestEntity(fileparts, post.getParams()));
 
