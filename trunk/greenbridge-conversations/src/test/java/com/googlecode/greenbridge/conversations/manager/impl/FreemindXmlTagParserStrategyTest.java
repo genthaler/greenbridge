@@ -87,7 +87,8 @@ public class FreemindXmlTagParserStrategyTest {
         InputStream xml = getClass().getResourceAsStream("/TestMeeting.mm");
         assertNotNull(xml);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag converter = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager personManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag converter = new DefaultFreemindNodeToMediaTag(mockTagManager, personManager);
         FreemindXmlTagParserStrategy instance = new FreemindXmlTagParserStrategy(mockTagManager, converter);
         Document doc = instance.parseDocument(xml);
         String name = instance.getMeetingName(doc);

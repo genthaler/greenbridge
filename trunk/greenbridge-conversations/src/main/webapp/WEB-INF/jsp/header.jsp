@@ -14,13 +14,35 @@
   <script type="text/javascript" src="<c:url value="/resources/spring/Spring-Dojo.js" />"> </script>	 
 	<script type="text/javascript">
           dojo.require("dojo.parser");
-          dojo.require("dijit.form.FilteringSelect");
+          dojo.require("dijit.form.ComboBox");
           dojo.require("dojo.data.ItemFileReadStore");
 
           function quickTagSelected() {
-              window.location = '<c:url value='/tag/' />' + dijit.byId("quickTag").getDisplayedValue();
-              
+              var tagAndProject = dijit.byId("quickTag").getDisplayedValue();
+              var tag = getTag(tagAndProject);
+              var project = getProject(tagAndProject);
+              if (project == null) {
+                window.location = '<c:url value='/tag/' />' + tag;
+              } else {
+                window.location = '<c:url value='/project/' />' + project + '/tag/' + tag;
+              }
           }
+
+          function getTag(d) {
+              if (d.indexOf('[') < 0) {
+                  return d;
+              }
+              return d.substring(0, d.indexOf('['));
+          }
+
+          function getProject(d) {
+              if (d.indexOf('[') < 0) {
+                  return null;
+              }
+              var startIndex = d.indexOf('[') + 1;
+              return d.substring(startIndex, d.indexOf(']'));
+          }
+
 
   </script>
   <title>Greenbridge Conversations</title>
@@ -29,15 +51,15 @@
 
 <body class="soria spring">
   <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/conversation/tag/json.do' />"/>
-  <div id="quickTagDiv" style="position:absolute; right: 200px;">
-     Quick Tag: <input dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="quickTag" name="tagId"  autocomplete="true" onChange="quickTagSelected()" />
+  <div id="quickTagDiv">
+     Quick Tag: <input dojoType="dijit.form.ComboBox"  store="TagStore" searchAttr="value" id="quickTag" name="tagId"  autocomplete="true" onChange="quickTagSelected()" />
   </div>
-  <div id="banner">
-      <img height="30" src="<c:url value='/images/greenbridge-logo.png' />" alt="Greenbridge Conversations" /> Greenbridge
+  <div id="banner" class="primary-4">
+      
   </div>
   <div id="wrap" >
   
-  	<div id="menu">
+  	<div id="menu" class="primary-4">
     	<%@ include file="/WEB-INF/jsp/menu.jsp" %>
     </div>
     <div id="main">

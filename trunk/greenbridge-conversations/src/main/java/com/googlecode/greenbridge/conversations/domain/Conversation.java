@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Conversation implements Serializable {
@@ -29,7 +31,7 @@ public class Conversation implements Serializable {
     }
 
 
-    private Set<Attendee> attendees = new HashSet<Attendee>();
+    private List<Attendee> attendees = new ArrayList<Attendee>();
 
     private Set<Media> media = new HashSet<Media>();
 
@@ -67,11 +69,11 @@ public class Conversation implements Serializable {
 
 
 
-    public java.util.Set<Attendee> getAttendees() {
+    public java.util.List<Attendee> getAttendees() {
         return this.attendees;
     }
 
-    public void setAttendees(java.util.Set<Attendee> attendees) {
+    public void setAttendees(java.util.List<Attendee> attendees) {
         this.attendees = attendees;
     }
 

@@ -7,6 +7,8 @@ package com.googlecode.greenbridge.conversations.manager.impl;
 
 import com.googlecode.greenbridge.conversations.domain.MediaTag;
 import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfoPerson;
+import com.googlecode.greenbridge.conversations.domain.Person;
 import com.googlecode.greenbridge.conversations.domain.Tag;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,7 @@ public class DefaultFreemindNodeToMediaTagTest {
         InputStream xml = getClass().getResourceAsStream("/tag_examples.mm");
         assertNotNull(xml);
         MockTagManager mockTagManager = new MockTagManager();
+        MockPersonManager mockPersonManager = new MockPersonManager();
         FreemindXmlTagParserStrategy instance = new FreemindXmlTagParserStrategy(mockTagManager, null);
         Document doc = instance.parseDocument(xml);
         XPath xpath = DocumentHelper.createXPath("/map/node/node");
@@ -56,7 +59,8 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatTheStartOffsetIsCorrect() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
 
         long meeting_start = 1248757600609l;
         long tag_start = 1248757670609l;
@@ -70,24 +74,29 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatTheStartOffsetIsCorrectWithAOffset() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
 
         long meeting_start = 1248757600609l;
-        long tag_start = 1248757670609l;
+        long tag_start =     1248757670609l;
         long expected = (tag_start - meeting_start) / 1000;
 
         Integer userSpecifiedStartOffset = 10; // seconds
-        expected = expected - userSpecifiedStartOffset;
+        expected = expected - (userSpecifiedStartOffset);
 
         instance.setStartTime(mediaTag, nodes.get(0), new Date(meeting_start), userSpecifiedStartOffset);
         assertEquals(expected, (long)mediaTag.getStartTime());
+
+        
+
     }
 
     @Test
     public void testThatTheStartOffsetIsCorrectWithAOffsetThatIsLargerThatTheTagStart() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
 
         long meeting_start = 1248757600609l;
         long tag_start = 1248757670609l;
@@ -105,7 +114,8 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatTheEndOffsetIsCorrect() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
 
         long meeting_start = 1248757600609l;
         long tag_start = 1248757670609l;
@@ -118,7 +128,8 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatTheEndOffsetIsCorrectForATree() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
 
         long meeting_start = 1248757600609l;
         long child_tag_start = 1248759999993l;
@@ -136,8 +147,9 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatANodeWithATagNameAttributeGetsThatTag() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
-        instance.setName(mediaTag, nodes.get(0), null);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
+        instance.setNameAndShortDescription(mediaTag, nodes.get(0), null);
         assertEquals("Alpha-1", mediaTag.getTag().getTagName());
     }
 
@@ -146,8 +158,9 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatANodeWithABadTagNameAttributeIsRejected() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
-        instance.setName(mediaTag, badNodes.get(2), null);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
+        instance.setNameAndShortDescription(mediaTag, badNodes.get(2), null);
     }
 
 
@@ -158,8 +171,9 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatANodeWithTextThatIsAWordGetsThatTag() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
-        instance.setName(mediaTag, nodes.get(2), null);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
+        instance.setNameAndShortDescription(mediaTag, nodes.get(2), null);
         assertEquals("FollowUp", mediaTag.getTag().getTagName());
     }
 
@@ -171,8 +185,9 @@ public class DefaultFreemindNodeToMediaTagTest {
     public void testThatANodeWithTextThatIsASentanceIsRejected() {
         MediaTag mediaTag = new MediaTag();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
-        instance.setName(mediaTag, badNodes.get(0), null);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
+        instance.setNameAndShortDescription(mediaTag, badNodes.get(0), null);
 
     }
 
@@ -183,8 +198,9 @@ public class DefaultFreemindNodeToMediaTagTest {
         t.setTagName("Alpha-1");
         mediaTag.setTag(t);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
-        instance.setShortDiscription(mediaTag, nodes.get(0));
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
+        instance.setNameAndShortDescription(mediaTag, nodes.get(0), null);
         MediaTagExtraInfo extraInfo = mediaTag.getMediaTagExtraInfos().get(0);
         assertEquals("shortDescription", extraInfo.getProp());
         assertEquals("Description, with tag", extraInfo.getEntry());
@@ -197,7 +213,8 @@ public class DefaultFreemindNodeToMediaTagTest {
         t.setTagName("FollowUp");
         mediaTag.setTag(t);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager, mockPersonManager);
         instance.setLongDescription(mediaTag, nodes.get(5));
         MediaTagExtraInfo extraInfo = mediaTag.getMediaTagExtraInfos().get(0);
         assertEquals("longDescription", extraInfo.getProp());
@@ -211,7 +228,8 @@ public class DefaultFreemindNodeToMediaTagTest {
         t.setTagName("FollowUp");
         mediaTag.setTag(t);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
         instance.setLongDescription(mediaTag, nodes.get(0));
         assertEquals(0, mediaTag.getMediaTagExtraInfos().size());
     }
@@ -223,7 +241,8 @@ public class DefaultFreemindNodeToMediaTagTest {
         t.setTagName("FollowUp");
         mediaTag.setTag(t);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
         instance.setIcons(mediaTag, nodes.get(4));
         MediaTagExtraInfo extraInfo = mediaTag.getMediaTagExtraInfos().get(0);
         assertEquals("icon", extraInfo.getProp());
@@ -236,8 +255,9 @@ public class DefaultFreemindNodeToMediaTagTest {
         Tag t = new Tag();
         t.setTagName("FollowUp");
         mediaTag.setTag(t);
+        MockPersonManager mockPersonManager = new MockPersonManager();
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
         instance.setIcons(mediaTag, nodes.get(0));
         assertEquals(0, mediaTag.getMediaTagExtraInfos().size());
     }
@@ -249,14 +269,55 @@ public class DefaultFreemindNodeToMediaTagTest {
         t.setTagName("FollowUp");
         mediaTag.setTag(t);
         MockTagManager mockTagManager = new MockTagManager();
-        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager);
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
         instance.setAttributes(mediaTag, nodes.get(1));
         MediaTagExtraInfo extraInfo = mediaTag.getMediaTagExtraInfos().get(0);
-        assertEquals("Attendee", extraInfo.getProp());
-        assertEquals("Ryan", extraInfo.getEntry());
+        assertEquals("extra", extraInfo.getProp());
+        assertEquals("stuff", extraInfo.getEntry());
         
     }
 
+    @Test
+    public void testSetPeopleResolvesBySlug() {
+        MediaTag mediaTag = new MediaTag();
+        Tag t = new Tag();
+        t.setTagName("FollowUp");
+        mediaTag.setTag(t);
+        MockTagManager mockTagManager = new MockTagManager();
+        MockPersonManager mockPersonManager = new MockPersonManager();
+        DefaultFreemindNodeToMediaTag instance = new DefaultFreemindNodeToMediaTag(mockTagManager,mockPersonManager);
+        instance.setPeople(mediaTag, nodes.get(1));
+        {
+            // check the slug resolved
+            MediaTagExtraInfoPerson extraInfo = (MediaTagExtraInfoPerson) mediaTag.getMediaTagExtraInfos().get(0);
+            assertEquals("personId", extraInfo.getProp());
+            assertEquals("1", extraInfo.getEntry());
+        }
+        {
+            // check that the email resolved
+            MediaTagExtraInfoPerson extraInfo = (MediaTagExtraInfoPerson) mediaTag.getMediaTagExtraInfos().get(1);
+            assertEquals("personId", extraInfo.getProp());
+            assertEquals("2", extraInfo.getEntry());
+        }
+        {
+            // check that the slug that does not exist is put in as a person
+            MediaTagExtraInfo extraInfo = mediaTag.getMediaTagExtraInfos().get(2);
+            assertEquals("person", extraInfo.getProp());
+            assertEquals("i-dont-exist", extraInfo.getEntry());
+        }
+        {
+            // check that a new email address, creates a person, and the id  matches
+            Person expectPerson = mockPersonManager.findPersonForText("create.me");
+            assertNotNull(expectPerson);
+            MediaTagExtraInfoPerson extraInfo = (MediaTagExtraInfoPerson) mediaTag.getMediaTagExtraInfos().get(3);
+            assertEquals("personId", extraInfo.getProp());
+            assertEquals(expectPerson.getId(), extraInfo.getEntry());
+        }
 
+
+
+
+    }
 
 }

@@ -86,7 +86,9 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
     @Override
     public List<String> getAttendeeList(Document doc) {
         List<String> attendees = new ArrayList<String>();
-        XPath xpath = DocumentHelper.createXPath("//node[@TEXT='Attendees']/attribute[@NAME='Attendee']");
+        XPath xpath = DocumentHelper.createXPath("/map/node/attribute[translate(@NAME, 'PERSON', 'person') ='person']");
+
+        //XPath xpath = DocumentHelper.createXPath("//node[@TEXT='Attendees']/attribute[@NAME='Attendee']");
         List<Element> people = xpath.selectNodes(doc);
         for (Element person : people) {
             String name = person.attributeValue("VALUE");
@@ -95,6 +97,7 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
         return attendees;
     }
 
+    @Override
     public String getMeetingName(Document doc) {
         Element e = doc.getRootElement();
         Element meeting = e.element("node");
@@ -102,12 +105,14 @@ public class FreemindXmlTagParserStrategy implements FullConversationTagParsingS
     }
 
 
+    @Override
     public Date getMeetingStart(Document doc) throws ParseException {
         XPath xpath = DocumentHelper.createXPath("/map/node/attribute[@NAME='startDate']");
         Element clock = (Element) xpath.selectSingleNode(doc);
         String created = clock.attributeValue("VALUE");
         return getDateFromAttribute(created);
     }
+    @Override
     public Date getMeetingEnd(Document doc) throws ParseException {
         XPath xpath = DocumentHelper.createXPath("/map/node/attribute[@NAME='endDate']");
         Element clock = (Element) xpath.selectSingleNode(doc);

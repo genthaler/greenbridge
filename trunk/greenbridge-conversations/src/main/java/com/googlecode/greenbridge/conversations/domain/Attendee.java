@@ -7,7 +7,11 @@ public class Attendee implements Serializable {
 
     private Boolean present;
 
-    private Person person;
+    private Boolean resolvedToPerson;
+    
+    private String personSlug;
+
+    private String personId;
 
     private Conversation conversation;
 
@@ -21,13 +25,7 @@ public class Attendee implements Serializable {
         this.present = present;
     }
 
-    public Person getPerson() {
-        return this.person;
-    }
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 
     public Conversation getConversation() {
         return this.conversation;
@@ -35,6 +33,48 @@ public class Attendee implements Serializable {
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+    }
+
+    /**
+     * @return the resolvedToPerson
+     */
+    public Boolean getResolvedToPerson() {
+        return resolvedToPerson;
+    }
+
+    /**
+     * @param resolvedToPerson the resolvedToPerson to set
+     */
+    public void setResolvedToPerson(Boolean resolvedToPerson) {
+        this.resolvedToPerson = resolvedToPerson;
+    }
+
+    /**
+     * @return the personSlug
+     */
+    public String getPersonSlug() {
+        return personSlug;
+    }
+
+    /**
+     * @param personSlug the personSlug to set
+     */
+    public void setPersonSlug(String personSlug) {
+        this.personSlug = personSlug;
+    }
+
+    /**
+     * @return the personId
+     */
+    public String getPersonId() {
+        return personId;
+    }
+
+    /**
+     * @param personId the personId to set
+     */
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 
 

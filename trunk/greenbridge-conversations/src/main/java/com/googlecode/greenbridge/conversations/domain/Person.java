@@ -1,39 +1,30 @@
 package com.googlecode.greenbridge.conversations.domain;
 
 import java.io.Serializable;
-import java.util.Set;
-import java.util.HashSet;
+
 
 public class Person implements Serializable {
 
 
     private String id;
-
-    private String firstName;
-
-    private String lastName;
+    
+    private String name;
 
     private String email;
 
-    private Set<Attendee> conversations = new HashSet<Attendee>();
+    private String slug;
 
 
 
-    public java.lang.String getFirstName() {
-        return this.firstName;
+
+    public java.lang.String getName() {
+        return this.name;
     }
 
-    public void setFirstName(java.lang.String firstName) {
-        this.firstName = firstName;
+    public void setName(java.lang.String name) {
+        this.name = name;
     }
 
-    public java.lang.String getLastName() {
-        return this.lastName;
-    }
-
-    public void setLastName(java.lang.String lastName) {
-        this.lastName = lastName;
-    }
 
     public java.lang.String getEmail() {
         return this.email;
@@ -43,23 +34,31 @@ public class Person implements Serializable {
         this.email = email;
     }
 
-    public java.util.Set<Attendee> getConversations() {
-        return this.conversations;
-    }
 
-    public void setConversations(java.util.Set<Attendee> conversations) {
-        this.conversations = conversations;
+
+    /**
+     * @return the slug
+     */
+    public String getSlug() {
+        return slug;
     }
 
     /**
-     * @return the uname
+     * @param slug the slug to set
+     */
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    /**
+     * @return the id
      */
     public String getId() {
         return id;
     }
 
     /**
-     * @param uname the uname to set
+     * @param id the id to set
      */
     public void setId(String id) {
         this.id = id;

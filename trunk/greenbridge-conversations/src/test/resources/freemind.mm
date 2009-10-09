@@ -17,16 +17,11 @@
 <node COLOR="#000000" CREATED="1248350260062" ID="ID_1641765324" MODIFIED="1248638478156" TEXT="Meeting Name">
 <attribute NAME="startDate" VALUE="14:57:13 08/57/2009"/>
 <attribute NAME="endDate" VALUE="14:57:31 08/57/2009"/>
+<attribute NAME="person" VALUE="Bill"/>
+<attribute NAME="person" VALUE="John"/>
+<attribute NAME="person" VALUE="Steve"/>
+<attribute NAME="Person" VALUE="Ryan"/>
 <font NAME="SansSerif" SIZE="20"/>
-<node BACKGROUND_COLOR="#ffffff" COLOR="#0033ff" CREATED="1248350874515" HGAP="32" ID="ID_859264528" MODIFIED="1248638731437" POSITION="right" TEXT="Attendees">
-<edge STYLE="sharp_bezier" WIDTH="8"/>
-<font NAME="SansSerif" SIZE="18"/>
-<icon BUILTIN="group"/>
-<attribute NAME="Attendee" VALUE="Bill"/>
-<attribute NAME="Attendee" VALUE="John"/>
-<attribute NAME="Attendee" VALUE="Steve"/>
-<attribute NAME="Attendee" VALUE="Ryan"/>
-</node>
 <node BACKGROUND_COLOR="#ffffff" COLOR="#0033ff" CREATED="1248378470156" ID="ID_710852343" MODIFIED="1248638744515" POSITION="right" TEXT="Meeting Time">
 <edge STYLE="sharp_bezier" WIDTH="8"/>
 <font NAME="SansSerif" SIZE="18"/>
