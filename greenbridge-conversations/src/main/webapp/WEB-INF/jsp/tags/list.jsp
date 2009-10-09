@@ -3,8 +3,6 @@
 <jsp:directive.include file="/WEB-INF/jsp/header.jsp"/>
 <style>
     .header {
-        background-color: #EEEEEE;
-        color: black;
         font-weight: bold;
         padding-top: 3px;
         padding-bottom: 3px;

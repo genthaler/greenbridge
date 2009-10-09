@@ -220,14 +220,12 @@ public class ConversationController {
     }
 
 
-        /**
+    /**
      * Delete a tag from a conversation
      */
     @RequestMapping(method = RequestMethod.GET, value = "/conversation/tag/json.do")
     public final ModelAndView viewAllTagsAsJson(
             @RequestParam(required=false,value="q") String tagName) {
-
-        System.out.println("Request for q: " + tagName);
 
         Map<String,String> data = conversationManager.findAllTags();
 

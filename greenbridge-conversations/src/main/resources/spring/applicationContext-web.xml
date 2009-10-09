@@ -10,14 +10,21 @@
   <bean id="tagManager" class="com.googlecode.greenbridge.conversations.manager.impl.TagManagerImpl" >
     <property name="dao" ref="conversationDao" />
     <property name="slugGenerator" ref="slugger" />
-
   </bean>
+
+  <bean id="personManager" class="com.googlecode.greenbridge.conversations.manager.impl.PersonManagerImpl" >
+    <constructor-arg ref="conversationDao" />
+    <constructor-arg ref="slugger" />
+  </bean>
+
+
   <bean id="chapterToolParser" class="com.googlecode.greenbridge.conversations.manager.impl.ChapterToolXMLTagParserStrategy" >
       <constructor-arg ref="tagManager"/>
   </bean>
 
   <bean id="freemindTagConverter" class="com.googlecode.greenbridge.conversations.manager.impl.DefaultFreemindNodeToMediaTag">
       <constructor-arg ref="tagManager"/>
+      <constructor-arg ref="personManager"/>
   </bean>
 
   <bean id="freemindParser" class="com.googlecode.greenbridge.conversations.manager.impl.FreemindXmlTagParserStrategy">
@@ -34,8 +41,11 @@
       <constructor-arg  ref="slugger" />
       <constructor-arg  ref="freemindParser" />
       <constructor-arg  ref="chapterToolParser" />
+      <constructor-arg  ref="personManager" />
   </bean>
-
+  <bean id="projectManager" class="com.googlecode.greenbridge.conversations.manager.impl.ProjectManagerImpl" >
+      <constructor-arg  ref="conversationDao" />
+  </bean>
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
   <bean id="storeMediaStrategy" class="com.googlecode.greenbridge.conversations.web.StoreMediaStrategyImpl" >
@@ -54,6 +64,14 @@
       <constructor-arg ref="storeFreemindStrategy" />
   </bean>
 
+  <bean name="/project/**" class="com.googlecode.greenbridge.conversations.web.ProjectController" >
+      <constructor-arg ref="projectManager" />
+      <constructor-arg  ref="conversationDao" />
+  </bean>
+  <bean name="/person/**" class="com.googlecode.greenbridge.conversations.web.PersonController" >
+    <constructor-arg  ref="conversationDao" />
+    <constructor-arg  ref="slugger" />
+  </bean>
   <bean name="/search**" class="com.googlecode.greenbridge.conversations.web.SearchController" >
       <constructor-arg ref="conversationManager" />
   </bean>

@@ -12,10 +12,9 @@ package com.googlecode.greenbridge.conversations.manager;
 public interface MediaTagManager {
 
 
-    public MediaTagSearchResults searchForGlobalTags(String tagName, Integer offset, Integer limit) throws Exception;
-    public MediaTagSearchResults searchForGroupTags(String tagName, String tagGroupName, Integer offset, Integer limit) throws Exception;
-    public MediaTagSearchResults searchForConversationTags(long conversationId, String tagName, String tagGroupName, Integer offset, Integer limit) throws Exception;
-    public MediaTagSearchResults searchForAttendeeTags(long personId, String tagName, String tagGroupName, Integer offset, Integer limit) throws Exception;
+    public MediaTagSearchResults searchForGlobalTags(String tagName, Integer page, Integer limit) throws Exception;
+    public MediaTagSearchResults searchForProjectTags(String tagName, String projectName, Integer page, Integer limit) throws Exception ;
+    public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception;
 
 
 

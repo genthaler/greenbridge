@@ -6,8 +6,13 @@
 package com.googlecode.greenbridge.conversations.dao;
 
 import com.googlecode.greenbridge.conversations.domain.Conversation;
+import com.googlecode.greenbridge.conversations.domain.MediaTag;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfoPerson;
+import com.googlecode.greenbridge.conversations.domain.Tag;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.junit.AfterClass;
@@ -113,7 +118,75 @@ public class Db4oConversationDaoTest implements ApplicationContextAware {
 
     }
 
+    @Test
+    public void testFindTagsByPerson() {
+        Db4oConversationDao instance = (Db4oConversationDao)context.getBean("conversationDao");
 
+        MediaTag tag = new MediaTag();
+        tag.setId("ABCD");
+        List<MediaTagExtraInfo> list = new ArrayList<MediaTagExtraInfo>();
+        tag.setMediaTagExtraInfos(list);
+        MediaTagExtraInfoPerson person = new MediaTagExtraInfoPerson();
+        person.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+        person.setEntry("3333");
+        person.setMediaTag(tag);
+
+        instance.saveMediaTag(tag);
+        instance.saveMediaTagExtraInfo(person);
+
+        List<MediaTag> results = instance.findTagsByPerson(person.getEntry(), null);
+        assertEquals(1, results.size());
+
+        instance.deleteMediaTagById(tag.getId());
+        instance.deleteMediaTagExtraInfo(person);
+    }
+
+    @Test
+    public void testFindTagsByPersonAndTag() {
+        Db4oConversationDao instance = (Db4oConversationDao)context.getBean("conversationDao");
+
+        Tag tag = new Tag();
+        tag.setId("A");
+        tag.setTagName("winner");
+        instance.saveTag(tag);
+
+            MediaTag mediaTag = new MediaTag();
+            mediaTag.setId("ABCD");
+
+            List<MediaTagExtraInfo> list = new ArrayList<MediaTagExtraInfo>();
+            mediaTag.setMediaTagExtraInfos(list);
+            MediaTagExtraInfoPerson person = new MediaTagExtraInfoPerson();
+            person.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+            person.setEntry("3333");
+            person.setMediaTag(mediaTag);
+            instance.saveMediaTag(mediaTag);
+            instance.saveMediaTagExtraInfo(person);
+
+
+            MediaTag mediaTag2 = new MediaTag();
+            mediaTag2.setId("EFGD");
+            mediaTag2.setTag(tag);
+            List<MediaTagExtraInfo> list2 = new ArrayList<MediaTagExtraInfo>();
+            mediaTag2.setMediaTagExtraInfos(list2);
+            MediaTagExtraInfoPerson person2 = new MediaTagExtraInfoPerson();
+            person2.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+            person2.setEntry("3333");
+            person2.setMediaTag(mediaTag2);
+            instance.saveMediaTag(mediaTag2);
+            instance.saveMediaTagExtraInfo(person2);
+
+
+
+        List<MediaTag> results = instance.findTagsByPerson("3333", tag);
+        assertEquals(1, results.size());
+        assertEquals("EFGD", results.get(0).getId());
+
+        instance.deleteTag(tag);
+        instance.deleteMediaTagById("ABCD");
+        instance.deleteMediaTagById("EFGD");
+        instance.deleteMediaTagExtraInfo(person);
+        instance.deleteMediaTagExtraInfo(person2);
+    }
 
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {

@@ -9,6 +9,8 @@ import com.googlecode.greenbridge.conversations.domain.Conversation;
 import com.googlecode.greenbridge.conversations.domain.ConversationTemplate;
 import com.googlecode.greenbridge.conversations.domain.Media;
 import com.googlecode.greenbridge.conversations.domain.MediaTag;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
+import com.googlecode.greenbridge.conversations.domain.Person;
 import com.googlecode.greenbridge.conversations.domain.Project;
 import com.googlecode.greenbridge.conversations.domain.Tag;
 import java.util.Date;
@@ -19,6 +21,10 @@ import java.util.List;
  * @author ryan
  */
 public interface ConversationDao {
+
+    public void deleteTag(Tag current);
+
+    public Person findPersonByEmail(String slug);
 
     Conversation loadConversationById(String id);
 
@@ -41,12 +47,14 @@ public interface ConversationDao {
     List<Tag> findAllGlobalTags();
     List<Tag> queryTagsByLike(String prefix);
     List<Tag> findAllTags();
+    List<Tag> findTagsByProject(String projectId);
 
     void deleteMediaTagById(String mediaTagId);
 
     MediaTag findMediaTagById(String mediaTagId);
 
     List<MediaTag> findAllMediaTagByTag(Tag tag);
+    List<MediaTag> findTagsByPerson(String personId, Tag tag);
 
     void saveMediaTag(MediaTag tag);
 
@@ -55,5 +63,21 @@ public interface ConversationDao {
     Tag findTagByNameAndProjectId(String name, String projectId);
 
     Project findProjectById(String id);
+    Project findProjectByName(String name);
+
+    void saveProject(Project project);
+
+    List<Project> findAllProjects();
+
+    List<Person> findAllPeople();
+
+    void savePerson(Person p);
+
+    void deletePerson(Person p);
+
+    void saveMediaTagExtraInfo(MediaTagExtraInfo info);
+    void deleteMediaTagExtraInfo(MediaTagExtraInfo info);
+
+    Person findBySlug(String slug);
 
 }

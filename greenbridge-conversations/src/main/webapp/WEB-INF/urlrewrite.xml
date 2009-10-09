@@ -11,6 +11,20 @@
         <to last="true">/tag/list.do</to>
 	</rule>
     <rule>
+        <from>/project/([A-Za-z0-9_-]+)/tag/([A-Za-z0-9_-]+)$</from>
+        <to last="true">/searchProjectTag.do?projectName=$1&amp;tagName=$2</to>
+	</rule>
+    <rule>
+        <from>/project/([A-Za-z0-9_-]+)$</from>
+        <to last="true">/project/view.do?id=$1</to>
+	</rule>
+    <rule>
+        <from>/project$</from>
+        <to last="true">/project/list.do</to>
+	</rule>
+
+
+    <rule>
         <from>/tag/([A-Za-z0-9_-]+)$</from>
         <to last="true">/searchGeneralTag.do?tagName=$1</to>
 	</rule>

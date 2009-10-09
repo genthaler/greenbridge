@@ -87,13 +87,17 @@
 
     function overTag(id) {
         dojo.removeClass(id, "tagdiv");
+        dojo.removeClass(id, "primary-2");
         dojo.addClass(id, "tagdiv-over");
+        dojo.addClass(id, "primary-1");
 
         
     }
     function outTag(id) {
         dojo.removeClass(id, "tagdiv-over");
+        dojo.removeClass(id, "primary-1");
         dojo.addClass(id, "tagdiv");
+        dojo.addClass(id, "primary-2");
     }
 
     function deleteTag(mediaTagId) {
@@ -145,7 +149,7 @@
 
     function addTag() {
         var playerStatus = $f("fms").getStatus();
-        dijit.byId("tagName").setValue(null);
+        //dijit.byId("tagName").setValue("");
         dijit.byId("sliderMin").setValue(playerStatus.time);
         dijit.byId("sliderMax").setValue(playerStatus.time + 10);
         dojo.byId("shortDescription").value = "";
@@ -210,7 +214,7 @@
 
 
     <c:if test="${not empty conversation}">
-	<h2 style="margin-top: 0px; margin-bottom: 7px;" ><img src="<c:url value='/images/balloon-left.png' />"/> ${conversation.name}</h2>
+	<h2 class="font-3" style="margin-top: 0px; margin-bottom: 7px;" ><img src="<c:url value='/images/balloon-left.png' />"/> ${conversation.name}</h2>
         <div id="conversation_date" class="conversation-attribute">
             <fmt:formatDate value="${conversation.startTime}" pattern="MMM d/yyyy HH:mm a"/>
         </div>
@@ -233,21 +237,22 @@
               <c:forEach var="mediaTag" items="${mediaTags}" varStatus="tagId" >
                  <tr  class="tagrow" id="tag-${mediaTag.id}-row1">
                     <td width="100" class="taglabel">
+                        <img src="<c:url value='/images/expand.png' />" />
                          ${mediaTag.tag.tagName}
                     </td>
                     <td width="60">
                         <gb:tag-icons mediaTag="${mediaTag}"/>
                     </td>
                     <td width="500" class="tagtd">
-                        <div class="tagdiv"  style="<gb:tag-duration maxwidth="500" mediaTag="${mediaTag}" />" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(${mediaTag.startTime});"></div>
+                        <div class="tagdiv primary-2"  style="<gb:tag-duration maxwidth="500" mediaTag="${mediaTag}" />" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(${mediaTag.startTime});"></div>
                     </td>    
                 </tr>
-                <tr id="tag-${mediaTag.id}-row2">
+                <tr id="tag-${mediaTag.id}-row2" >
                     <td colspan="3" >
                         <gb:tag-shortDescriptiion mediaTag="${mediaTag}" />
 
 
-                        <div class="tagactions">
+                        <div class="tagactions" >
                              <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
                              [<a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">link</a>]
                              [<a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">all</a>]<br/><br/>
@@ -269,51 +274,54 @@
             </applet>
         </div>
 
-        <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/conversation/tag/json.do' />"/>
+        <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/conversation/tag/json.do' />"></div>
+        <div dojoType="dojo.data.ItemFileReadStore" jsId="ProjectStore" url="<c:url value='/project/list/json.do' />"></div>
+
         <div id="tagDialog" dojoType="dijit.Dialog" title="Tag Details">
-            <form id="editTagForm" method="post" action="<c:url value='/conversation/tag/edit.do' />?conversation=${conversation.id}&id=1">
-                <div id="test" style="background-color:white;">
+            <form id="editTagForm" method="post" action="<c:url value='/conversation/tag/edit.do' />?conversation=2&id=1">
+                    <div id="test" style="background-color:white;">
+                    
                     <label for="tagType">Tag:</label>
 
                     <input type="radio" name="tagType" value="existing" onclick="showExistingTag()" /> Existing
                     <input type="radio" name="tagType" value="new" onclick="showNewTag()" /> New
                     <div id="existingTagDiv" style="margin-left: 100px;">
-                        <input dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagName" name="tagId"  autocomplete="true" onChange="tagChanged()" />
+                        <div dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagName" name="tagId"  autocomplete="true" onChange="tagChanged()" ></div>
                     </div>
                     <div id="newTagDiv" style="margin-left: 100px; display: none;">
-                        <label for="newTagName">Name:</label> <input type="text" dojoType="dijit.form.TextBox" name="newTagName" id="newTag" value="" /><br/>
-                        <label for="newTagProject">Project:</label> <input dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagProject" name="projectId"  autocomplete="true"  /><br/>
+                        <label for="newTagName">Name:</label> <div type="text" dojoType="dijit.form.TextBox" name="newTagName" id="newTag" value="" ></div><br/>
+                        <label for="newTagProject">Project:</label> <div dojoType="dijit.form.FilteringSelect"  store="ProjectStore" searchAttr="value" id="tagProject" name="projectId"  autocomplete="true"  ></div><br/>
                     </div>
-                    <br/>
-                    <br/>
+
+                        <label for="sliderMin">Tag:</label><div id="sliderMin" style="width:445px;" name="startTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="19" onChange="moveEditSliders()" ></div>
 
 
+                        <label for="sliderMax">Tag:</label><div id="sliderMax" style="width:445px;"  name="endTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="19" onChange="moveEditSliders()" ></div>
 
-                    <label for="_editSlider">Start:</label>
-                    <span id="sliderMin" name="startTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="9" onChange="moveEditSliders()"></span>
-                      <br/>
-                    <label for="_editSlider">End:</label>
-                    <span id="sliderMax" name="endTime" dojoType="dijit.form.HorizontalSlider" minimum="0" maximum="${media.mediaLength}" discreteValues="${media.mediaLength}" value="19" onChange="moveEditSliders()"></span>
-                      <br/>
-                      <div style="height:14px; margin-left:125px; margin-right:22px;">
-                        <div style="float:left; position:relative; width: 400px; height: 14px; border:1px solid green;">
-                            <div id="editSpan" class="tagdiv"  style="margin-left: 100px; width:60px; height:13px;" >
-                                <div  id="newStartTime" style="position:relative; margin-right: 3px; left:-30px;">0:12</div>
-                                <span id="newEndTime" style="position:relative; top:-15px; margin-left: 3px; left: 70px;">0:22</span>
+
+                          <div style="height:14px; margin-left:125px; margin-right:22px;">
+                            <div style="float:left; position:relative; width: 400px; height: 14px; border:1px solid green;">
+                                <div id="editSpan" class="tagdiv primary-2"  style="margin-left: 100px; width:60px; height:13px;" >
+                                    <div  id="newStartTime" style="position:relative; margin-right: 3px; left:-30px;">0:12</div>
+                                    <span id="newEndTime" style="position:relative; top:-15px; margin-left: 3px; left: 70px;">0:22</span>
+                                </div>
+                                <div id="editPlayhead" style="width:1px; height:20px; top:-20px; background-color:#222222; position:relative; left: 157px; z-index:1" ></div>
                             </div>
-                            <div id="editPlayhead" style="width:1px; height:20px; top:-20px; background-color:#222222; position:relative; left: 157px; z-index:1" ></div>
                         </div>
-                    </div>
-                    <br/>
-                    <label for="_editSlider">Description:</label>
-                    <textarea id="shortDescription" name="shortDescription" dojoType="dijit.form.Textarea" style="width:425px;"></textarea>
-                    <br/>
-                    <br/>
+                        <br/>
+                        <!-- -->
+                        <label for="_editSlider">Description:</label>
+                        <textarea id="shortDescription" name="shortDescription"  style="width:425px;"></textarea>
+                        <br/>
+                        <br/>
 
-                    <input dojotype="dijit.form.Button" type="submit" name="changeTag" value="Save"/>
-                </div>
-            </form>
+                        <input  type="submit" name="changeTag" value="Save"/>
+                    </div>
+                </form>
         </div>
+
+
+        
 		<!-- this will install flowplayer inside previous A- tag. -->
 		<script>
 			$f("fms", {src: "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", wmode: 'transparent'}, {

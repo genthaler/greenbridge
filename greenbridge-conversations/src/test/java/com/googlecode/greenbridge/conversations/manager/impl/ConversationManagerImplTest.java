@@ -5,20 +5,24 @@
 
 package com.googlecode.greenbridge.conversations.manager.impl;
 
+import com.googlecode.greenbridge.conversations.dao.ConversationDao;
 import com.googlecode.greenbridge.conversations.dao.Db4oConversationDao;
+import com.googlecode.greenbridge.conversations.domain.Attendee;
 import com.googlecode.greenbridge.conversations.domain.Conversation;
 import com.googlecode.greenbridge.conversations.domain.Media;
 import com.googlecode.greenbridge.conversations.domain.MediaTag;
+import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
+import com.googlecode.greenbridge.conversations.domain.Person;
 import com.googlecode.greenbridge.conversations.manager.AppleChapterConversationDetails;
 import com.googlecode.greenbridge.conversations.manager.ConversationSearchResults;
 import com.googlecode.greenbridge.conversations.manager.FreemindConversationDetails;
+import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
+import com.googlecode.greenbridge.conversations.manager.MediaTagSummary;
 import com.googlecode.greenbridge.conversations.manager.TagUpdateDetails;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
@@ -94,18 +98,26 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
 
 
         ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
-       
+        Db4oConversationDao dao = (Db4oConversationDao)context.getBean("conversationDao");
+
+        Person p = new Person();
+        p.setName("Ryan Ramage");
+        p.setEmail("r2@123.com");
+        p.setId("CCCCCC");
+        p.setSlug("ryan-ramage");
+        dao.savePerson(p);
+
         FreemindConversationDetails cd = createBaseDetails();
         Conversation c = imp.newConversation(cd);
 
         assertNotNull(c.getId());
-        System.out.println("Saved conversation: " + c.getId());
         assertEquals("Test Meeting", c.getName());
         assertEquals("test-meeting", c.getSlug());
         assertNull(c.getCategory());
 
-        Db4oConversationDao dao = (Db4oConversationDao)context.getBean("conversationDao");
-        
+        assertNotNull(c.getAttendees());
+        assertEquals(3, c.getAttendees().size());
+
 
         Conversation c2 = dao.loadConversationById(c.getId());
         Media media = c2.findFirstMedia();
@@ -113,8 +125,13 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
         assertEquals(testMediaURL, media.getUrl());
 
 
+        MediaTagSearchResults results = imp.searchForPersonTags("CCCCCC", null, null, 0, 20);
+        assertNotNull(results);
+        assertEquals(1,results.getTotalMediaTagsInResults());
+
 
         dao.deleteConversation(c.getId());
+        dao.deletePerson(p);
 
 
     }
@@ -124,11 +141,13 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
         ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
 
         FreemindConversationDetails cd = createBaseDetails();
+
         Conversation c = imp.newConversation(cd);
         TagUpdateDetails details = new TagUpdateDetails();
         details.setStartTime(10);
         details.setEndTime(20);
 
+        details.setTagName("A test Name");
         imp.addTag(c.getId(), details);
 
         //check if the one in memory has changed
@@ -146,14 +165,25 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
     public void listAllTest() throws Exception {
         ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
         ConversationSearchResults results = imp.listAllConversations(1, 2);
-        System.out.println("There are " + results.getConversations().size() + " of " + results.getTotalConversationInResults());
 
     }
+
+
+
+
+
 
     
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
     }
+
+
+    
+
+
+
+
 
 }

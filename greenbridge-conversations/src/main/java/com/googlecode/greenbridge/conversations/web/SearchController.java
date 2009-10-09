@@ -66,15 +66,22 @@ public class SearchController {
     /**
      * View all conversations by a tag, with no tag group
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/searchGroupTag.do")
-    public final String searchGroupTag( HttpServletRequest request, ModelMap model,
-            @RequestParam(value="tagName",required=false) String tagName,
-            @RequestParam(value="tagGroupName",required=false) String tagGroupName,
+    @RequestMapping(method = RequestMethod.GET, value = "/searchProjectTag.do")
+    public final String searchProjectTag( HttpServletRequest request, ModelMap model,
+            @RequestParam(value="tagName") String tagName,
+            @RequestParam(value="projectName") String projectName,
             @RequestParam(value="page",required=false) Integer page,
             @RequestParam(value="limit",required=false) Integer limit) throws Exception {
 
-        MediaTagSearchResults results = mediaTagManager.searchForGroupTags(tagName, tagGroupName, page, limit);
+        if (page == null) {
+            page = 0;
+        }
+        if (limit == null) {
+            limit = 20;
+        }
+        MediaTagSearchResults results = mediaTagManager.searchForProjectTags(tagName, projectName, page, limit);
         model.put("results", results);
+        if (results == null) System.out.println("Results are NULL");
         Pagination pagination = new Pagination(page, limit, results.getTotalMediaTagsInResults());
         model.put("pagination", pagination);
         return "search/results";
