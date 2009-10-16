@@ -76,20 +76,20 @@ class AudioListener implements com.mycompany.conversation.AudioRecordingListener
             
         }
         if (state.recordingStarted && !state.recordingStopped) {
-            def icon = new javax.swing.ImageIcon("plugins/script/record.png")
-            def started = new javax.swing.JLabel(icon);
-            started.setText("REC");
-            started.setForeground(java.awt.Color.RED)
-            def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
-            glass.setVisible(true);
-            glass.setLayout(null);
-            glass.add(started);
-            started.setBounds(c.frame.getJFrame().getWidth() - 62, 40 , 50, 50);
+            //def icon = new javax.swing.ImageIcon("plugins/script/record.png")
+            //def started = new javax.swing.JLabel(icon);
+            //started.setText("REC");
+            //started.setForeground(java.awt.Color.RED)
+            //def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
+            //glass.setVisible(true);
+            //glass.setLayout(null);
+            //glass.add(started);
+            //started.setBounds(c.frame.getJFrame().getWidth() - 62, 40 , 50, 50);
         }
         if (state.recordingStarted && state.recordingStopped) {
-            def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
-            glass.setVisible(false);
-            glass.removeAll();
+            //def glass = (javax.swing.JPanel) c.frame.getJFrame().getGlassPane();
+            //glass.setVisible(false);
+            //glass.removeAll();
         }
     }
 }
