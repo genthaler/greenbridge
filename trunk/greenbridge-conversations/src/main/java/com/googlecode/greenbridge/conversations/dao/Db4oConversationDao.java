@@ -137,7 +137,7 @@ public class Db4oConversationDao extends Db4oDaoSupport implements ConversationD
     public List<MediaTag> findTagsByPerson(final String personId, final Tag tag) {
         Query q = getDb4oTemplate().query();
         q.constrain(MediaTagExtraInfoPerson.class);
-        q.descend("prop").constrain(MediaTagExtraInfoPerson.PROPERTY_NAME).equal();
+        q.descend("prop").constrain(MediaTagExtraInfoPerson.getPROPERTY_NAME()).equal();
         q.descend("entry").constrain(personId).equal();
         Query mediaTagQuery = q.descend("mediaTag");
         if (tag != null) {
@@ -335,6 +335,10 @@ public class Db4oConversationDao extends Db4oDaoSupport implements ConversationD
         //there really should only be one
         if (people == null) return null;
         if (people.size() == 0 ) return null;
+
+        System.out.println("Find person by slug returned: " + people.size());
+        System.out.println("with id: " + people.get(0).getId());
+
         return (people.get(0));
     }
 
@@ -346,6 +350,9 @@ public class Db4oConversationDao extends Db4oDaoSupport implements ConversationD
         //there really should only be one
         if (people == null) return null;
         if (people.size() == 0 ) return null;
+
+        System.out.println("Find person by email returned: " + people.size());
+        System.out.println("with id: " + people.get(0).getId());
         return (people.get(0));
     }
 

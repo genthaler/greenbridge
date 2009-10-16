@@ -19,10 +19,13 @@ import com.googlecode.greenbridge.conversations.manager.FreemindConversationDeta
 import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
 import com.googlecode.greenbridge.conversations.manager.MediaTagSummary;
 import com.googlecode.greenbridge.conversations.manager.TagUpdateDetails;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.BeansException;
@@ -49,37 +52,24 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
 
     }
 
+    @BeforeClass
+    public static void clearAnyDB() {
+        File f = new File("target/gbc.db");
+        if (f.exists()) {
+            f.delete();
+        }
+    }
+
+    @AfterClass
+    public static void clearFinishedDB() {
+        clearAnyDB();
+    }
+
+
     /**
      * Test of getDayAfter method, of class ConversationManagerImpl.
      */
-    @Test
-    public void testGetDayAfter() {
-        System.out.println("getDayAfter");
-        int day = 8;
-        int month = 8;
-        int year = 2009;
-        ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
 
-        Calendar c = Calendar.getInstance();
-        c.set(year, month, 9);
-        Date expResult = c.getTime();
-        Date result = imp.getDayAfter(day, month, year);
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testGetDayBefore() {
-        System.out.println("getDayBefore");
-        int day = 8;
-        int month = 8;
-        int year = 2009;
-        ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
-        Calendar c = Calendar.getInstance();
-        c.set(year, month, 7);
-        Date expResult = c.getTime();
-        Date result = imp.getDayBefore(day, month, year);
-        assertEquals(expResult, result);
-    }
 
     protected FreemindConversationDetails createBaseDetails() {
 
@@ -98,6 +88,7 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
 
 
         ConversationManagerImpl imp = (ConversationManagerImpl)context.getBean("conversationManager");
+        PersonManagerImpl pm_imp = (PersonManagerImpl)context.getBean("personManager");
         Db4oConversationDao dao = (Db4oConversationDao)context.getBean("conversationDao");
 
         Person p = new Person();
@@ -125,7 +116,7 @@ public class ConversationManagerImplTest  implements ApplicationContextAware {
         assertEquals(testMediaURL, media.getUrl());
 
 
-        MediaTagSearchResults results = imp.searchForPersonTags("CCCCCC", null, null, 0, 20);
+        MediaTagSearchResults results = pm_imp.searchForPersonTags("CCCCCC", null, null, 0, 20);
         assertNotNull(results);
         assertEquals(1,results.getTotalMediaTagsInResults());
 

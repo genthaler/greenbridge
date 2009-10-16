@@ -26,4 +26,6 @@ public interface PersonManager {
         public Person createPersonForEmailText(String text);
 
         public boolean isEmailAddress(String slug);
+ 
+        public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception ;
 }

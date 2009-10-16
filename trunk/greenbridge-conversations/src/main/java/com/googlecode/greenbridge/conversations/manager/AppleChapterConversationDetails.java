@@ -21,6 +21,7 @@ public class AppleChapterConversationDetails {
     private String description;
     private InputStream appleChapterXMLStream;
     private String mediaUrl;
+    private Long calculatedDurationInSec;
     private String template_id;
     private List<Integer> attendeePersonIDs = new ArrayList();
 
@@ -120,6 +121,20 @@ public class AppleChapterConversationDetails {
      */
     public void setTemplateID(String template_id) {
         this.template_id = template_id;
+    }
+
+    /**
+     * @return the calculatedDurationInSec
+     */
+    public Long getCalculatedDurationInSec() {
+        return calculatedDurationInSec;
+    }
+
+    /**
+     * @param calculatedDurationInSec the calculatedDurationInSec to set
+     */
+    public void setCalculatedDurationInSec(Long calculatedDurationInSec) {
+        this.calculatedDurationInSec = calculatedDurationInSec;
     }
     
 

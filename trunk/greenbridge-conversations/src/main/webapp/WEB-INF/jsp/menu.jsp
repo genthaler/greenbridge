@@ -38,7 +38,7 @@
         <h2 class="primary-2"><img src="<c:url value='/images/users.png' />" /> People</h2>
         <ul>
             <li id="web_mvc_jsp_list_person_menu_item">
-                <a href="<c:url value='/person/list.do' />">List all People</a>
+                <a href="<c:url value='/person' />">List all People</a>
             </li>
         <li id="web_mvc_jsp_create_person_menu_item">
                 <a href="<c:url value='/conversations/person/form' />">Create new Person</a>

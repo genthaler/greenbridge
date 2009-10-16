@@ -14,7 +14,6 @@ public interface MediaTagManager {
 
     public MediaTagSearchResults searchForGlobalTags(String tagName, Integer page, Integer limit) throws Exception;
     public MediaTagSearchResults searchForProjectTags(String tagName, String projectName, Integer page, Integer limit) throws Exception ;
-    public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception;
 
 
 

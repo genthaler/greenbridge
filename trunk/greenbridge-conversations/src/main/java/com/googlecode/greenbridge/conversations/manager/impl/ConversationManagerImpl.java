@@ -145,14 +145,22 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
         }
 
         Media m = new Media();
+        m.setStartTime(conversationDetails.getConversationDate());
+        m.setMediaLength(conversationDetails.getCalculatedDurationInSec());
         m.setConversation(c);
         m.setUrl(conversationDetails.getMediaUrl());
         m.setMediaType(1);
         Set<Media> medias = new HashSet<Media>();
         medias.add(m);
         c.setMedia(medias);
-        Document doc = tagParser.parseDocument(conversationDetails.getAppleChapterXMLStream());
-        List<MediaTag> mediaTags = tagParser.getTags(doc, conversationDetails.getTempateID(), null, null);
+        List<MediaTag> mediaTags = null;
+        if (conversationDetails.getAppleChapterXMLStream() != null) {
+             Document doc = tagParser.parseDocument(conversationDetails.getAppleChapterXMLStream());
+             mediaTags = tagParser.getTags(doc, conversationDetails.getTempateID(), null, null);
+        } else {
+            mediaTags = new ArrayList<MediaTag>();
+        }
+
         m.setMediaTags(mediaTags);
         setAllMediaTagsMedia(mediaTags, m);
         setAllMediaTagsDate(mediaTags, c.getStartTime());
@@ -337,20 +345,7 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
         return convert(mediaTag);
     }
 
-    @Override
-    public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception {
-        Tag tag = null;
-        if (tagName != null && projectName != null) {
-            Project project = dao.findProjectByName(projectName);
-            String projectId = project.getId();
-            tag = dao.findTagByNameAndProjectId(tagName, projectId);
-        }
-        if (tagName != null && projectName == null) {
-            tag = dao.findTagByNameAndProjectId(tagName, null);
-        }
-        List<MediaTag> tags = dao.findTagsByPerson(personId, tag);
-        return buildSearchResults(tags, page, limit);
-    }
+
 
     @Override
     public MediaTagSearchResults searchForProjectTags(String tagName, String projectName, Integer page, Integer limit) throws Exception {
@@ -365,37 +360,12 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
         return findAllMediaForTag(tag, page, limit);
     }
 
-    protected MediaTagSearchResults buildSearchResults(List<MediaTag> tags, Integer page, Integer limit)throws Exception {
-        MediaTagSearchResults results = new MediaTagSearchResults();
-        List<MediaTagSummary> tagSummary = new ArrayList<MediaTagSummary>();
-        results.setMediaTags(tagSummary);
-        for (MediaTag mediaTag : tags) {
-            MediaTagSummary summary = new MediaTagSummary();
-            summary.setConversationId(mediaTag.getMedia().getConversation().getId());
-            summary.setConversationName(mediaTag.getMedia().getConversation().getName());
 
-            Date conversationStart = mediaTag.getMedia().getConversation().getStartTime();
-            Date tagDate = new Date(conversationStart.getTime() + (mediaTag.getStartTime() * 1000) );
-
-            summary.setMediaTagCalculatedTimestamp(tagDate);
-
-            //summary.setConversationTotalLength(1000);
-            summary.setMediaTagId(mediaTag.getId());
-            summary.setMediaTagName(mediaTag.getTag().getTagName());
-            summary.setMediaUrl(mediaTag.getMedia().getUrl());
-            summary.setTagStartTime(mediaTag.getStartTime());
-            summary.setTagEndTime(mediaTag.getEndTime());
-            tagSummary.add(summary);
-
-        }
-        results.setTotalMediaTagsInResults(tags.size());
-        return results;
-    }
 
 
     protected MediaTagSearchResults findAllMediaForTag(Tag tag, Integer page, Integer limit) throws Exception {   
         List<MediaTag> tags = dao.findAllMediaTagByTag(tag);
-        return buildSearchResults(tags, page, limit);
+        return SearchUtils.buildSearchResults(tags, page, limit);
     }
 
 

@@ -9,6 +9,7 @@ import com.googlecode.greenbridge.conversations.manager.ConversationManager;
 import com.googlecode.greenbridge.conversations.manager.ConversationSearchResults;
 import com.googlecode.greenbridge.conversations.manager.FreemindConversationDetails;
 import com.googlecode.greenbridge.conversations.manager.TagUpdateDetails;
+import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
+import javazoom.spi.mpeg.sampled.file.MpegAudioFileReader;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -187,24 +191,41 @@ public class ConversationController {
                 MultipartHttpServletRequest req = (MultipartHttpServletRequest) request;
                 MultipartFile conversation_data = req.getFile("conversation");
                 String url = storeMedia.store(conversation_data);
-                MultipartFile tags_xml = req.getFile("tags");
+                
+                File mediaFile = storeMedia.getStoredReferenceAsFile(url);
+                Long duration = getMP3length(mediaFile);
+
 
                 String datetime = date + time;
                 Date meetingTime = sdf.parse(datetime);
 
                 AppleChapterConversationDetails details = new AppleChapterConversationDetails();
                 details.setName(name);
-                details.setAppleChapterXMLStream(tags_xml.getInputStream());
+                MultipartFile tags_xml = req.getFile("tags");
+                if (!tags_xml.isEmpty()) {
+                    details.setAppleChapterXMLStream(tags_xml.getInputStream());
+                }
                 details.setMediaUrl(url);
                 details.setConversationDate(meetingTime);
                 details.setDescription(description);
-
+                details.setCalculatedDurationInSec(duration);
                 Conversation conversation = conversationManager.newConversation(details);
                 return "redirect:../" + conversation.getId() ;
 
             }
             return "conversation/uploadForm";
     }
+
+
+    protected long getMP3length(File file) throws Exception {
+        MpegAudioFileReader reader = new MpegAudioFileReader();
+        AudioFileFormat format = reader.getAudioFileFormat(file);
+        if ((Boolean)format.properties().get("mp3.vbr")) throw new IllegalArgumentException("Currently only cbr mp3s are supported");
+        Long duration = (Long) format.properties().get("duration") / 1000000;
+        if (duration != null) return duration;
+        throw new Exception("Unable to determine mp3 length");
+    }
+
 
 
     /**

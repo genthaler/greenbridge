@@ -19,12 +19,16 @@
 <node CREATED="1248757670609" ID="ID_1907642642" MODIFIED="1248757717218" POSITION="right" TEXT="Description, with tag">
 <attribute NAME="Tag" VALUE="Alpha-1"/>
 </node>
-<node CREATED="1248758149890" ID="ID_1756688930" MODIFIED="1248763196750" POSITION="right" TEXT="A tag, and additional attributes, like who will follow up">
+<node CREATED="1248758149890" ID="ID_1756688930" MODIFIED="1254896434546" POSITION="right" TEXT="A tag, and additional attributes, like who will follow up">
 <attribute NAME="Tag" VALUE="Aplha-2"/>
-<attribute NAME="Attendee" VALUE="Ryan"/>
+<attribute NAME="person" VALUE="ryan-ramage"/>
+<attribute NAME="extra" VALUE="stuff"/>
+<attribute NAME="person" VALUE="tr@1234.com"/>
+<attribute NAME="person" VALUE="i-dont-exist"/>
+<attribute NAME="person" VALUE="create.me@test.com"/>
 </node>
 <node CREATED="1248757662593" MODIFIED="1248775132109" POSITION="right" TEXT="FollowUp">
-<node CREATED="1248759999993" ID="ID_1935331861" MODIFIED="1249038217812" TEXT="TreeExample">
+<node CREATED="1248759999993" ID="ID_1935331861" MODIFIED="1254887072515" TEXT="TreeExample">
 <richcontent TYPE="NOTE"><html>
   <head>
     
