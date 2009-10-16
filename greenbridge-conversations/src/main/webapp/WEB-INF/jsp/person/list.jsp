@@ -15,7 +15,7 @@
 
     <c:forEach items="${people}" var="person">
         <div>
-            <a href="/person/${person.slug}">${person.name} [${person.email}] </a>
+            <a href="<c:url value='/person/${person.slug}' />">${person.name} [${person.email}] </a>
         </div>
     </c:forEach>
 

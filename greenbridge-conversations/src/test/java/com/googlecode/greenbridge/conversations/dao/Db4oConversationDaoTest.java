@@ -10,6 +10,7 @@ import com.googlecode.greenbridge.conversations.domain.MediaTag;
 import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfo;
 import com.googlecode.greenbridge.conversations.domain.MediaTagExtraInfoPerson;
 import com.googlecode.greenbridge.conversations.domain.Tag;
+import com.googlecode.greenbridge.conversations.manager.impl.ConversationManagerImplTest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +40,16 @@ public class Db4oConversationDaoTest implements ApplicationContextAware {
     public Db4oConversationDaoTest() {
     }
 
+
+    
+    @BeforeClass
+    public static void clearDB() {
+        ConversationManagerImplTest.clearAnyDB();
+    }
+    @AfterClass
+    public static void clearFinishedDB() {
+        ConversationManagerImplTest.clearAnyDB();
+    }
 
 
     @Test
@@ -127,7 +138,7 @@ public class Db4oConversationDaoTest implements ApplicationContextAware {
         List<MediaTagExtraInfo> list = new ArrayList<MediaTagExtraInfo>();
         tag.setMediaTagExtraInfos(list);
         MediaTagExtraInfoPerson person = new MediaTagExtraInfoPerson();
-        person.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+        person.setProp(MediaTagExtraInfoPerson.getPROPERTY_NAME());
         person.setEntry("3333");
         person.setMediaTag(tag);
 
@@ -156,7 +167,7 @@ public class Db4oConversationDaoTest implements ApplicationContextAware {
             List<MediaTagExtraInfo> list = new ArrayList<MediaTagExtraInfo>();
             mediaTag.setMediaTagExtraInfos(list);
             MediaTagExtraInfoPerson person = new MediaTagExtraInfoPerson();
-            person.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+            person.setProp(MediaTagExtraInfoPerson.getPROPERTY_NAME());
             person.setEntry("3333");
             person.setMediaTag(mediaTag);
             instance.saveMediaTag(mediaTag);
@@ -169,7 +180,7 @@ public class Db4oConversationDaoTest implements ApplicationContextAware {
             List<MediaTagExtraInfo> list2 = new ArrayList<MediaTagExtraInfo>();
             mediaTag2.setMediaTagExtraInfos(list2);
             MediaTagExtraInfoPerson person2 = new MediaTagExtraInfoPerson();
-            person2.setProp(MediaTagExtraInfoPerson.PROPERTY_NAME);
+            person2.setProp(MediaTagExtraInfoPerson.getPROPERTY_NAME());
             person2.setEntry("3333");
             person2.setMediaTag(mediaTag2);
             instance.saveMediaTag(mediaTag2);

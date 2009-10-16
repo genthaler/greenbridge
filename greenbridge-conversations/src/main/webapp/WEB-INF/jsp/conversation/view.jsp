@@ -29,7 +29,7 @@
         var taglist_height = dojo.style("tag-table", "height");
 
 
-        var left =  ((playerStatus.time / ${media.mediaLength}) * 500) + 155;;
+        var left =  ((playerStatus.time / ${media.mediaLength}) * 500) + 163;;
 //        console.log("time: " + playerStatus.time );
         dojo.style("playhead", "left", left );
         dojo.style("playhead", "height", taglist_height + 20);
@@ -207,6 +207,16 @@
         play(offset);
        //Thu Aug 13 11:30:59 NZST 2009
     }
+	
+	function finishLoadingAudio() {
+		dojo.style("loading", "display", "none" );
+	}
+
+    function showControls(id) {
+        console.log("shoing: " + id);
+        dojo.style(id, "display", "block" );
+        //dojo.fadeIn({node: id}).play();
+    }
 
 </script>
     <style>
@@ -222,23 +232,33 @@
             ${conversation.description}
         </div>
 
-        <div id="fms" style=" height: 57px; width: 537px; margin-left: 143px;">
+        <div id="fms" style=" height: 57px; width: 537px; margin-left: 150px;">
         </div>
+		
+		<div id="loading" style="position: absolute; z-index: 30; top: 45px;">
+			<img src="<c:url value='/images/ajax-loader.gif' />" /> <span style="">Loading Audio...</span>
+		</div>
         <div id="conversation-menu">
                  &nbsp;
                  <span id="tag-menu-item" class="tag-menu-selected" onclick="selectTags()" onmouseover="overTab(this)" onmouseout="outTab(this)">Tags</span>
-                 <span id="map-menu-item" class="tag-menu" onclick="selectMap()" onmouseover="overTab(this)" onmouseout="outTab(this)">Map</span>
+                 <c:if test="${not empty conversation.freemindUrl}">
+                     <span id="map-menu-item" class="tag-menu" onclick="selectMap()" onmouseover="overTab(this)" onmouseout="outTab(this)">Map</span>
+                 </c:if>
         </div>
         <div id="tag-content" style="width: 660px; ">
             <button onclick="addTag()">Add Tag</button>
             <!--<div id="playhead" style="width:1px; height:200px; background-color:#BBBBBB; position:absolute; left: 168px; z-index:1"></div>-->
-            <div id="playhead" style="width:1px; height:1px; background-color:#BBBBBB; position:absolute; left: 157px; z-index:1"></div>
+            <div id="playhead" class="playhead"></div>
             <table id="tag-table" cellpadding="0" cellspacing="0">
               <c:forEach var="mediaTag" items="${mediaTags}" varStatus="tagId" >
                  <tr  class="tagrow" id="tag-${mediaTag.id}-row1">
                     <td width="100" class="taglabel">
-                        <img src="<c:url value='/images/expand.png' />" />
-                         ${mediaTag.tag.tagName}
+                         <span onmouseover="showControls('tag-${mediaTag.id}-controls');">+</span>
+                         <a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">${mediaTag.tag.tagName}</a>
+                         <div id="tag-${mediaTag.id}-controls" style="position:absolute; display:none;" >
+                             <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
+
+                         </div>
                     </td>
                     <td width="60">
                         <gb:tag-icons mediaTag="${mediaTag}"/>
@@ -249,19 +269,21 @@
                 </tr>
                 <tr id="tag-${mediaTag.id}-row2" >
                     <td colspan="3" >
-                        <gb:tag-shortDescriptiion mediaTag="${mediaTag}" />
+                        <gb:tag-extrainfo mediaTag="${mediaTag}" />
 
-
-                        <div class="tagactions" >
+						<!--
+                        <div id="" class="tagactions" >
                              <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
                              [<a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">link</a>]
                              [<a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">all</a>]<br/><br/>
                         </div>
+						-->
                     </td>
                 </tr>
               </c:forEach>
             </table>
         </div>
+        <c:if test="${not empty conversation.freemindUrl}">
         <div id="freemind" style="display: none;">
             <button onclick="inspectApplet()">Play Selected</button> <span>This is the original upload. It does not reflect the changes made after upload.</span>
             <applet name="freemindApplet" code="freemind.main.FreeMindApplet.class" archive="<c:url value='/scripts/freemind/freemindbrowser.jar' />" width="100%" height="100%" >
@@ -273,6 +295,7 @@
                 <param name="selection_method" value="selection_method_direct"/>
             </applet>
         </div>
+        </c:if>
 
         <div dojoType="dojo.data.ItemFileReadStore" jsId="TagStore" url="<c:url value='/conversation/tag/json.do' />"></div>
         <div dojoType="dojo.data.ItemFileReadStore" jsId="ProjectStore" url="<c:url value='/project/list/json.do' />"></div>
@@ -327,6 +350,7 @@
 			$f("fms", {src: "<c:url value='/scripts/flowplayer/flowplayer-3.1.1.swf' />", wmode: 'transparent'}, {
 				clip: {
 					provider: 'influxis',
+					onStart: function(clip) {finishLoadingAudio();},
 					streams: [
 						{ url: '${media.url}', start: ${startTime} }
 					]

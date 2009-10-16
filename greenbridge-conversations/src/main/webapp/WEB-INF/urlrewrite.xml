@@ -15,6 +15,14 @@
         <to last="true">/searchProjectTag.do?projectName=$1&amp;tagName=$2</to>
 	</rule>
     <rule>
+        <from>/person/([A-Za-z0-9_-]+)$</from>
+        <to last="true">/person/view.do?slug=$1</to>
+	</rule>
+    <rule>
+        <from>/person$</from>
+        <to last="true">/person/list.do</to>
+	</rule>
+    <rule>
         <from>/project/([A-Za-z0-9_-]+)$</from>
         <to last="true">/project/view.do?id=$1</to>
 	</rule>

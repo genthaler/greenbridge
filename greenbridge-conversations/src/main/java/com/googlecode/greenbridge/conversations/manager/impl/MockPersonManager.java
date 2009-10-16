@@ -6,6 +6,7 @@
 package com.googlecode.greenbridge.conversations.manager.impl;
 
 import com.googlecode.greenbridge.conversations.domain.Person;
+import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
 import com.googlecode.greenbridge.conversations.manager.PersonManager;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +68,11 @@ public class MockPersonManager implements PersonManager {
     public boolean isEmailAddress(String slug) {
        if (slug.contains("@")) return true;
        else return false;
+    }
+
+    @Override
+    public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

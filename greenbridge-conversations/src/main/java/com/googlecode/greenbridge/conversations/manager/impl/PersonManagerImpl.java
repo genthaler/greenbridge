@@ -6,9 +6,14 @@
 package com.googlecode.greenbridge.conversations.manager.impl;
 
 import com.googlecode.greenbridge.conversations.dao.ConversationDao;
+import com.googlecode.greenbridge.conversations.domain.MediaTag;
 import com.googlecode.greenbridge.conversations.domain.Person;
+import com.googlecode.greenbridge.conversations.domain.Project;
+import com.googlecode.greenbridge.conversations.domain.Tag;
+import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
 import com.googlecode.greenbridge.conversations.manager.PersonManager;
 import com.googlecode.greenbridge.conversations.manager.SlugGenerator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -60,6 +65,22 @@ public class PersonManagerImpl implements PersonManager {
     public boolean isEmailAddress(String slug) {
        if (slug.contains("@")) return true;
        else return false;
+    }
+ 
+ 
+    @Override
+    public MediaTagSearchResults searchForPersonTags(String personId, String tagName, String projectName, Integer page, Integer limit) throws Exception {
+        Tag tag = null;
+        if (tagName != null && projectName != null) {
+            Project project = dao.findProjectByName(projectName);
+            String projectId = project.getId();
+            tag = dao.findTagByNameAndProjectId(tagName, projectId);
+        }
+        if (tagName != null && projectName == null) {
+            tag = dao.findTagByNameAndProjectId(tagName, null);
+        }
+        List<MediaTag> tags = dao.findTagsByPerson(personId, tag);
+        return SearchUtils.buildSearchResults(tags, page, limit);
     }
 
     

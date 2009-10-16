@@ -3,7 +3,11 @@ package com.googlecode.greenbridge.conversations.web;
 
 import com.googlecode.greenbridge.conversations.dao.ConversationDao;
 import com.googlecode.greenbridge.conversations.domain.Person;
+import com.googlecode.greenbridge.conversations.manager.ConversationManager;
+import com.googlecode.greenbridge.conversations.manager.MediaTagSearchResults;
+import com.googlecode.greenbridge.conversations.manager.PersonManager;
 import com.googlecode.greenbridge.conversations.manager.SlugGenerator;
+import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class PersonController {
 
+    private PersonManager personnManager;
     private ConversationDao dao;
     private SlugGenerator slug;
 
-    public PersonController(ConversationDao dao, SlugGenerator slug) {
+    public PersonController(PersonManager personnManager, ConversationDao dao,  SlugGenerator slug) {
+        this.personnManager = personnManager;
         this.dao = dao;
         this.slug = slug;
     }
@@ -40,11 +46,19 @@ public class PersonController {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/person/view.do")
     public final String view(@RequestParam("slug")  String slug, ModelMap model) throws Exception {
-        
-        model.addAttribute("person", dao.findBySlug(slug));
-        
+
+        Person p = dao.findBySlug(slug);
+        model.addAttribute("person", p);
+        MediaTagSearchResults results = personnManager.searchForPersonTags(p.getId(), null, null, 0, 100);
+        model.put("results", results);
+        Pagination pagination = new Pagination(0, 100, results.getTotalMediaTagsInResults());
+        model.put("pagination", pagination);
         return "person/view";
     }
+
+   private String generateUUID() {
+       return UUID.randomUUID().toString();
+   }
     /**
      * list
      */
@@ -53,10 +67,13 @@ public class PersonController {
                               @RequestParam("name")  String name,
                               @RequestParam("email") String email
             ) throws Exception {
+
+        
         Person p = new Person();
         p.setSlug(slug.generateSlug(name));
         p.setName(name);
         p.setEmail(email);
+        p.setId(generateUUID());
         dao.savePerson(p);
 
         return list(model);

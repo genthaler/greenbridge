@@ -69,6 +69,7 @@
       <constructor-arg  ref="conversationDao" />
   </bean>
   <bean name="/person/**" class="com.googlecode.greenbridge.conversations.web.PersonController" >
+    <constructor-arg ref="personManager" />
     <constructor-arg  ref="conversationDao" />
     <constructor-arg  ref="slugger" />
   </bean>

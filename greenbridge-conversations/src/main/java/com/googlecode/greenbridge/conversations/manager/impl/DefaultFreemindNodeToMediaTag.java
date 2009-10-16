@@ -144,7 +144,7 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
                 p = personManager.createPersonForEmailText(personEmailOrSlug);
             }
             if (p != null) {
-                addExtraInfoPerson("personId", p.getId(), tag);
+                addExtraInfoPerson("personId", p, tag);
             } else {
                 addExtraInfo("person", personEmailOrSlug, tag);
             }
@@ -175,10 +175,11 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
         tag.getMediaTagExtraInfos().add(extraInfo);
     }
 
-    private void addExtraInfoPerson(String property, String value, MediaTag tag) {
+    private void addExtraInfoPerson(String property, Person person, MediaTag tag) {
         MediaTagExtraInfoPerson extraInfo = new MediaTagExtraInfoPerson();
         extraInfo.setProp(property);
-        extraInfo.setEntry(value);
+        extraInfo.setEntry(person.getId());
+        extraInfo.setPerson(person);
         extraInfo.setMediaTag(tag);
         tag.getMediaTagExtraInfos().add(extraInfo);
     }
