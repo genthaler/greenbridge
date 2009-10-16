@@ -73,7 +73,21 @@
             <artifactId>com.springsource.org.tuckey.web.filters.urlrewrite</artifactId>
             <version>3.1.0</version>
         </dependency>
-
+        <dependency>
+          <groupId>org.mobicents.external.fmj</groupId>
+          <artifactId>mp3spi</artifactId>
+          <version>1.9.4</version>
+        </dependency>
+        <dependency>
+          <groupId>org.mobicents.external.fmj</groupId>
+          <artifactId>tritonus_share</artifactId>
+          <version>1.0</version>
+        </dependency>
+        <dependency>
+          <groupId>de.huxhorn.sulky</groupId>
+          <artifactId>de.huxhorn.sulky.3rdparty.jlayer</artifactId>
+          <version>1.0</version>
+        </dependency>
 		<!-- Container provided -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
