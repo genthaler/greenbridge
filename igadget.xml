@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="Greenbridge Story Generator for Maven" /> 
+  <Content type="html">
+     <![CDATA[ 
+
+<style>
+.helpfor {
+	
+}
+</style>
+<script src="http://www.google.com/jsapi"></script>
+<script>
+	
+	var baseCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName='APPLICATIONNAME' -DremoteRepositories=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+	google.load("jquery", "1");
+    function generateMvnCommand() {
+		var cmd = baseCmd.replace("APPLICATIONNAME", $('#applicationName').val());
+		cmd = cmd.replace("PACKAGENAME", $('#packageName').val());
+		cmd = cmd.replace("ARTIFACTID",  $('#artifactiId').val());
+		cmd = cmd.replace("PACKAGENAME", $('#packageName').val());
+		cmd = cmd.replace("GROUPID", getGroupID());
+		cmd = cmd.replace("VERSION", getVersion());
+		$('#cmdResult').html(cmd);
+	}
+	
+	
+	function getGroupID() {
+		return $('#packageName').val();
+	}
+	
+	function getVersion() {
+		return "1.0-SNAPSHOT";
+	}
+	
+	
+</script>
+
+
+<div id="applicationNameContainer" class="labelAndField mediumField">
+    <fieldset>
+		<label for="applicationName">Application Name</label> 
+		<input type="text" name="applicationName" id="applicationName"/>
+		<div id="helpfor-applicationName" class="helpfor">
+			A human friendly, and catchy name, for the final application. EG: The Appinatior
+		</div>
+		
+		<label for="artifactiId">ArtifactId</label> 
+		<input type="text" name="artifactiId" id="artifactiId"/>
+		<div id="helpfor-artifactiId" class="helpfor">
+			A maven artifactId that will hold just the stories and scenarios. eg: appinator-stories
+		</div>
+		
+		
+		<label for="packageName">Java Package</label> 
+		<input type="text" name="packageName" id="packageName"/>
+		<div id="helpfor-packageName" class="helpfor">
+			A java package that your stories and scenarios will be prefixed with. <br/>
+			Eg: org.cool  [generated packages from this name would be org.cool.stories and org.cool.scenarios]
+		</div>
+	</fieldset>
+</div>
+
+<button class="button" href="#" onclick="generateMvnCommand();">Generate</button>
+
+<div id="cmdResult">here</div>
+     ]]>
+  </Content> 
+</Module>
