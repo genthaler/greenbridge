@@ -8,7 +8,7 @@
 
 == 2. Setup a story repository ==
 
-<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  />
+<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="400"  />
 
 ==4. Create a Hudson Job (Optional)==
 
