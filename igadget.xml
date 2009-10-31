@@ -3,11 +3,29 @@
   <ModulePrefs title="Greenbridge Story Generator for Maven" /> 
   <Content type="html">
      <![CDATA[ 
-
 <style>
 .helpfor {
+	left: 130px;
+	position: relative;
+	width: 370px;
+	margin-top: 4px; 
+	margin-bottom: 10px;
+	font-size: 10px;
+}
+
+fieldset label {
+	font-weight: bold;
+	clear: both;
+	width: 150px;
+}
+
+fieldset input {
+	left: 150px;
+	width: 370px;
+	position: absolute;
 	
 }
+
 </style>
 <script src="http://www.google.com/jsapi"></script>
 <script>
@@ -64,6 +82,7 @@
 <button class="button" href="#" onclick="generateMvnCommand();">Generate</button>
 
 <div id="cmdResult">here</div>
+
      ]]>
   </Content> 
 </Module>
