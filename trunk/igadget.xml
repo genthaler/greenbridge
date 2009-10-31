@@ -12,7 +12,7 @@
 <script src="http://www.google.com/jsapi"></script>
 <script>
 	
-	var baseCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName="APPLICATIONNAME" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+	var baseCmd = 'mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName="APPLICATIONNAME" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false';
 	google.load("jquery", "1");
     function generateMvnCommand() {
 		var cmd = baseCmd.replace("APPLICATIONNAME", $('#applicationName').val());
