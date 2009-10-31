@@ -24,6 +24,11 @@
           <version>1.0.0</version>
     </dependency>
     <dependency>
+          <groupId>com.googlecode.greenbridge</groupId>
+          <artifactId>greenbridge-tiddlywiki</artifactId>
+          <version>1.0.0</version>
+    </dependency>
+    <dependency>
         <groupId>org.freemarker</groupId>
         <artifactId>freemarker</artifactId>
         <version>2.3.14</version>
