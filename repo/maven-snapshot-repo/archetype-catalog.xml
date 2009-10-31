@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype-catalog>
+  <archetypes>
+    <archetype>
+      <groupId>com.googlecode.greenbridge</groupId>
+      <artifactId>greenbridge-archetype</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <description>test-greenbridge</description>
+    </archetype>
+  </archetypes>
+</archetype-catalog>
