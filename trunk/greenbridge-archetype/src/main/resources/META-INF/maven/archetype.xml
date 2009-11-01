@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>test-greenbridge</id>
+  <sources>
+    <source>src\main\java\com\test\scenarios\SampleStory2Scenario1_1.java</source>
+    <source>src\main\java\com\test\scenarios\Scenario1_1.java</source>
+    <source>src\main\java\com\test\scenarios\Scenario2_1.java</source>
+    <source>src\main\java\com\test\scenarios\TestTable_4.java</source>
+    <source>src\main\java\com\test\stories\SampleStory1_2.java</source>
+    <source>src\main\java\com\test\stories\SampleStory2_2.java</source>
+    <source>src\main\java\com\test\stories\SampleStory3_2.java</source>
+  </sources>
+  <resources>
+    <resource>stories.html</resource>
+  </resources>
+</archetype>
