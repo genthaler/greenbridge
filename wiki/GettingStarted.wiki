@@ -1,9 +1,11 @@
-#How to get started with Greenbridge
 
-= Getting Started =
+Want to use greenbride in two minutes? Fill in the form below and hit _Generate Commands_. 
+You will be presented with *seven commands* that you can paste in your command line.
 
-We have tried to prepare the fastest quickstarts you will see. Fill in the form below and hit <i>Generate Commands</i>. 
-You will be presented with <b>seven</b> commands that you can paste in. 
 
-<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="800"  />
+<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="600"  />
 
+Once the commands run, have a look around the two generated maven projects. 
+* Open stories.html in the first mvn project with your web browser. This is the story wiki.   
+* Open AppTest.java in the second mvn project. This is an example of annotating your junit tests.
+ 
