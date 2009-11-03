@@ -90,7 +90,7 @@ fieldset input {
 	
 	function generateExampleProject() {
 		var cmd = baseOtherCmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
-		cmd = cmd..replace("APPLICATIONNAME", jQuery.trim($('#applicationName').val()));
+		cmd = cmd.replace("APPLICATIONNAME", jQuery.trim($('#applicationName').val()));
 		cmd = cmd.replace("ARTIFACTID",  getExampleArtifactID() );
 		cmd = cmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
 		cmd = cmd.replace("GROUPID", getGroupID());
