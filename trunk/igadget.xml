@@ -10,7 +10,25 @@
 	width: 370px;
 	margin-top: 4px; 
 	margin-bottom: 10px;
-	font-size: 10px;
+	font-size: 11px;
+	font: sans-sarif;
+}
+
+.command {
+	margin-bottom: 20px;
+}
+
+.button {
+	margin-left: 135px;
+}
+
+textarea {
+	width: 520;
+	height: 100;
+}
+
+fieldset {
+	border: none;
 }
 
 fieldset label {
@@ -29,22 +47,78 @@ fieldset input {
 </style>
 <script src="http://www.google.com/jsapi"></script>
 <script>
-	
-	var baseCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+
+	var baseCoord = "<dependency>\n\t<groupId>GROUPID</groupId>\n\t<artifactId>ARTIFACTID</artifactId>\n\t<version>VERSION</version>\n</dependency>";
+	var baseCmd      = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+	var baseOtherCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=example-greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
 	google.load("jquery", "1");
-    function generateMvnCommand() {
-		var cmd = baseCmd.replace("APPLICATIONNAME", $('#applicationName').val());
-		cmd = cmd.replace("PACKAGENAME", $('#packageName').val());
-		cmd = cmd.replace("ARTIFACTID",  $('#artifactiId').val());
-		cmd = cmd.replace("PACKAGENAME", $('#packageName').val());
+
+
+	
+
+	function showResult() {
+		var cmd1 = generateStoryProject();
+		$('#cmd1').html(cmd1);
+		
+		var cd_story_artifact = getStoryArtifactID();
+		$('#cd_story_artifact').html(cd_story_artifact);
+		
+		
+		var cd_example_artifact = getExampleArtifactID();
+		$('#cd_example_artifact').html(cd_example_artifact);
+		var cmd5 = generateExampleProject();
+		$('#cmd5').html(cmd5);
+
+		$('.command').show(5);
+		
+		$('#command-list').fadeIn(1500);
+		//generateCoordenate();
+		
+	}
+	
+    function generateStoryProject() {
+		var cmd = baseCmd.replace("APPLICATIONNAME", jQuery.trim($('#applicationName').val()));
+		cmd = cmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
+		cmd = cmd.replace("ARTIFACTID",  getStoryArtifactID() );
+		cmd = cmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
 		cmd = cmd.replace("GROUPID", getGroupID());
 		cmd = cmd.replace("VERSION", getVersion());
-		$('#cmdResult').html(cmd);
+		return cmd;
+		
 	}
 	
 	
+	function generateExampleProject() {
+		var cmd = baseOtherCmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
+		cmd = cmd.replace("ARTIFACTID",  getExampleArtifactID() );
+		cmd = cmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
+		cmd = cmd.replace("GROUPID", getGroupID());
+		cmd = cmd.replace("VERSION", getVersion());
+		return cmd;
+		//$('#exampleCmdResult').html(cmd);		
+	}
+	
+	
+	
+	function generateCoordenate() {
+		var coord = baseCoord.replace("ARTIFACTID",  getStoryArtifactID() );
+		coord = coord.replace("GROUPID", getGroupID());
+		coord = coord.replace("VERSION", getVersion());
+		
+		$('#coordUsedTA').val(coord);
+	}
+	
+	
+	function getStoryArtifactID() {
+		return jQuery.trim($('#artifactiId').val())   + '-stories';
+	}
+	
+	function getExampleArtifactID() {
+		return jQuery.trim($('#artifactiId').val());
+	}
+	
 	function getGroupID() {
-		return $('#packageName').val();
+		return jQuery.trim($('#packageName').val());
 	}
 	
 	function getVersion() {
@@ -60,28 +134,43 @@ fieldset input {
 		<label for="applicationName">Application Name</label> 
 		<input type="text" name="applicationName" id="applicationName"/>
 		<div id="helpfor-applicationName" class="helpfor">
-			A human friendly, and catchy name, for the final application. EG: The Appinatior
+			A human friendly name for the application. <br>
+			Something like <i>Greenbridge BDD Framework</i>.
 		</div>
 		
 		<label for="artifactiId">ArtifactId</label> 
 		<input type="text" name="artifactiId" id="artifactiId"/>
 		<div id="helpfor-artifactiId" class="helpfor">
-			A maven artifactId that will hold just the stories and scenarios. eg: appinator-stories
+			A maven artifactId for the application. <br>
+			Something like <i>greenbridge</i> or <i>greenbridge-bdd</i>.
 		</div>
 		
 		
 		<label for="packageName">Java Package</label> 
 		<input type="text" name="packageName" id="packageName"/>
 		<div id="helpfor-packageName" class="helpfor">
-			A java package that your stories and scenarios will be prefixed with. <br/>
-			Eg: org.cool  [generated packages from this name would be org.cool.stories and org.cool.scenarios]
+			The root java package for the stories and scenarios. <br/>
+			Something like <i>com.googlecode.greenbridge</i>. <br>
+			[Generated packages from this name would be com.googlecode.greenbridge.stories and com.googlecode.greenbridge.scenarios]
 		</div>
 	</fieldset>
 </div>
 
-<button class="button" href="#" onclick="generateMvnCommand();">Generate</button>
+<button class="button" href="#" onclick="showResult();">Generate Commands</button>
 
-<div id="cmdResult">here</div>
+<ul id="command-list" style="display: none;">
+ <li><div id="cmd1" class="command" style="display: none;"></div></li>
+ <li><div id="cmd2" class="command" style="display: none;">cd <span id="cd_story_artifact"></span></div></li>
+ <li><div id="cmd3" class="command" style="display: none;">mvn clean install</div></li>
+ <li><div id="cmd4" class="command" style="display: none;">cd ..</div></li>
+ <li><div id="cmd5" class="command" style="display: none;"></div></li>
+ <li><div id="cmd6" class="command" style="display: none;">cd <span id="cd_example_artifact"></span></div></li>
+ <li><div id="cmd3" class="command" style="display: none;">mvn test</div></li>
+<ul>
+
+<div id="coordUsed" style="display: none;">
+    <textarea id="coordUsedTA"></textarea>
+</div>
 
      ]]>
   </Content> 
