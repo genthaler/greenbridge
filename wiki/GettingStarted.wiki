@@ -2,15 +2,8 @@
 
 = Getting Started =
 
-== 1. Prerequisites ==
+We have tried to prepare the fastest quickstarts you will see. Fill in the form below and hit <i>Generate Commands</i>. 
+You will be presented with <b>seven</b> commands that you can paste in. 
 
--Greenbridge requires Maven2
+<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="800"  />
 
-== 2. Setup a story repository ==
-
-<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="400"  />
-
-==4. Create a Hudson Job (Optional)==
-
-
-==5. Create JUnit tests==
