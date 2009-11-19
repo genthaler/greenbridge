@@ -44,6 +44,23 @@ public class GreenbridgeMojo
 
     private Log log;
 
+
+    /**
+     * @parameter expression="${project.artifactId}"
+     */
+    private String projectArtifactId;
+
+    /**
+     * @parameter expression="${project.groupId}"
+     */
+    private String projectGroupId;
+
+     /**
+     * @parameter expression="${project.version}"
+     */
+    private String projectVersion;
+
+
     /**
      * @parameter expression="${project.compileSourceRoots}"
      */
@@ -71,9 +88,12 @@ public class GreenbridgeMojo
     {
         log = getLog();
         try {
-            log.info("Gathering stories");
+
+
+            log.info("Gathering stories for: " + generateStoryPackage());
             List<StoryNarrative> stories = storyHarvester.gather();
             log.info("Stories Retrieved: " + stories.size());
+            setStoryPackage(stories);
 
             String srcDir = (String)roots.get(0);
             CodeGenerator generator = new CodeGenerator("/", srcDir, packageName);
@@ -82,8 +102,20 @@ public class GreenbridgeMojo
             Logger.getLogger(GreenbridgeMojo.class.getName()).log(Level.SEVERE, null, ex);
             throw new MojoExecutionException("", ex);
         }
-        
-        
     }
+
+    private void setStoryPackage(List<StoryNarrative> stories) {
+        for (StoryNarrative storyNarrative : stories) {
+            storyNarrative.setStoryPackage(generateStoryPackage());
+        }
+    }
+
+
+    private String generateStoryPackage() {
+        return projectGroupId + ":" + projectArtifactId + ":" + projectVersion;
+    }
+
+
+
 
 }
