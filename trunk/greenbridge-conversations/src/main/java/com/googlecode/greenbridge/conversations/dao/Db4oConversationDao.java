@@ -6,7 +6,6 @@
 package com.googlecode.greenbridge.conversations.dao;
 
 import com.db4o.ObjectSet;
-import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 import com.googlecode.greenbridge.conversations.domain.Conversation;
 import com.googlecode.greenbridge.conversations.domain.ConversationTemplate;
@@ -18,7 +17,6 @@ import com.googlecode.greenbridge.conversations.domain.Person;
 import com.googlecode.greenbridge.conversations.domain.Project;
 import com.googlecode.greenbridge.conversations.domain.Tag;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.springmodules.db4o.support.Db4oDaoSupport;

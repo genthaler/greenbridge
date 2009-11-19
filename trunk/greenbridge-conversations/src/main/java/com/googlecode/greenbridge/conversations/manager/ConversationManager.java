@@ -23,7 +23,7 @@ public interface ConversationManager {
     public Conversation newConversation(FreemindConversationDetails conversationDetails) throws Exception;
     public ConversationSearchResults listAllConversations(Integer offset, Integer limit) throws Exception;
     public Long addTag(String conversationId, TagUpdateDetails details);
-    public void updateTag(String conversationId, String mediaTagId, TagUpdateDetails details);
+    public void updateTag(String conversationId, TagUpdateDetails details);
     public void deleteTag(String mediaTagId);
     public TagUpdateDetails loadTag(String conversationId, String mediaTagId);
     public Map<String,String> findAllTagsByLike(String prefix);

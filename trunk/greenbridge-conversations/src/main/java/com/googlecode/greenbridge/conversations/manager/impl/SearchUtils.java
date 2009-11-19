@@ -33,7 +33,7 @@ public class SearchUtils {
             Date tagDate = new Date(conversationStart.getTime() + (mediaTag.getStartTime() * 1000) );
 
             summary.setMediaTagCalculatedTimestamp(tagDate);
-
+            summary.setShortDescription(mediaTag.getShortDescription());
             //summary.setConversationTotalLength(1000);
             summary.setMediaTagId(mediaTag.getId());
             summary.setMediaTagName(mediaTag.getTag().getTagName());

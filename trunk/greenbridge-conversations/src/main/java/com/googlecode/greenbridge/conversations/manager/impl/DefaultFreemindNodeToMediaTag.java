@@ -63,8 +63,7 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
             mediaTag.setTag(tag);
 
             String description = node.attributeValue("TEXT");
-            System.out.println("Found some short desc: " + description);
-            addExtraInfo("shortDescription", description, mediaTag);
+            mediaTag.setShortDescription(description);
 
 
         } else {
@@ -79,17 +78,13 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
 
     protected void setStartTime(MediaTag tag, Element node, Date meetingStart, Integer tagStartOffset) {
         String longText = node.attributeValue("CREATED");
-        System.out.print("offset:" + tagStartOffset);
 
         Date tagStart = new Date(Long.parseLong(longText));
         long startOffset = (tagStart.getTime() - meetingStart.getTime()) /1000;
-        System.out.print("Start offset:" + startOffset);
 
         if (tagStartOffset != null && tagStartOffset <= startOffset) {
             startOffset = startOffset - tagStartOffset;
-            System.out.print("NEW Start offset:" + startOffset);
         }
-        System.out.print("Final Start offset:" + startOffset);
         tag.setStartTime(startOffset);
 
         Date tagDate = new Date(meetingStart.getTime() + startOffset);
@@ -136,7 +131,6 @@ public class DefaultFreemindNodeToMediaTag implements FreemindNodeToMediaTagStra
     protected void setPeople(MediaTag tag, Element node) {
         XPath xpath = node.createXPath("attribute[translate(@NAME, 'PERSON', 'person') ='person']");
         List<Element> people = xpath.selectNodes(node);
-        System.out.println("There are nodes " + people.size());
         for (Element element : people) {
             String personEmailOrSlug = element.attributeValue("VALUE");
             Person p = personManager.findPersonForText(personEmailOrSlug);

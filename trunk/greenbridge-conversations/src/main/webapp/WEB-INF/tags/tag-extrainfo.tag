@@ -11,13 +11,10 @@
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core'%>
 
 <c:forEach var="extraInfo" items="${mediaTag.mediaTagExtraInfos}" varStatus="i" >
-    <c:if test="${extraInfo.prop == 'shortDescription'}" >
-        <div class="tagdescription">${extraInfo.entry}</div>
-    </c:if>
     <c:if test="${extraInfo.prop == 'personId'}" >
         <div class="tagdescription">Person: <a href="<c:url value='/person/${extraInfo.person.slug}' />">${extraInfo.person.name}</a></div>
     </c:if>
-    <c:if test="${extraInfo.prop != 'personId' && extraInfo.prop != 'shortDescription' && extraInfo.prop != 'icon'}" >
+    <c:if test="${extraInfo.prop != 'personId'  && extraInfo.prop != 'icon'}" >
         <div class="tagdescription">${extraInfo.prop}: ${extraInfo.entry}</div>
     </c:if>
 </c:forEach>

@@ -17,8 +17,9 @@
     <table class="result" style="width: 100%;">
         <tr style="color: black;">
             <th style="color: black;" >When</th>
-            <th>Conversation</th>
             <th>Tag</th>
+            <th>Conversation</th>
+            
             <th>Time </th>
             <th>Play</th>
         </tr>
@@ -28,8 +29,15 @@
           <td><fmt:formatDate value="${mediaTagSummary.mediaTagCalculatedTimestamp}" pattern="HH:mm:ss"/><br/>
               <fmt:formatDate value="${mediaTagSummary.mediaTagCalculatedTimestamp}" pattern="dd/MM/yyyy"/>
           </td>
-          <td><a href="<c:url value='/conversation/${mediaTagSummary.conversationId}' />">${mediaTagSummary.conversationName}</a></td>
-          <td><a href="<c:url value='/conversation/${mediaTagSummary.conversationId}/time/${mediaTagSummary.tagStartTime}' />">${mediaTagSummary.mediaTagName}</a></td>
+          <td>
+              <a href="<c:url value='/conversation/${mediaTagSummary.conversationId}/time/${mediaTagSummary.tagStartTime}' />" >${mediaTagSummary.mediaTagName}</a>
+              <img src="<c:url value='/images/bookmark.gif' />" />
+              <img src="<c:url value='/images/field_input.gif' />" />
+              <img src="<c:url value='/images/cross.gif' />" />
+             <br/>
+              ${mediaTagSummary.shortDescription}
+          </td>
+          <td> <a href="<c:url value='/conversation/${mediaTagSummary.conversationId}' />">${mediaTagSummary.conversationName}</a></td>
           <td>${mediaTagSummary.tagStartTime} - ${mediaTagSummary.tagEndTime}</td>
           <td><div id="mediatag-${mediaTagSummary.mediaTagId}" style="display:block;width:130px;height:30px;"></div></td>
 
