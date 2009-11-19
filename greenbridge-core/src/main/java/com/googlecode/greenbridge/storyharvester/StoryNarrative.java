@@ -18,7 +18,7 @@ public class StoryNarrative {
     private List<ScenarioNarrative> scenarios;
     private String linkUrl;
     private String linkName;
-
+    private String storyPackage;
 
 
 
@@ -107,5 +107,19 @@ public class StoryNarrative {
      */
     public void setVersion(int version) {
         this.version = version;
+    }
+
+    /**
+     * @return the storyPackage
+     */
+    public String getStoryPackage() {
+        return storyPackage;
+    }
+
+    /**
+     * @param storyPackage the storyPackage to set
+     */
+    public void setStoryPackage(String storyPackage) {
+        this.storyPackage = storyPackage;
     }
 }
