@@ -269,7 +269,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                         .addContainerGap()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(serverComboBox, 0, 363, Short.MAX_VALUE)
+                        .addComponent(serverComboBox, 0, 546, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(uploadButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, uploadPanelLayout.createSequentialGroup()
@@ -281,15 +281,15 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                                     .addComponent(jLabel8))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(uploadPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(overallProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE)
-                                    .addComponent(taskProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
+                                    .addComponent(overallProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                                    .addComponent(taskProgressBar, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(uploadCancelButton))
                             .addGroup(uploadPanelLayout.createSequentialGroup()
                                 .addGap(13, 13, 13)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)))))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 623, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         uploadPanelLayout.setVerticalGroup(
@@ -365,7 +365,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                         .addGap(18, 18, 18)
                         .addComponent(otherRecordingLabel))
                     .addComponent(recordingStopButton))
-                .addContainerGap(289, Short.MAX_VALUE))
+                .addContainerGap(472, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

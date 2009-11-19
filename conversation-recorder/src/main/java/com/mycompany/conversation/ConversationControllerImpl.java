@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.sound.sampled.LineUnavailableException;
+
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.jpeg.JpegProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.MetadataException;
+import com.drew.metadata.exif.ExifDirectory;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -157,10 +164,42 @@ public class ConversationControllerImpl implements ConversationController {
         }
 
         File mp3 = getFileForDocument(outputFile, ".mp3");
+        if (mp3.exists()) return mp3;
 
         FFMpegConverter converter = new FFMpegConverter(ffmpegcmd);
         converter.convert(outputFile, bitrate, frequency, mp3, true);
         return mp3;
+    }
+
+    protected List<File> findPicturesInDirBetweenDates(File dir, Date start, Date end) {
+        assert(dir.exists() && dir.isDirectory());
+        ArrayList result = new ArrayList<File>();
+        File[] children = dir.listFiles();
+        for (File child : children) {
+           if (child.getName().endsWith(".jpg") || child.getName().endsWith(".jpeg") || child.getName().endsWith(".JPG")) {
+               if (isPictureBetweenDates(child, start, end)) {
+                   result.add(child);
+               }
+            }
+        }
+        return result;
+    }
+
+
+    protected boolean isPictureBetweenDates(File picture, Date start, Date end) {
+        Date picDate = null;
+        try {
+            Metadata metadata = JpegMetadataReader.readMetadata(picture);
+            Directory exifDirectory = metadata.getDirectory(ExifDirectory.class);
+            picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME_ORIGINAL) ;
+            if (picDate == null) picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME);
+        } catch (JpegProcessingException e) {
+        } catch (MetadataException e) {
+        }
+        if (picDate == null) picDate = new Date(picture.lastModified());
+        if (picDate.after(start) && picDate.before(end)) return true;
+
+        return false;
     }
 
 
