@@ -274,24 +274,39 @@ public class ConversationController {
     @RequestMapping(method = RequestMethod.POST, value = "/conversation/tag/edit.do")
     public final String editMediaTag(
             @RequestParam("conversation") String conversationId,
-            @RequestParam("mediaTagId") String mediaTagId,
             @RequestParam("tagType") String tagType,
-            @RequestParam(value="newTagName",required=false) String newTagName,
-            @RequestParam(value="projectId", required=false) String projectId,
             @ModelAttribute TagUpdateDetails tag,
             HttpServletRequest request, ModelMap model) {
 
         if (TAG_NEW.equals(tagType)) {
             tag.setTagId(null);
-            tag.setTagName(newTagName);
-            tag.setTagProjectId(projectId);
+        }   else {
+            String tagProjectName = tag.getTagName();
+            String tagName = findTagName(tagProjectName);
+            String projectName = findProjectName(tagProjectName);
+            tag.setTagName(tagName);
+            tag.setTagProjectName(projectName);
 
         }
-        conversationManager.updateTag(conversationId, mediaTagId, tag);
-        model.put("tagId", mediaTagId);
+        conversationManager.updateTag(conversationId, tag);
+        //model.put("tagId", mediaTagId);
         return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();
     }
 
+
+
+
+    private String findTagName(String tagProjectName) {
+           String[] split = tagProjectName.split("[\\[\\]]");
+           return split[0];
+    }
+    private String findProjectName(String tagProjectName) {
+           String[] split = tagProjectName.split("[\\[\\]]");
+            if (split.length > 1) {
+                return split[1];
+            }
+            return null;
+    }
      /**
      * Create a tag for a conversation
      */
@@ -304,10 +319,25 @@ public class ConversationController {
             @ModelAttribute TagUpdateDetails tag,
             HttpServletRequest request, ModelMap model) {
 
+         System.out.println("New tag: " + newTagName);
+         System.out.println("New tag: " + projectId);
+         System.out.println("New tag: " + tagType);
         if (TAG_NEW.equals(tagType)) {
             tag.setTagId(null);
             tag.setTagName(newTagName);
             tag.setTagProjectId(projectId);
+        }   else {
+            String tagProjectName = tag.getTagName();
+            String[] split = tagProjectName.split("[\\[\\]]");
+
+            tag.setTagName(split[0]);
+            System.out.println("Found tagname: " + tag.getTagName());
+            if (split.length > 1) {
+                String project = split[1];
+                System.out.println("Found project: " + project);
+                tag.setTagProjectName(project);
+            }
+
         }
         conversationManager.addTag(conversationId, tag);
         return "redirect:/conversation/" + conversationId + "/time/" + (long)tag.getStartTime();

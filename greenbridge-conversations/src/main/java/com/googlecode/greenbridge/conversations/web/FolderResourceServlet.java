@@ -34,17 +34,23 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HttpServletBean;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Special resource servlet for efficiently resolving and rendering static resources from within a JAR file.
  *
  * @author Jeremy Grelle
  */
+@Controller
 public class FolderResourceServlet extends HttpServletBean {
 
 	private static final String HTTP_CONTENT_LENGTH_HEADER = "Content-Length";
@@ -60,6 +66,8 @@ public class FolderResourceServlet extends HttpServletBean {
 	private String folder;
 
 	private boolean gzipEnabled = true;
+
+    private boolean contentDispositionHeader = false;
 
 	private String[] allowedResourcePaths = new String[] { "/**/*.css", "/**/*.gif", "/**/*.ico", "/**/*.jpeg",
 			"/**/*.jpg", "/**/*.js", "/**/*.png", "META-INF/**/*.css", "META-INF/**/*.gif", "META-INF/**/*.ico",
@@ -82,21 +90,22 @@ public class FolderResourceServlet extends HttpServletBean {
 		compressedMimeTypes.add("text/javascript");
 	}
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(method = RequestMethod.GET, value = "*")
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Allo, we are starting ");
 		String rawResourcePath = request.getPathTranslated();
         System.out.println("Attempting to GET resource: " + request.getPathTranslated());
         System.out.println("Attempting to GET resource: " + request.getServletPath());
         System.out.println("Attempting to GET resource: " + request.getMethod());
 		//if (log.isDebugEnabled()) {
-			log.info("Attempting to GET resource: " + rawResourcePath);
+			System.out.println("Attempting to GET resource: " + rawResourcePath);
 		//}
 
 		URL[] resources = getRequestResourceURLs(request);
 
 		if (resources == null || resources.length == 0) {
 			//if (log.isDebugEnabled()) {
-				log.info("Resource not found: " + rawResourcePath);
+				System.out.println("Resource not found: " + rawResourcePath);
 			//}
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
@@ -151,11 +160,10 @@ public class FolderResourceServlet extends HttpServletBean {
 				lastModified = resourceConn.getLastModified();
 			}
 
-			String currentMimeType = getServletContext().getMimeType(resources[i].getPath());
-			if (currentMimeType == null) {
-				String extension = resources[i].getPath().substring(resources[i].getPath().lastIndexOf('.'));
-				currentMimeType = (String) defaultMimeTypes.get(extension);
-			}
+
+            String extension = resources[i].getPath().substring(resources[i].getPath().lastIndexOf('.'));
+            String currentMimeType = (String) defaultMimeTypes.get(extension);
+
 			if (mimeType == null) {
 				mimeType = currentMimeType;
 			} else if (!mimeType.equals(currentMimeType)) {
@@ -168,6 +176,13 @@ public class FolderResourceServlet extends HttpServletBean {
 		response.setContentType(mimeType);
 		response.setHeader(HTTP_CONTENT_LENGTH_HEADER, Long.toString(contentLength));
 		response.setDateHeader(HTTP_LAST_MODIFIED_HEADER, lastModified);
+        if (contentDispositionHeader && resources.length == 1) {
+            System.out.println("URL to download: " + resources[0].getPath());
+            String[] parts = resources[0].getPath().split("/");
+            String filename = parts[parts.length - 1];
+            System.out.println("URL to download dh: "  + filename);
+            response.setHeader("Content-disposition", "attachment; filename=" + filename);
+        }
 		configureCaching(response, 31556926);
 	}
 
@@ -205,7 +220,15 @@ public class FolderResourceServlet extends HttpServletBean {
 
 	private URL[] getRequestResourceURLs(HttpServletRequest request) throws MalformedURLException {
 
-		String rawResourcePath = request.getPathInfo();
+		String rawResourcePath = request.getServletPath();
+        System.out.println("Raw: " + rawResourcePath);
+
+        // strip the first path directory (which is the servlet mapping)
+        String[] path = rawResourcePath.split("/");
+        path = (String[]) ArrayUtils.subarray(path, 2, path.length);
+        rawResourcePath = "/" + StringUtils.arrayToDelimitedString(path, "/");
+        System.out.println("New Raw: " + rawResourcePath);
+
 		String appendedPaths = request.getParameter("appended");
 		if (StringUtils.hasText(appendedPaths)) {
 			rawResourcePath = rawResourcePath + "," + appendedPaths;
@@ -214,6 +237,7 @@ public class FolderResourceServlet extends HttpServletBean {
 		URL[] resources = new URL[localResourcePaths.length];
 		for (int i = 0; i < localResourcePaths.length; i++) {
 			String localResourcePath = localResourcePaths[i];
+            System.out.println("Local resource path: " + localResourcePath);
 			if (!isAllowed(localResourcePath)) {
 				if (log.isWarnEnabled()) {
 					log.warn("An attempt to access a protected resource at " + localResourcePath + " was disallowed.");
@@ -347,6 +371,10 @@ public class FolderResourceServlet extends HttpServletBean {
      */
     public void setFolder(String folder) {
         this.folder = folder;
+    }
+
+    public void setContentDispositionHeader(boolean setContentDispositionHeader) {
+        this.contentDispositionHeader = setContentDispositionHeader;
     }
 
 }

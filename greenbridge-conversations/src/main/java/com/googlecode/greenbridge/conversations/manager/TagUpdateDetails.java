@@ -14,8 +14,10 @@ import java.util.Map;
  */
 public class TagUpdateDetails {
     private String tagId;
+    private String mediaTagId;
     private String tagName;
     private String tagProjectId;
+    private String tagProjectName;
     private double startTime;
     private double endTime;
     private String shortDescription;
@@ -110,17 +112,17 @@ public class TagUpdateDetails {
     }
 
     /**
-     * @return the tagId
+     * @return the mediaTagId
      */
-    public String getTagId() {
-        return tagId;
+    public String getMediaTagId() {
+        return mediaTagId;
     }
 
     /**
-     * @param tagId the tagId to set
+     * @param mediaTagId the tagId to set
      */
-    public void setTagId(String tagId) {
-        this.tagId = tagId;
+    public void setMediaTagId(String mediaTagId) {
+        this.mediaTagId = mediaTagId;
     }
 
     /**
@@ -149,5 +151,20 @@ public class TagUpdateDetails {
      */
     public void setTagProjectId(String tagProjectId) {
         this.tagProjectId = tagProjectId;
+    }
+
+    public String getTagProjectName() {
+        return tagProjectName;
+    }
+
+    public void setTagProjectName(String tagProjectName) {
+        this.tagProjectName = tagProjectName;
+    }
+
+    public String getTagId() {
+        return tagId;
+    }
+    public void setTagId(String tagId) {
+        this.tagId = tagId;
     }
 }

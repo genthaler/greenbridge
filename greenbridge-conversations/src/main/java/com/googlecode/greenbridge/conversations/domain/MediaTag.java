@@ -16,6 +16,8 @@ public class MediaTag implements Serializable {
 
     private Long endTime;
 
+    private String shortDescription;
+
     private Tag tag;
 
     private List<MediaTagExtraInfo> mediaTagExtraInfos = new ArrayList<MediaTagExtraInfo>();
@@ -90,6 +92,20 @@ public class MediaTag implements Serializable {
      */
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    /**
+     * @return the shortDescription
+     */
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    /**
+     * @param shortDescription the shortDescription to set
+     */
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
 

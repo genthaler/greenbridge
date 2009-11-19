@@ -77,6 +77,13 @@
       <constructor-arg ref="conversationManager" />
   </bean>
 
+  <bean name="/freemind/**" class="com.googlecode.greenbridge.conversations.web.FolderResourceServlet" >
+      <property name="folder" value="${freemind.dir}" />
+  </bean>
+  <bean name="/mp3/**" class="com.googlecode.greenbridge.conversations.web.FolderResourceServlet" >
+      <property name="folder" value="${ofla.dir}" />
+      <property name="contentDispositionHeader"  value="true" />
+  </bean>
 
   <!--
     View resolver. Has custom view to support theme based page resolution.

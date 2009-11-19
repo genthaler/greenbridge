@@ -5,6 +5,7 @@
 <script type="text/javascript">
       dojo.require("dijit.TitlePane");
       dojo.require("dijit.form.FilteringSelect");
+      dojo.require("dijit.form.ComboBox");
       dojo.require("dojo.data.ItemFileReadStore");
       dojo.require("dijit.form.TextBox");
       dojo.require("dijit.form.Slider");
@@ -238,6 +239,12 @@
 		<div id="loading" style="position: absolute; z-index: 30; top: 45px;">
 			<img src="<c:url value='/images/ajax-loader.gif' />" /> <span style="">Loading Audio...</span>
 		</div>
+
+        <div id="download" style="position: absolute; z-index: 30; top: 45px; left: 650px;">
+			<a href="<c:url value='/mp3/${media.url}' />">mp3</a>
+		</div>
+
+
         <div id="conversation-menu">
                  &nbsp;
                  <span id="tag-menu-item" class="tag-menu-selected" onclick="selectTags()" onmouseover="overTab(this)" onmouseout="outTab(this)">Tags</span>
@@ -252,16 +259,18 @@
             <table id="tag-table" cellpadding="0" cellspacing="0">
               <c:forEach var="mediaTag" items="${mediaTags}" varStatus="tagId" >
                  <tr  class="tagrow" id="tag-${mediaTag.id}-row1">
-                    <td width="100" class="taglabel">
-                         <span onmouseover="showControls('tag-${mediaTag.id}-controls');">+</span>
-                         <a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">${mediaTag.tag.tagName}</a>
+                    <td width="120" class="taglabel">
+                         <a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />">${mediaTag.tag.tagName}</a>
+
                          <div id="tag-${mediaTag.id}-controls" style="position:absolute; display:none;" >
                              <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
 
                          </div>
                     </td>
-                    <td width="60">
-                        <gb:tag-icons mediaTag="${mediaTag}"/>
+                    <td width="40">
+                          <a href="<c:url value='/tag/${mediaTag.tag.tagName}' />"><img src="<c:url value='/images/light/tag-light.png' />"   title="Show ${mediaTag.tag.tagName} tags from all conversations." alt="Show ${mediaTag.tag.tagName} tags from all conversations."      onmouseover="this.src='<c:url value='/images/light/tag.png' />'"          onmouseout="this.src='<c:url value='/images/light/tag-light.png' />'"/></a>
+                          <a href="#" onclick="showTagDialog('${mediaTag.id}'); return false;" style="text-decoration: none;" ><img src="<c:url value='/images/light/field_input-light.png' />" title="Edit this tag..." alt="Edit this tag..." onmouseover="this.src='<c:url value='/images/light/field_input.png' />'"  onmouseout="this.src='<c:url value='/images/light/field_input-light.png' />'" /></a>
+                          <a href="#" onclick="deleteTag('${mediaTag.id}');     return false;" style="text-decoration: none;" ><img src="<c:url value='/images/light/cross-light.png' />"  title="Remove this tag..." alt="Remove this tag..."     onmouseover="this.src='<c:url value='/images/light/cross.png' />'"        onmouseout="this.src='<c:url value='/images/light/cross-light.png' />'"/></a>
                     </td>
                     <td width="500" class="tagtd">
                         <div class="tagdiv primary-2"  style="<gb:tag-duration maxwidth="500" mediaTag="${mediaTag}" />" onmouseover="overTag(this)" onmouseout="outTag(this)" onclick="play(${mediaTag.startTime});"></div>
@@ -269,15 +278,11 @@
                 </tr>
                 <tr id="tag-${mediaTag.id}-row2" >
                     <td colspan="3" >
-                        <gb:tag-extrainfo mediaTag="${mediaTag}" />
-
-						<!--
-                        <div id="" class="tagactions" >
-                             <button onclick="showTagDialog('${mediaTag.id}')">Edit</button> <button onclick="deleteTag('${mediaTag.id}')">Delete</button>
-                             [<a href="<c:url value='/conversation/${conversation.id}/time/${mediaTag.startTime}' />" title="permalink">link</a>]
-                             [<a href="<c:url value='/tag/${mediaTag.tag.tagName}' />">all</a>]<br/><br/>
+                        <div style="margin-bottom: 5px;">
+                            <gb:tag-icons mediaTag="${mediaTag}"/>
+                            <div class="tagdescription">${mediaTag.shortDescription}</div>
+                            <gb:tag-extrainfo mediaTag="${mediaTag}" />
                         </div>
-						-->
                     </td>
                 </tr>
               </c:forEach>
@@ -309,7 +314,7 @@
                     <input type="radio" name="tagType" value="existing" onclick="showExistingTag()" /> Existing
                     <input type="radio" name="tagType" value="new" onclick="showNewTag()" /> New
                     <div id="existingTagDiv" style="margin-left: 100px;">
-                        <div dojoType="dijit.form.FilteringSelect"  store="TagStore" searchAttr="value" id="tagName" name="tagId"  autocomplete="true" onChange="tagChanged()" ></div>
+                        <div dojoType="dijit.form.ComboBox"   store="TagStore" searchAttr="value" id="tagName" name="tagName"  autocomplete="true" onChange="tagChanged()" ></div>
                     </div>
                     <div id="newTagDiv" style="margin-left: 100px; display: none;">
                         <label for="newTagName">Name:</label> <div type="text" dojoType="dijit.form.TextBox" name="newTagName" id="newTag" value="" ></div><br/>

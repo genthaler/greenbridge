@@ -253,23 +253,28 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
             }
             dao.saveTag(tag);
         } else {
-            tag = dao.findTagById(details.getTagId());
+            String projectId = null;
+            if (details.getTagProjectId() != null) projectId = details.getTagProjectId();
+            else if (details.getTagProjectName() != null) {
+                   projectId = dao.findProjectById(details.getTagProjectName()).getId();
+            }
+            System.out.println("In dao: " + details.getTagName());
+              System.out.println("In dao: " + projectId);
+            tag = dao.findTagByNameAndProjectId(details.getTagName(), projectId);
+            System.out.println("In dao: " + tag.getTagName());
+
         }
+
 
         mediaTag.setId(generateUUID());
         mediaTag.setTag(tag);
         mediaTag.setStartTime((long)details.getStartTime());
         mediaTag.setEndTime((long)details.getEndTime());
-
+        mediaTag.setShortDescription(details.getShortDescription());
         Media media = c.findFirstMedia();
 
 
         mediaTag.setMedia(media);
-        MediaTagExtraInfo sd = new MediaTagExtraInfo();
-        sd.setProp("shortDescription");
-        sd.setEntry(details.getShortDescription());
-        sd.setMediaTag(mediaTag);
-        mediaTag.getMediaTagExtraInfos().add(sd);
         media.getMediaTags().add(mediaTag);
 
         dao.saveMediaTag(mediaTag);
@@ -280,8 +285,8 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
     }
 
     @Override
-    public void updateTag(String conversationId, String mediaTagId, TagUpdateDetails details) {
-        MediaTag mediaTag = dao.findMediaTagById(mediaTagId);
+    public void updateTag(String conversationId, TagUpdateDetails details) {
+        MediaTag mediaTag = dao.findMediaTagById(details.getMediaTagId());
         Tag tag = null;
         if (details.getTagId() == null) {
             tag = new Tag();
@@ -292,27 +297,22 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
             }
             dao.saveTag(tag);
         } else {
-            tag = dao.findTagById(details.getTagId());
+            String projectId = null;
+            if (details.getTagProjectId() != null) projectId = details.getTagProjectId();
+            else if (details.getTagProjectName() != null) {
+                   projectId = dao.findProjectById(details.getTagProjectName()).getId();
+            }
+            System.out.println("In dao: " + details.getTagName());
+              System.out.println("In dao: " + projectId);
+            tag = dao.findTagByNameAndProjectId(details.getTagName(), projectId);
+            System.out.println("In dao: " + tag.getTagName());
         }
 
         
         mediaTag.setTag(tag);
         mediaTag.setStartTime((long)details.getStartTime());
         mediaTag.setEndTime((long)details.getEndTime());
-        boolean foundShort = false;
-        for(MediaTagExtraInfo extra : mediaTag.getMediaTagExtraInfos()) {
-            if ("shortDescription".equals(extra.getProp())) {
-                extra.setEntry(details.getShortDescription());
-                foundShort = true;
-            }
-        }
-        if (!foundShort) {
-            MediaTagExtraInfo sd = new MediaTagExtraInfo();
-            sd.setProp("shortDescription");
-            sd.setEntry(details.getShortDescription());
-            sd.setMediaTag(mediaTag);
-            mediaTag.getMediaTagExtraInfos().add(sd);
-        }
+        mediaTag.setShortDescription(details.getShortDescription());
         dao.saveMediaTag(mediaTag);
     }
 
@@ -329,12 +329,11 @@ public class ConversationManagerImpl implements ConversationManager, MediaTagMan
         if (tag == null) return null;
         TagUpdateDetails details = new TagUpdateDetails();
         details.setTagId(tag.getTag().getId());
+        details.setMediaTagId(tag.getId());
         details.setTagName(tag.getTag().getTagName());
         details.setStartTime((double)tag.getStartTime());
         details.setEndTime((double)tag.getEndTime());
-        for(MediaTagExtraInfo extra : tag.getMediaTagExtraInfos()) {
-            if ("shortDescription".equals(extra.getProp())) details.setShortDescription(extra.getEntry());
-        }
+        details.setShortDescription(tag.getShortDescription());
         return details;
 
     }

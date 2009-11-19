@@ -21,6 +21,7 @@ public class MediaTagSummary {
     private long conversationTotalLength;
     private long tagStartTime;
     private long tagEndTime;
+    private String shortDescription;
 
     /**
      * @return the mediaTagId
@@ -146,6 +147,20 @@ public class MediaTagSummary {
      */
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
+    }
+
+    /**
+     * @return the shortDescription
+     */
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    /**
+     * @param shortDescription the shortDescription to set
+     */
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
     }
 
 }
