@@ -32,4 +32,19 @@ public class MockStoryRef implements StoryRef {
         return 1;
     }
 
+    @Override
+    public String storyPackage() {
+        return "mock-source";
+    }
+
+    @Override
+    public String linkUrl() {
+        return "http://some.where";
+    }
+
+    @Override
+    public String linkName() {
+        return "wiki-source";
+    }
+
 }

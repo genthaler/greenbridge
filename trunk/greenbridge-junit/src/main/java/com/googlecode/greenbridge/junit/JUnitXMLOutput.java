@@ -31,7 +31,8 @@ public class JUnitXMLOutput implements Output {
     public void write(StoryResults results, PrintWriter stream) {
         writeHeader(stream);
         Summary summary = calculateSummary(results);
-        writeSummary(results.getStory().name(), summary, stream);
+        summary.source = results.getStory().storyPackage();
+        writeSummary(results.getStory().name(), results.getStory().getClass().getName(), summary, stream);
         writeTestCases(results.getScenarioResults(), stream);
         stream.println("</testsuite>");
     }
@@ -45,7 +46,7 @@ public class JUnitXMLOutput implements Output {
             writeHeader(stream);
             Summary summary = new Summary();
             summary = addScenarioResult(result, summary);
-            writeSummary(result.getScenario().name(), summary, stream);
+            writeSummary(result.getScenario().name(), result.getScenario().getClass().getName() ,summary, stream);
             writeTestCase(result, stream);
             stream.println("</testsuite>");
             stream.close();
@@ -59,12 +60,12 @@ public class JUnitXMLOutput implements Output {
         stream.println("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
     }
 
-    protected void writeSummary(String name, Summary summary, PrintWriter stream) {
+    protected void writeSummary(String name, String clazz, Summary summary, PrintWriter stream) {
             //TODO convert tume from ms to seconds
         stream.println("<testsuite failures=\"" + summary.failures +
                        "\" time=\"0.078\" errors=\"0\" skipped=\"" +
                        summary.skipped + "\" tests=\"" + summary.tests +
-                       "\" name=\"" + name +  "\" >");
+                       "\" package=\"" + summary.source + "\" name=\"" + name +  "\"  class=\"" + clazz   + "\" >");
 
     }
 
@@ -121,7 +122,7 @@ public class JUnitXMLOutput implements Output {
             end = "/";
         }
         stream.println("\t<testcase time=\"" + scenarioResult.getDuration()
-                + "\" classname=\"\" name=\"" + scenarioResult.getScenario().name() +"\" " + end + ">");
+                + "\" classname=\"" +  scenarioResult.getScenario().getClass().getName() + "\" name=\"" + scenarioResult.getScenario().name() +"\" " + end + ">");
     }
 
     private void writeTestCaseCloseTag( PrintWriter stream) {
@@ -166,6 +167,7 @@ public class JUnitXMLOutput implements Output {
         protected int errors = 0;
         protected int skipped = 0;
         protected int tests = 0;
+        protected String source;
 
     }
 

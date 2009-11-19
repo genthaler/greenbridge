@@ -31,4 +31,19 @@ public class Story2121 implements StoryRef {
     public int version(){
         return 1;
     }
+
+    @Override
+    public String storyPackage() {
+        return "brads-stuff-stories:com.brad.stuff:1.0-SNAPSHOT";
+    }
+
+    @Override
+    public String linkUrl() {
+        return "http://code.googlecode.com/p/greenbridge/Story";
+    }
+
+    @Override
+    public String linkName() {
+        return "Wiki Link";
+    }
 }

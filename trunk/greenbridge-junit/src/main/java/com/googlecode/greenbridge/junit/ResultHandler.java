@@ -25,7 +25,7 @@ public class ResultHandler {
         
         File story_root = setupStoryOutputDir();
         File scenario_root = setupScenarioOutputDir();
-        String name = results.getStory().name();
+        String name = results.getTestDescription().getDisplayName();
         writeTextOutput(story_root, results, name);
         writeXmlOutput(story_root, results, name);
         writeScenarioOutput(scenario_root, results);

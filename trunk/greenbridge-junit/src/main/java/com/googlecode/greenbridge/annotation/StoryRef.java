@@ -7,6 +7,9 @@
  */
 public  interface StoryRef {
 
+    public String storyPackage();
+    public String linkUrl();
+    public String linkName();
     public String[] narrative();
     public String name();
     public int version();
