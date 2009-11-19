@@ -27,7 +27,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-greenbridge-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -36,12 +36,9 @@
                         </goals>
                         <configuration>
                             <packageName>com.test</packageName>
-                            <storyHarvester implementation="com.googlecode.greenbridge.DefaultConfluenceStoryHarverster">
-                                <confluenceEndpoint>http://fg5664/rpc/xmlrpc</confluenceEndpoint>
-                                <confluenceUsername>confluence_application</confluenceUsername>
-                                <confluencePassword>password</confluencePassword>
-                                <confluenceSpace>~ryan_ramage</confluenceSpace>
-                                <confluencePage>My New App</confluencePage>
+                            <storyHarvester implementation="com.googlecode.greenbridge.storyharvester.impl.TiddlyWikiStoryHarvester">
+                                <tiddlyWikiFile>stories.html</tiddlyWikiFile>
+                                <tiddlyWikiRemoteURL>file:///D:/devel/greenbridge/test-greenbridge/stories.html</tiddlyWikiRemoteURL>
                             </storyHarvester>
                         </configuration>
                     </execution>
@@ -73,4 +70,10 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>greenbridge</id>
+            <url>http://greenbridge.googlecode.com/svn/trunk/repo</url>
+        </repository>
+    </repositories>
 </project>
