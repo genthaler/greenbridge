@@ -28,4 +28,19 @@ public class ${story.id}_${story.version} implements StoryRef {
         return ${story.version};
     }
 
+    @Override
+    public String storyPackage() {
+        return "${story.storyPackage}";
+    }
+
+    @Override
+    public String linkUrl() {
+        return "${story.linkUrl}";
+    }
+
+    @Override
+    public String linkName() {
+        return "${story.linkName}";
+    }
+
 }
