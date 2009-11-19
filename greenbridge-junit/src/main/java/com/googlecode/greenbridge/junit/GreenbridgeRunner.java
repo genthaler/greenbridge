@@ -40,7 +40,9 @@ public class GreenbridgeRunner extends BlockJUnit4ClassRunner {
         StoryListener listener = new StoryListener(storyRef);
         rn.addListener(listener);
         super.run(rn);
-        new ResultHandler().handleResults(listener.getStoryResults());
+        StoryResults results = listener.getStoryResults();
+        results.setTestDescription(this.getDescription());
+        new ResultHandler().handleResults(results);
     }
 
 }

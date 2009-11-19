@@ -18,6 +18,7 @@ import com.googlecode.greenbridge.annotation.StoryRef;
  * @author ryan
  */
 public class StoryResults {
+    private Description testDescription;
     private StoryRef storyRef;
     private Map<ScenarioRef , List<ScenarioResult>> scenarioResults;
 
@@ -74,5 +75,19 @@ public class StoryResults {
      */
     public void setScenarioResults(Map<ScenarioRef , List<ScenarioResult>> scenarioResults) {
         this.scenarioResults = scenarioResults;
+    }
+
+    /**
+     * @return the testDescription
+     */
+    public Description getTestDescription() {
+        return testDescription;
+    }
+
+    /**
+     * @param testDescription the testDescription to set
+     */
+    public void setTestDescription(Description testDescription) {
+        this.testDescription = testDescription;
     }
 }
