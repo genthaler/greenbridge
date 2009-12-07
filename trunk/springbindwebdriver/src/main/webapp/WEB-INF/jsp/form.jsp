@@ -66,6 +66,10 @@
                     <td><form:input path="inputText2"></form:input></td>
                 </tr>
                 <tr>
+                    <td>Checkbox</td>
+                    <td><form:checkbox path="checkbox2"  /></td>
+                </tr>
+                <tr>
                     <td>Radio</td>
                     <td>
                       <form:radiobutton path="radio2" value="Y"/> Yes<br/>

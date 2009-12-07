@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.googlecode.greenbridge.springwebdriverbind;
+package com.googlecode.greenbridge.binder.webdriver;
 
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
@@ -17,7 +17,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeanWrapperImplExposer;
 
 /**
  *
@@ -45,45 +44,31 @@ public class Binder {
     }
 
 
-    public void bindBean(BeanWrapperImpl bean, WebDriver wd) {
-        PropertyDescriptor[] pds = bean.getPropertyDescriptors();
-        for (PropertyDescriptor propertyDescriptor : pds) {
-            bindProperty(propertyDescriptor, bean, wd);
+    public void bindBean(Object bean, WebDriver wd) {
+        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
+        PathFinder finder = new PathFinder();
+        List<String> paths = finder.findAllPaths(wrap);
+        for (String path : paths) {
+            bindProperty(path, wrap, wd);
         }
     }
 
-    public void bindProperty(String path, BeanWrapperImpl bean, WebDriver wd) {
-        PropertyDescriptor pd = bean.getPropertyDescriptor(path);
-        bindProperty(pd, bean, wd);
+    public Binder bindProperty(String path, Object bean, WebDriver wd) {
+        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
+        bindProperty(path, wrap, wd);
+        return this;
     }
-    
 
-    protected void bindProperty(PropertyDescriptor pd, BeanWrapperImpl bean, WebDriver wd) {
-        if (isBindable(pd)) {
-            String path = getPropertyPath(bean, pd);
-            INPUT_TYPE input_type = determineInputType(path, wd);
-            bind(input_type, pd, path, bean, wd);
-        }
-        else if (isList(pd)) {
-            List list = (List)bean.getPropertyValue(pd.getName());
-            if (list == null) return;
-            for (int i = 0; i < list.size(); i++) {
-                Object object = list.get(i);
-                BeanWrapperImpl subbeanWrap = new BeanWrapperImpl(object, pd.getName() + "[" + i + "]", bean.getWrappedInstance());
-                String indexPath = subbeanWrap.getNestedPath();
-                checkForListCollectionListeners(i, indexPath, object, wd);
-                bindBean(subbeanWrap, wd);
-            }
-        }
-        else if (isSubBean(pd)) {
-            //BeanWrapperImplExposer exposer = new BeanWrapperImplExposer(bean);
-            //BeanWrapperImpl subbeanWrap = exposer.exposeBeanWrapperForPropertyPath(pd.getName());
-            Object subbean = bean.getPropertyValue(pd.getName());
-            BeanWrapperImpl subbeanWrap = new BeanWrapperImpl(subbean, pd.getName(), bean.getWrappedInstance());
-            //exposer.exposeCopyCustomEditorsTo(subbeanWrap, pd.getName());
-            bindBean(subbeanWrap, wd);
-        }
+
+
+    protected void bindProperty(String path, BeanWrapperImpl bean, WebDriver wd) {
+        INPUT_TYPE input_type = determineInputType(path, wd);
+        checkForListCollectionListeners(0, path, bean.getPropertyValue(path), wd);
+        bind(input_type, path, bean, wd);
+
     }
+
+
 
 
     protected void checkForListCollectionListeners(int index, String path, Object object, WebDriver wd) {
@@ -96,55 +81,22 @@ public class Binder {
     }
 
 
-    protected boolean isList(PropertyDescriptor pd) {
-        if (pd.getPropertyType().isAssignableFrom(List.class)) return true;
-        return false;
-    }
-
-
-    protected boolean isSubBean(PropertyDescriptor pd) {
-        if (isCollection(pd)) return false;
-        if ("class".equals(pd.getName()) || "annotation".equals(pd.getName())) return false;
-        return true;
-    }
-
-    protected boolean isCollection(PropertyDescriptor pd) {
-        if (pd.getPropertyType().isAssignableFrom(Collection.class)) return true;
-        else return false;
-    }
-
-
-
-
-
-    protected void bind(INPUT_TYPE input_type, PropertyDescriptor pd, String path, BeanWrapperImpl bean, WebDriver wd) {
+    protected void bind(INPUT_TYPE input_type, String path, BeanWrapperImpl bean, WebDriver wd) {
         if (input_type == INPUT_TYPE.checkbox) {
-            bindPathToCheckbox(path, pd, bean, wd);
+            bindPathToCheckbox(path, bean, wd);
         }
         if (input_type == INPUT_TYPE.radio) {
-            bindPathToRadio(path, pd, bean, wd);
+            bindPathToRadio(path,  bean, wd);
         }
         if (input_type == INPUT_TYPE.inputText) {
-            bindPathToInputText(path, pd, bean, wd);
+            bindPathToInputText(path, bean, wd);
         }
         if (input_type == INPUT_TYPE.select) {
-            bindPathToSelect(path, pd, bean, wd);
+            bindPathToSelect(path, bean, wd);
         }
     }
 
-    protected String getPropertyPath(BeanWrapperImpl bean, PropertyDescriptor pd) {
-        String path = bean.getNestedPath();
-        if (path != null && !"".equals(path)) return path + "." + pd.getName();
-        else return pd.getName();
-    }
 
-    protected boolean isBindable(PropertyDescriptor pd) {
-       Class prop_clazz = pd.getPropertyType();
-       if (prop_clazz.isAssignableFrom(String.class) || prop_clazz.isAssignableFrom(Boolean.class) || prop_clazz.isAssignableFrom(Integer.class) || prop_clazz.isAssignableFrom(Date.class)) {
-            return true;
-        }
-       return false;
-    }
 
 
 
@@ -195,11 +147,11 @@ public class Binder {
     }
 
 
-    protected String findPropertyValueAsString(String path,PropertyDescriptor pd, BeanWrapperImpl bean) {
-        Object value = bean.getPropertyValue(pd.getName());
+    protected String findPropertyValueAsString(String path, BeanWrapperImpl bean) {
+        Object value = bean.getPropertyValue(path);
         if (value == null) return null;
         String value_str = value.toString();
-        PropertyEditor pe = findPropertyEditor(path, pd, bean);
+        PropertyEditor pe = findPropertyEditor(path, bean);
         if (pe != null) {
             pe.setValue(value);
             value_str = pe.getAsText();
@@ -207,8 +159,8 @@ public class Binder {
         return value_str;
     }
 
-    protected PropertyEditor findPropertyEditor(String path, PropertyDescriptor pd, BeanWrapperImpl bean) {
-        PropertyEditor pe = classToPropertyEditor.get(pd.getPropertyType());
+    protected PropertyEditor findPropertyEditor(String path, BeanWrapperImpl bean) {
+        PropertyEditor pe = classToPropertyEditor.get(bean.getPropertyType(path));
         if (pe != null) return pe;
 
         for (String pathRegex : pathRegexToPropertyEditor.keySet()) {
@@ -216,35 +168,33 @@ public class Binder {
                 return pathRegexToPropertyEditor.get(pathRegex);
             }
         }
-        pe = bean.findCustomEditor(bean.getWrappedClass(), pd.getName());
-        if (pe != null) return pe;
-        return bean.findCustomEditor(pd.getPropertyType(), null);
+        return null;
     }
 
 
 
-    protected void bindPathToRadio(String path, PropertyDescriptor pd, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, pd, bean);
+    protected void bindPathToRadio(String path, BeanWrapperImpl bean, WebDriver wd) {
+        String value_str = findPropertyValueAsString(path, bean);
         if (value_str != null) {
             wd.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'radio'][@value = '" + value_str +"']")).click();
         }
     }
 
-    protected void bindPathToSelect(String path, PropertyDescriptor pd, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, pd, bean);
+    protected void bindPathToSelect(String path, BeanWrapperImpl bean, WebDriver wd) {
+        String value_str = findPropertyValueAsString(path, bean);
         if (value_str != null) {
             new Select(wd.findElement(By.name(path))).selectByValue(value_str);
         }
     }
-    protected void bindPathToInputText(String path, PropertyDescriptor pd, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, pd, bean);
+    protected void bindPathToInputText(String path, BeanWrapperImpl bean, WebDriver wd) {
+        String value_str = findPropertyValueAsString(path, bean);
         if (value_str != null) {
             wd.findElement(By.name(path)).sendKeys(value_str);
         }
     }
 
-    protected void bindPathToCheckbox(String path, PropertyDescriptor pd, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, pd, bean);
+    protected void bindPathToCheckbox(String path, BeanWrapperImpl bean, WebDriver wd) {
+        String value_str = findPropertyValueAsString(path, bean);
         if (value_str != null) {
             wd.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'checkbox'][@value = '" + value_str +"']")).click();
         }
