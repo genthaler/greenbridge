@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.googlecode.greenbridge.springwebdriverbind;
+package com.googlecode.greenbridge.binder.webdriver;
 
 import org.openqa.selenium.WebDriver;
 

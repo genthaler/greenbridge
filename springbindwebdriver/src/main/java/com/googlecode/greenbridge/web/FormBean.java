@@ -20,6 +20,7 @@ public class FormBean {
     private String select1;
 
     private Boolean inputText2;
+    private Boolean checkbox2;
     private Boolean radio2;
     private Boolean select2;
 
@@ -284,5 +285,19 @@ public class FormBean {
      */
     public void setList(List<SubBean> list) {
         this.list = list;
+    }
+
+    /**
+     * @return the checkbox2
+     */
+    public Boolean getCheckbox2() {
+        return checkbox2;
+    }
+
+    /**
+     * @param checkbox2 the checkbox2 to set
+     */
+    public void setCheckbox2(Boolean checkbox2) {
+        this.checkbox2 = checkbox2;
     }
 }

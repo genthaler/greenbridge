@@ -3,11 +3,12 @@
  * and open the template in the editor.
  */
 
-package com.googlecode.greenbridge.springwebdriverbind;
+package com.googlecode.greenbridge.binder.webdriver;
 
+import com.googlecode.greenbridge.binder.webdriver.ListCollectionListener;
 import com.googlecode.greenbridge.web.FormBean;
 import com.googlecode.greenbridge.web.SubBean;
-import com.googlecode.greenbridge.springwebdriverbind.Binder.INPUT_TYPE;
+import com.googlecode.greenbridge.binder.webdriver.Binder.INPUT_TYPE;
 import com.thoughtworks.xstream.XStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,10 +18,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.propertyeditors.CustomBooleanEditor;
@@ -32,7 +35,7 @@ import static org.junit.Assert.*;
  * @author ryan
  */
 public class IntegrationTest {
-    private static FirefoxDriver wd;
+    private static WebDriver wd;
     private static String base = "http://localhost:8181/test/form.html";
     private static String output_dir_txt = "target/binding";
     private static File output_dir;
@@ -42,7 +45,7 @@ public class IntegrationTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        wd = new FirefoxDriver();
+        wd = new HtmlUnitDriver(true);
         output_dir = new File(output_dir_txt);
         output_dir.mkdirs();
     }
@@ -53,6 +56,7 @@ public class IntegrationTest {
     }
 
     @Test
+    @Ignore
     public void doTest() throws FileNotFoundException, ParseException {
         String testId = "test1";
 
@@ -110,6 +114,10 @@ public class IntegrationTest {
         assertEquals(INPUT_TYPE.radio, radio2_type);
         binder.bindProperty("radio2", wrap, wd);
 
+        bean.setCheckbox2(Boolean.TRUE);
+        binder.bindProperty("checkbox2", wrap, wd);
+
+
         bean.setSelect2(Boolean.FALSE);
         INPUT_TYPE select2_type = binder.determineInputType("select2", wd);
         assertEquals(INPUT_TYPE.select, select2_type);
@@ -156,6 +164,7 @@ public class IntegrationTest {
         assertEquals(bean.getSelect1(), result.getSelect1());
         assertEquals(bean.getInputText2(), result.getInputText2());
         assertEquals(bean.getRadio2(), result.getRadio2());
+        assertEquals(bean.getCheckbox2(), result.getCheckbox2());
         assertEquals(bean.getSelect2(), result.getSelect2());
         assertEquals(bean.getInputText3(), result.getInputText3());
         assertEquals(bean.getRadio3(), result.getRadio3());
@@ -207,8 +216,6 @@ public class IntegrationTest {
             }
         });
 
-
-        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
         CustomBooleanEditor boolEdit = new CustomBooleanEditor("Y", "N", true);
         binder.addPropertyEditor(Boolean.class, boolEdit);
         
@@ -218,7 +225,7 @@ public class IntegrationTest {
 
 
 
-        binder.bindBean(wrap, wd);
+        binder.bindBean(bean, wd);
 
         wd.findElement(By.id("next")).click();
         assertEquals("Done", wd.findElement(By.id("done")).getText());
@@ -244,6 +251,7 @@ public class IntegrationTest {
     }
 
 
+    @Ignore
     @Test
     public void testNulls() throws FileNotFoundException {
         String testId = "nullTestBinding";

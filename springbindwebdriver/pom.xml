@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.googlecode.greenbridge</groupId>
-    <artifactId>springbindwebdriver</artifactId>
+    <artifactId>binder-webdriver</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
     <name>Spring Binding to Web Driver</name>
@@ -21,6 +21,13 @@
             <groupId>org.seleniumhq.webdriver</groupId>
             <artifactId>webdriver-firefox</artifactId>
             <version>0.9.7376</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.webdriver</groupId>
+            <artifactId>webdriver-htmlunit</artifactId>
+            <version>0.9.7376</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.webdriver</groupId>
@@ -180,7 +187,7 @@
                 <deployables>
                   <deployable>
                     <groupId>com.googlecode.greenbridge</groupId>
-                    <artifactId>springbindwebdriver</artifactId>
+                    <artifactId>binder-webdriver</artifactId>
                     <type>war</type>
                     <properties>
                       <context>test</context>
