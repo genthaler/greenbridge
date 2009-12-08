@@ -19,6 +19,18 @@
     <dependencies>
         <dependency>
             <groupId>org.seleniumhq.webdriver</groupId>
+            <artifactId>webdriver-chrome</artifactId>
+            <version>0.9.7376</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.webdriver</groupId>
+            <artifactId>webdriver-ie</artifactId>
+            <version>0.9.7376</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.webdriver</groupId>
             <artifactId>webdriver-firefox</artifactId>
             <version>0.9.7376</version>
             <scope>test</scope>
@@ -260,10 +272,6 @@
         <cargo.test.user.password>password</cargo.test.user.password>
         <cargo.test.user.roles>user</cargo.test.user.roles>
         <cargo.users>${cargo.test.user.name}:${cargo.test.user.password}:${cargo.test.user.roles}</cargo.users>
-
-
-        <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
-
 
     </properties>
 
