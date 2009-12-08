@@ -7,12 +7,17 @@ package com.googlecode.greenbridge.binder.webdriver;
 
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -24,15 +29,19 @@ import org.springframework.beans.BeanWrapperImpl;
  */
 public class Binder {
 
-    private Map<String,ListCollectionListener> pathRegexToListCollectionListener = new HashMap<String,ListCollectionListener>();
+    private BeanWrapperImpl cachedWrapper;
+    private WebDriver cachedWebDriver;
+    private Map<String,PathListener> pathRegexToPathListener = new HashMap<String,PathListener>();
     private Map<String,PropertyEditor> pathRegexToPropertyEditor = new HashMap<String,PropertyEditor>();
     private Map<Class,PropertyEditor> classToPropertyEditor = new HashMap<Class,PropertyEditor>();
+    private Map<String,WebElement> cachedPathToWebElement = new HashMap<String,WebElement>();
+    private Map<String,INPUT_TYPE> cachedPathToInputType = new HashMap<String, INPUT_TYPE>();
 
     public enum INPUT_TYPE {inputText,radio,checkbox,select};
 
 
-    public void addListCollectionListener(String pathRegex, ListCollectionListener listener) {
-        pathRegexToListCollectionListener.put(pathRegex, listener);
+    public void addPathListener(String pathRegex, PathListener listener) {
+        pathRegexToPathListener.put(pathRegex, listener);
     }
 
     public void addPropertyEditor(String pathRegex, PropertyEditor pe) {
@@ -44,101 +53,200 @@ public class Binder {
     }
 
 
-    public void bindBean(Object bean, WebDriver wd) {
+    public Binder bind(Object bean, String path, WebDriver wd) {
         BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
-        PathFinder finder = new PathFinder();
-        List<String> paths = finder.findAllPaths(wrap);
-        for (String path : paths) {
-            bindProperty(path, wrap, wd);
-        }
+        this.cachedWrapper = wrap;
+        this.cachedWebDriver = wd;
+        bindProperty(path);
+        return this;
     }
 
-    public Binder bindProperty(String path, Object bean, WebDriver wd) {
-        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
-        bindProperty(path, wrap, wd);
+    public Binder bind(String path) {
+        if (this.cachedWebDriver == null || this.cachedWrapper == null) throw new IllegalStateException();
+        bindProperty(path);
         return this;
     }
 
 
+    public void bindUnordered(Object bean, WebDriver wd) {
+        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
+        this.cachedWrapper = wrap;
+        this.cachedWebDriver = wd;
+        PathFinder finder = new PathFinder();
+        List<String> paths = finder.findAllPaths(wrap);
+        for (String path : paths) {
+            bindProperty(path);
+        }
+    }
 
-    protected void bindProperty(String path, BeanWrapperImpl bean, WebDriver wd) {
-        INPUT_TYPE input_type = determineInputType(path, wd);
-        checkForListCollectionListeners(0, path, bean.getPropertyValue(path), wd);
-        bind(input_type, path, bean, wd);
+
+    public void bindOrdered(Object bean, String pathOfFirstPropertyToBind, WebDriver wd)  {
+        BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
+        this.cachedWebDriver = wd;
+        this.cachedWrapper = wrap;
+        PathFinder finder = new PathFinder();
+        List<String> remainingPaths = finder.findAllPaths(wrap);
+        prunePathsWithNullValues(remainingPaths);
+        WebElement current = bindProperty(pathOfFirstPropertyToBind);
+        remainingPaths.remove(pathOfFirstPropertyToBind);
+        int count = 0;
+        while (remainingPaths.size() > 0 && count < 100) {
+            current = focusOnNextWebElement(current);
+            String path = pathThatNextElementMatches(current, remainingPaths);
+            if (path != null) {
+                bindProperty(path);
+                remainingPaths.remove(path);
+            }
+            count++;
+        }
+    }
+
+    protected void prunePathsWithNullValues(List<String> remainingPaths) {
+        List<String> toPrune = new ArrayList<String>();
+        for (String path : remainingPaths) {
+            Object value = cachedWrapper.getPropertyValue(path);
+            if (value == null) toPrune.add(path);
+        }
+        remainingPaths.removeAll(toPrune);
+    }
+
+
+    // pull one odd
+    protected WebElement focusOnNextWebElement(WebElement current) {
+        if (current == null) return null;
+        current.sendKeys(Keys.TAB);
+        WebElement next = cachedWebDriver.switchTo().activeElement();
+        return next;
+    }
+
+    protected String pathThatNextElementMatches(WebElement next, List<String> remainingPaths) {
+        for (String path : remainingPaths) {
+            INPUT_TYPE found_type = determineInputType(path);
+            WebElement match = getWebElement(found_type, path);
+            if (isRadio(next) && found_type == INPUT_TYPE.radio && isSameName(next, match)) {
+                return path;
+            } else {
+                if (match != null && match.equals(next)) return path;
+            }
+        }
+        return null;
+    }
+
+    private boolean isSameName(WebElement we1, WebElement we2) {
+        try {
+            if (we1.getAttribute("name").equalsIgnoreCase(we2.getAttribute("name"))) return true;
+        } catch (Exception ignore) {}
+        return false;
+    }
+
+    private boolean isRadio(WebElement we) {
+        try {
+            if (we.getAttribute("type").equalsIgnoreCase("radio")) return true;
+        } catch (Exception ignore) {}
+        return false;
+    }
+
+    protected WebElement bindProperty(String path) {
+        INPUT_TYPE input_type = determineInputType(path);
+        checkForPathListeners(path, cachedWrapper.getPropertyValue(path), false);
+        WebElement result =  bind(input_type, path);
+        checkForPathListeners(path, cachedWrapper.getPropertyValue(path), true);
+        return result;
 
     }
 
 
 
 
-    protected void checkForListCollectionListeners(int index, String path, Object object, WebDriver wd) {
-        for (String pathRegex : pathRegexToListCollectionListener.keySet()) {
+    protected void checkForPathListeners(String path, Object object, boolean after) {
+        for (String pathRegex : pathRegexToPathListener.keySet()) {
             if (path.matches(pathRegex)) {
-                ListCollectionListener listener = pathRegexToListCollectionListener.get(pathRegex);
-                listener.beforeListCollectionEntry(index, object, wd);
+                PathListener listener = pathRegexToPathListener.get(pathRegex);
+                if (!after) listener.beforePathDataBind(path, object, cachedWebDriver);
+                else listener.afterPathDataBind(path, object, cachedWebDriver);
             }
         }
     }
 
 
-    protected void bind(INPUT_TYPE input_type, String path, BeanWrapperImpl bean, WebDriver wd) {
+    protected WebElement bind(INPUT_TYPE input_type, String path) {
         if (input_type == INPUT_TYPE.checkbox) {
-            bindPathToCheckbox(path, bean, wd);
+            return bindPathToCheckbox(path);
         }
         if (input_type == INPUT_TYPE.radio) {
-            bindPathToRadio(path,  bean, wd);
+            return bindPathToRadio(path);
         }
         if (input_type == INPUT_TYPE.inputText) {
-            bindPathToInputText(path, bean, wd);
+            return bindPathToInputText(path);
         }
         if (input_type == INPUT_TYPE.select) {
-            bindPathToSelect(path, bean, wd);
+            return bindPathToSelect(path);
         }
-    }
-
-
-
-
-
-    public INPUT_TYPE determineInputType(String path, WebDriver wd ) {
-        if (isCheckbox(path, wd)) return INPUT_TYPE.checkbox;
-        if (isRadio(path, wd)) return INPUT_TYPE.radio;
-        if (isSelect(path, wd)) return INPUT_TYPE.select;
-        if (isInputText(path, wd)) return INPUT_TYPE.inputText;
-
         return null;
     }
 
-    protected boolean isCheckbox(String path, WebDriver wd) {
+    protected WebElement getWebElement(INPUT_TYPE input_type, String path) {
+        
+        if (input_type == INPUT_TYPE.checkbox) {
+            return findWebElementForCheckbox(path);
+        }
+        if (input_type == INPUT_TYPE.radio) {
+            return findWebElementForRadio(path);
+        }
+        if (input_type == INPUT_TYPE.inputText) {
+            return findWebElementForInputText(path);
+        }
+        if (input_type == INPUT_TYPE.select) {
+            return findWebElementForSelect(path);
+        }
+        return null;
+    }
+
+
+
+    protected INPUT_TYPE determineInputType(String path ) {
+        if (cachedPathToInputType.containsKey(path)) return cachedPathToInputType.get(path);
+        INPUT_TYPE result = null;
+        if (isCheckbox(path)) result =  INPUT_TYPE.checkbox;
+        if (isRadio(path)) result =  INPUT_TYPE.radio;
+        if (isSelect(path)) result =  INPUT_TYPE.select;
+        if (isInputText(path)) result =  INPUT_TYPE.inputText;
+        if (result != null) {
+            cachedPathToInputType.put(path, result);
+        }
+        return result;
+    }
+
+    protected boolean isCheckbox(String path) {
         try {
-            List<WebElement> elements = wd.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'checkbox']"));
+            List<WebElement> elements = cachedWebDriver.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'checkbox']"));
             if (elements.size() > 0 ) return true;
             return false;
         } catch (Exception e) {
             return false;
         }
     }
-    protected boolean isRadio(String path, WebDriver wd) {
+    protected boolean isRadio(String path) {
         try {
-            List<WebElement> elements = wd.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'radio']"));
+            List<WebElement> elements = cachedWebDriver.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'radio']"));
             if (elements.size() > 0 ) return true;
             return false;
         } catch (Exception e) {
             return false;
         }
     }
-    protected boolean isInputText(String path, WebDriver wd) {
+    protected boolean isInputText(String path) {
         try {
-            List<WebElement> elements = wd.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'text']"));
+            List<WebElement> elements = cachedWebDriver.findElements(By.xpath("//input[@name='"+ path +"'][@type = 'text']"));
             if (elements.size() > 0 ) return true;
             return false;
         } catch (Exception e) {
             return false;
         }
     }
-    protected boolean isSelect(String path, WebDriver wd) {
+    protected boolean isSelect(String path) {
         try {
-            List<WebElement> elements = wd.findElements(By.xpath("//select[@name='"+ path +"']"));
+            List<WebElement> elements = cachedWebDriver.findElements(By.xpath("//select[@name='"+ path +"']"));
             if (elements.size() > 0 ) return true;
             return false;
         } catch (Exception e) {
@@ -147,11 +255,11 @@ public class Binder {
     }
 
 
-    protected String findPropertyValueAsString(String path, BeanWrapperImpl bean) {
-        Object value = bean.getPropertyValue(path);
+    protected String findPropertyValueAsString(String path) {
+        Object value = cachedWrapper.getPropertyValue(path);
         if (value == null) return null;
         String value_str = value.toString();
-        PropertyEditor pe = findPropertyEditor(path, bean);
+        PropertyEditor pe = findPropertyEditor(path);
         if (pe != null) {
             pe.setValue(value);
             value_str = pe.getAsText();
@@ -159,8 +267,8 @@ public class Binder {
         return value_str;
     }
 
-    protected PropertyEditor findPropertyEditor(String path, BeanWrapperImpl bean) {
-        PropertyEditor pe = classToPropertyEditor.get(bean.getPropertyType(path));
+    protected PropertyEditor findPropertyEditor(String path) {
+        PropertyEditor pe = classToPropertyEditor.get(cachedWrapper.getPropertyType(path));
         if (pe != null) return pe;
 
         for (String pathRegex : pathRegexToPropertyEditor.keySet()) {
@@ -172,32 +280,91 @@ public class Binder {
     }
 
 
-
-    protected void bindPathToRadio(String path, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, bean);
+    protected WebElement findWebElementForRadio(String path) {
+        if (cachedPathToWebElement.containsKey(path)) return cachedPathToWebElement.get(path);
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = null;
         if (value_str != null) {
-            wd.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'radio'][@value = '" + value_str +"']")).click();
+            try {
+                we = cachedWebDriver.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'radio'][@value = '" + value_str +"']"));
+                cachedPathToWebElement.put(path, we);
+            } catch(Exception ignore) {}
         }
+        return we;
     }
 
-    protected void bindPathToSelect(String path, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, bean);
-        if (value_str != null) {
-            new Select(wd.findElement(By.name(path))).selectByValue(value_str);
+    protected WebElement bindPathToRadio(String path) {
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = findWebElementForRadio(path);
+        if (value_str != null && we != null) {
+            we.click();
         }
-    }
-    protected void bindPathToInputText(String path, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, bean);
-        if (value_str != null) {
-            wd.findElement(By.name(path)).sendKeys(value_str);
-        }
+        return we;
     }
 
-    protected void bindPathToCheckbox(String path, BeanWrapperImpl bean, WebDriver wd) {
-        String value_str = findPropertyValueAsString(path, bean);
+     protected WebElement findWebElementForSelect(String path) {
+        if (cachedPathToWebElement.containsKey(path)) return cachedPathToWebElement.get(path);
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = null;
         if (value_str != null) {
-            wd.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'checkbox'][@value = '" + value_str +"']")).click();
+            try {
+                we = cachedWebDriver.findElement(By.name(path));
+                cachedPathToWebElement.put(path, we);
+            } catch(Exception ignore) {}
         }
+        return we;
+    }
+
+    protected WebElement bindPathToSelect(String path) {
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = findWebElementForSelect(path);
+        if (value_str != null && we != null) {
+            new Select(we).selectByValue(value_str);
+        }
+        return we;
+    }
+
+     protected WebElement findWebElementForInputText(String path) {
+        if (cachedPathToWebElement.containsKey(path)) return cachedPathToWebElement.get(path);
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = null;
+        if (value_str != null) {
+            try {
+                we = cachedWebDriver.findElement(By.name(path));
+                cachedPathToWebElement.put(path, we);
+            } catch(Exception ignore) {}
+        }
+        return we;
+    }
+
+    protected WebElement bindPathToInputText(String path) {
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = findWebElementForInputText(path);
+        if (value_str != null && we != null) {
+            we.sendKeys(value_str);
+        }
+        return we;
+    }
+
+    protected WebElement findWebElementForCheckbox(String path) {
+        if (cachedPathToWebElement.containsKey(path)) return cachedPathToWebElement.get(path);
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = null;
+        if (value_str != null) {
+            try {
+                we = cachedWebDriver.findElement(By.xpath("//input[@name='"+ path +"'][@type = 'checkbox'][@value = '" + value_str +"']"));
+                cachedPathToWebElement.put(path, we);
+            } catch(Exception ignore) {}
+        }
+        return we;
+    }
+    protected WebElement bindPathToCheckbox(String path) {
+        String value_str = findPropertyValueAsString(path);
+        WebElement we = findWebElementForCheckbox(path);
+        if (value_str != null && we != null) {
+            we.click();
+        }
+        return we;
     }
 
 }

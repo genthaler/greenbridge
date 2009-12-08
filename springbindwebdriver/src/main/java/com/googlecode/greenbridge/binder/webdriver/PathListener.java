@@ -11,6 +11,8 @@ import org.openqa.selenium.WebDriver;
  *
  * @author ryan
  */
-public interface ListCollectionListener {
-    public void beforeListCollectionEntry(int index, Object element, WebDriver wd);
+public interface PathListener {
+    public void beforePathDataBind(String path, Object pathValue, WebDriver wd);
+    public void afterPathDataBind(String path, Object pathValue, WebDriver wd);
+    
 }

@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.hamcrest.beans.PropertyUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapperImpl;
 
 /**
@@ -19,6 +17,8 @@ import org.springframework.beans.BeanWrapperImpl;
  * @author ryan
  */
 public class PathFinder {
+
+    public PathFinder() {}
 
     public List<String> findAllPaths(Object bean) {
         BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
