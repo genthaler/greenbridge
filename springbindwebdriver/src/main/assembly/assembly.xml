@@ -8,7 +8,7 @@
             <directory>${basedir}/src/main/java</directory>
             <outputDirectory></outputDirectory>
             <includes>
-                <include>com/googlecode/greenbridge/binder/webdriver/**</include>
+                <include>**/binder/webdriver/**</include>
             </includes>
         </fileSet>
     </fileSets>

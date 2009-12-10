@@ -6,6 +6,7 @@
 package com.googlecode.greenbridge.binder.webdriver;
 
 import com.googlecode.greenbridge.binder.webdriver.PathFinder;
+import com.googlecode.greenbridge.web.BeanWithNullStuff;
 import com.googlecode.greenbridge.web.FormBean;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,8 +55,17 @@ public class PathFinderTest {
 
         PathFinder finder = new PathFinder();
         List<String> paths = finder.findAllPaths(bean);
+
+
+    }
+
+    @Test
+    public void testPathsThatAreNull() {
+        BeanWithNullStuff bean = new BeanWithNullStuff();
+        PathFinder finder = new PathFinder();
+        List<String> paths = finder.findAllPaths(bean);
         for (String string : paths) {
-            System.out.println("Found: " + string);
+            System.out.println("Path: " + string);
         }
 
     }

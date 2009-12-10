@@ -33,6 +33,7 @@ public class FormBean {
     private Date checkbox4;
     private Date radio4;
     private Date select4;
+    private String notShown;
 
 
     private SubBean subbean = new SubBean();
@@ -299,5 +300,19 @@ public class FormBean {
      */
     public void setCheckbox2(Boolean checkbox2) {
         this.checkbox2 = checkbox2;
+    }
+
+    /**
+     * @return the notShown
+     */
+    public String getNotShown() {
+        return notShown;
+    }
+
+    /**
+     * @param notShown the notShown to set
+     */
+    public void setNotShown(String notShown) {
+        this.notShown = notShown;
     }
 }

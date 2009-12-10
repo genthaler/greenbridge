@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.googlecode.greenbridge</groupId>
     <artifactId>binder-webdriver</artifactId>
-    <version>1.0</version>
+    <version>1.1.2</version>
     <packaging>war</packaging>
     <name>Spring Binding to Web Driver</name>
     <url>http://code.google.com/p/greenbridge/</url>
