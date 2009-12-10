@@ -18,6 +18,9 @@ public class Bean {
     private Date birthday;
     private List<String> phone = new ArrayList<String>();
     private Boolean happy;
+    private Integer amount1;
+    private Float amount2;
+    private double amount3;
 
     /**
      * @return the name
@@ -73,5 +76,47 @@ public class Bean {
      */
     public void setHappy(Boolean happy) {
         this.happy = happy;
+    }
+
+    /**
+     * @return the amount1
+     */
+    public Integer getAmount1() {
+        return amount1;
+    }
+
+    /**
+     * @param amount1 the amount1 to set
+     */
+    public void setAmount1(Integer amount1) {
+        this.amount1 = amount1;
+    }
+
+    /**
+     * @return the amount2
+     */
+    public Float getAmount2() {
+        return amount2;
+    }
+
+    /**
+     * @param amount2 the amount2 to set
+     */
+    public void setAmount2(Float amount2) {
+        this.amount2 = amount2;
+    }
+
+    /**
+     * @return the amount
+     */
+    public double getAmount3() {
+        return amount3;
+    }
+
+    /**
+     * @param amount the amount to set
+     */
+    public void setAmount3(double amount3) {
+        this.amount3 = amount3;
     }
 }
