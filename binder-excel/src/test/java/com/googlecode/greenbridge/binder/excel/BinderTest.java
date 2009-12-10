@@ -43,6 +43,8 @@ public class BinderTest {
         assertEquals("08/08/1975", dateFormat.format(bean.getBirthday()));
         assertEquals(2, bean.getPhone().size());
         assertEquals(true, bean.getHappy());
+        assertEquals(1d, (double)bean.getAmount1(), 0.2);
+        assertEquals(2.3, (float)bean.getAmount2(), 0.2);
     }
 
     @Test
@@ -52,7 +54,7 @@ public class BinderTest {
 
         Binder b = new Binder();
         List<String> results = b.readPaths(s);
-        assertEquals(5, results.size());
+        assertEquals(8, results.size());
         for (String string : results) {
             System.out.println("path: " + string);
         }
