@@ -10,6 +10,7 @@ import java.util.List;
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.DateCell;
+import jxl.NumberCell;
 import jxl.Sheet;
 import org.springframework.beans.BeanWrapperImpl;
 
@@ -84,6 +85,7 @@ public class Binder {
         if (cell.getContents().equals("")) return null;
         if (cell instanceof BooleanCell) return ((BooleanCell)cell).getValue();
         if (cell instanceof DateCell) return ((DateCell)cell).getDate();
+        if (cell instanceof NumberCell) return((NumberCell)cell).getValue();
         return cell.getContents();
     }
 }
