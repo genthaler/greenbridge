@@ -98,6 +98,7 @@ public class IntegrationTest {
 
         wd.findElement(By.id("addRow")).click();
         binder.bind("list[0].prop1");
+        binder.bind("list[0].date1");
 
         wd.findElement(By.id("next")).click();
         assertEquals("Done", wd.findElement(By.id("done")).getText());
@@ -107,43 +108,70 @@ public class IntegrationTest {
     }
 
 
-
     @Test
     public void bindBean() throws FileNotFoundException, ParseException {
-        String testId = "bindBean";
-        wd.get(base);
-        wd.findElement(By.name("testId")).sendKeys(testId);
+        startTest("bindBean", wd);
 
-
+        // Setup the binder
         Binder binder = new Binder();
-        binder.addPathListener("subbean\\.prop1", new AbstractPathListener() {
-            @Override
+        registerCustomEditors(binder);
+        // add a listener to the path so the addRow button will be clicked, so
+        // a new table row will be created in prep for the list binding.
+        binder.addPathListener("subbean\\.date1", new AbstractPathListener() {
             public void afterPathDataBind(String path, Object pathValue, WebDriver wd) {
                 wd.findElement(By.id("addRow")).click();
             }
         });
 
-        binder.addPathListener("list\\[0\\]\\.prop1", new AbstractPathListener() {
-            @Override
-            public void beforePathDataBind(String path, Object pathValue, WebDriver wd) {
-                wd.findElement(By.id("addRow")).click();
-            }
-        });
-
-        CustomBooleanEditor boolEdit = new CustomBooleanEditor("Y", "N", true);
-        binder.addPropertyEditor(Boolean.class, boolEdit);
-        CustomDateEditor dateEditor = new CustomDateEditor(dateFormat, true);
-        binder.addPropertyEditor(Date.class, dateEditor);
-
-
+        // bind the bean!
         FormBean bean = createFormBean();
         binder.bindOrdered(bean, "inputText", wd);
 
         wd.findElement(By.id("next")).click();
         assertEquals("Done", wd.findElement(By.id("done")).getText());
 
-        verifyBinding(testId, bean);
+        verifyBinding("bindBean", bean);
     }
+
+    @Test
+    public void testLoopAsRequestedOnFieldMissingOnForm() throws ParseException, FileNotFoundException {
+         startTest("loopOnMissingField", wd);
+
+        // Setup the binder
+        Binder binder = new Binder();
+        registerCustomEditors(binder);
+        // add a listener to the path so the addRow button will be clicked, so
+        // a new table row will be created in prep for the list binding.
+        binder.addPathListener("subbean\\.date1", new AbstractPathListener() {
+            public void afterPathDataBind(String path, Object pathValue, WebDriver wd) {
+                wd.findElement(By.id("addRow")).click();
+            }
+        });
+
+        // bind the bean!
+        FormBean bean = createFormBean();
+        bean.setNotShown("Not on screen, should loop only once to find me");
+        binder.bindOrdered(bean, "inputText", wd, 1);
+
+        wd.findElement(By.id("next")).click();
+        assertEquals("Done", wd.findElement(By.id("done")).getText());
+
+        verifyBinding("bindBean", bean);
+        assertEquals(2, binder.seenMarkerCount);
+    }
+
+    protected void registerCustomEditors(Binder binder) {
+        CustomBooleanEditor boolEdit = new CustomBooleanEditor("Y", "N", true);
+        binder.addPropertyEditor(Boolean.class, boolEdit);
+        CustomDateEditor dateEditor = new CustomDateEditor(dateFormat, true);
+        binder.addPropertyEditor(Date.class, dateEditor);
+    }
+
+    protected void startTest(String testID, WebDriver wd) {
+        wd.get(base);
+        wd.findElement(By.name("testId")).sendKeys(testID);
+    }
+
 
     protected FormBean createFormBean() throws ParseException {
         FormBean bean = new FormBean();
@@ -163,6 +191,7 @@ public class IntegrationTest {
         bean.getSubbean().setProp1("Sub 1");
         bean.getSubbean().setDate1(dateFormat.parse("01/01/2007"));
         bean.getList().get(0).setProp1("A1");
+        bean.getList().get(0).setDate1(dateFormat.parse("01/01/2006"));
         return bean;
     }
 
@@ -187,6 +216,7 @@ public class IntegrationTest {
         assertEquals(bean.getSubbean().getProp1(), result.getSubbean().getProp1());
         assertEquals(bean.getSubbean().getDate1(), result.getSubbean().getDate1());
         assertEquals(bean.getList().get(0).getProp1(), result.getList().get(0).getProp1());
+        assertEquals(bean.getList().get(0).getDate1(), result.getList().get(0).getDate1());
     }
 
 }

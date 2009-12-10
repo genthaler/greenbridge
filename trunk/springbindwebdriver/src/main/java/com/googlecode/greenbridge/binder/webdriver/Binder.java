@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -22,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.util.StringUtils;
 
 /**
  *
@@ -36,6 +39,7 @@ public class Binder {
     private Map<Class,PropertyEditor> classToPropertyEditor = new HashMap<Class,PropertyEditor>();
     private Map<String,WebElement> cachedPathToWebElement = new HashMap<String,WebElement>();
     private Map<String,INPUT_TYPE> cachedPathToInputType = new HashMap<String, INPUT_TYPE>();
+    protected int seenMarkerCount = 0;
 
     public enum INPUT_TYPE {inputText,radio,checkbox,select};
 
@@ -54,6 +58,7 @@ public class Binder {
 
 
     public Binder bind(Object bean, String path, WebDriver wd) {
+        System.out.println("Binding 1.1.1");
         BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
         this.cachedWrapper = wrap;
         this.cachedWebDriver = wd;
@@ -79,27 +84,50 @@ public class Binder {
         }
     }
 
-
     public void bindOrdered(Object bean, String pathOfFirstPropertyToBind, WebDriver wd)  {
+        bindOrdered(bean, pathOfFirstPropertyToBind, wd, 3);
+    }
+
+    public void bindOrdered(Object bean, String pathOfFirstPropertyToBind, WebDriver wd, int maxLoops)  {
         BeanWrapperImpl wrap = new BeanWrapperImpl(bean);
         this.cachedWebDriver = wd;
         this.cachedWrapper = wrap;
         PathFinder finder = new PathFinder();
         List<String> remainingPaths = finder.findAllPaths(wrap);
         prunePathsWithNullValues(remainingPaths);
+
+        WebElement seenMarkerElement = null;
+        seenMarkerCount = 0;
+
         WebElement current = bindProperty(pathOfFirstPropertyToBind);
         remainingPaths.remove(pathOfFirstPropertyToBind);
-        int count = 0;
-        while (remainingPaths.size() > 0 && count < 100) {
+        
+        while (remainingPaths.size() > 0 && seenMarkerCount <= maxLoops) {
+            logRemainingPaths(remainingPaths);
             current = focusOnNextWebElement(current);
             String path = pathThatNextElementMatches(current, remainingPaths);
             if (path != null) {
                 bindProperty(path);
                 remainingPaths.remove(path);
+            } else {
+                if (seenMarkerElement == null) {
+                    seenMarkerElement = current;
+                    seenMarkerCount++;
+                }
+                else if (current.equals(seenMarkerElement)) {
+                    seenMarkerCount++;
+                    Logger.getLogger(Binder.class.getName()).log(Level.INFO, "On loop " + seenMarkerCount + " of a max of " + maxLoops);
+                }
             }
-            count++;
+            
         }
     }
+
+    private void logRemainingPaths(List<String> remainingPaths) {
+        String paths = StringUtils.collectionToCommaDelimitedString(remainingPaths);
+        Logger.getLogger(Binder.class.getName()).log(Level.INFO, "Paths to locate: " + paths);
+    }
+
 
     protected void prunePathsWithNullValues(List<String> remainingPaths) {
         List<String> toPrune = new ArrayList<String>();
@@ -112,9 +140,14 @@ public class Binder {
 
 
     // pull one odd
-    protected WebElement focusOnNextWebElement(WebElement current) {
+    protected WebElement focusOnNextWebElement(WebElement current)  {
         if (current == null) return null;
-        current.sendKeys(Keys.TAB);
+        try {
+            Thread.sleep(100);
+            current.sendKeys(Keys.TAB);
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {}
+
         WebElement next = cachedWebDriver.switchTo().activeElement();
         return next;
     }
