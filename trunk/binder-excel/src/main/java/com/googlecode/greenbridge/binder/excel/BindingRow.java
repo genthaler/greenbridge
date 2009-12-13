@@ -28,6 +28,10 @@ public class BindingRow {
         return binder.bind(sheet, clazz, row);
     }
 
+    public Object bind(Object bean) {
+        return binder.bind(sheet, bean, row);
+    }
+
     public Cell[] getCells() {
         return sheet.getRow(row);
     }
