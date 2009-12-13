@@ -8,6 +8,8 @@ package com.googlecode.greenbridge.binder.excel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.collections.list.GrowthList;
+import org.apache.commons.collections.list.LazyList;
 
 /**
  *
@@ -21,6 +23,10 @@ public class Bean {
     private Integer amount1;
     private Float amount2;
     private double amount3;
+    private String nonNumber;
+    private Integer number2;
+    private List<Date> dates = new ArrayList<Date>();
+    private List<SubBean> beans = new ArrayList<SubBean>();
 
     /**
      * @return the name
@@ -118,5 +124,61 @@ public class Bean {
      */
     public void setAmount3(double amount3) {
         this.amount3 = amount3;
+    }
+
+    /**
+     * @return the nonNumber
+     */
+    public String getNonNumber() {
+        return nonNumber;
+    }
+
+    /**
+     * @param nonNumber the nonNumber to set
+     */
+    public void setNonNumber(String nonNumber) {
+        this.nonNumber = nonNumber;
+    }
+
+    /**
+     * @return the number
+     */
+    public Integer getNumber2() {
+        return number2;
+    }
+
+    /**
+     * @param number the number to set
+     */
+    public void setNumber2(Integer number2) {
+        this.number2 = number2;
+    }
+
+    /**
+     * @return the dates
+     */
+    public List<Date> getDates() {
+        return dates;
+    }
+
+    /**
+     * @param dates the dates to set
+     */
+    public void setDates(List<Date> dates) {
+        this.dates = dates;
+    }
+
+    /**
+     * @return the beans
+     */
+    public List<SubBean> getBeans() {
+        return beans;
+    }
+
+    /**
+     * @param beans the beans to set
+     */
+    public void setBeans(List<SubBean> beans) {
+        this.beans = beans;
     }
 }
