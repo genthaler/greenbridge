@@ -1,0 +1,196 @@
+/* 
+    Document   : gb
+    Created on : Nov 26, 2009, 4:43:27 PM
+    Author     : ryan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+.neutral-1 { background-color: #FFFFFF }
+.primary-1 { background-color: #00B74A }
+.primary-2 { background-color: #228A4C }
+.primary-3 { background-color: #007730 }
+.primary-4 { background-color: #37DB79 }
+.primary-5 { background-color: #63DB93 }
+
+.font-1 { color: #00B74A }
+.font-2 { color: #228A4C }
+.font-3 { color: #007730 }
+.font-4 { color: #37DB79 }
+.font-5 { color: #63DB93 }
+
+root { 
+    display: block;
+}
+
+body {
+	margin: 0 0 0 0;
+	
+}
+
+#header {
+	height: 65px;
+	background-color: #37DB79;
+
+}
+
+#main_menu {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	height: 58px;
+	position: absolute;
+	top: 0px;
+	left: 123px;
+	width: 100%;
+}
+
+#main_menu_title {
+	background-color: #37DB79;
+	height: 34px;
+	font-family: HELVETICA;
+	font-size: 1.45em;
+	
+	
+}
+
+#main_menu_img {
+	padding-top: 13px;
+}
+
+#menu {
+	background-color: #228A4C;
+	height: 34px;
+}
+
+#search{
+	position: absolute;
+	top: 39px;
+	right: 150px;
+} 
+ 
+#bar {
+   background-color:#8E7E54 !important;
+}
+
+#bar #bar_menu {
+    height:26px;
+    position:relative;
+}
+
+#bar #brand, #bar #gyo_link, #bar #bar_menu_branding {
+    float:left;
+}
+
+
+#content {
+    background-color: #FFFFFF;
+    margin-left: 26px;
+    margin-right: 26px;
+	margin-top: 30px;
+    padding: 2em 2em 2em 2em;
+}
+
+#calendar_bounds {
+    position: absolute;
+    right: 3em;
+}
+
+ui-datepicker {
+    width: 13em;
+}
+.ui-datepicker td span, .ui-datepicker td a {
+    display:block;
+    padding:0.0em;
+    text-align:right;
+    text-decoration:none;
+    
+}
+#calendar {
+   font-size:62.5%;
+}
+
+#conversation {
+
+}
+
+#c_name {
+    font-size: 3em;
+}
+
+#conversation_details{
+
+}
+
+#fms {
+    width: 300px;
+    height: 60px;
+    margin-top: 30px;
+
+}
+
+
+.ui-tabs .ui-tabs-nav li a {
+    padding:0.15em 1em;
+}
+
+#playhead {
+    position: absolute;
+    width: 18px;
+    background-color:#63DB93;
+    z-index: 1;
+}
+
+.tagrow {
+    height: 3em;
+}
+
+.tagtable {
+    width: 100%;
+
+}
+
+.taginfo {
+    width: 30%;
+    margin-right: 0;
+    padding-right: 0;
+}
+.taginfo a img {
+    border:none;
+}
+.tagbar {
+    width: 70%;
+    margin-left: 0;
+    padding-left: 0;
+    z-index: 2;
+}
+.tagdiv {
+   border: 1px solid white;
+}
+
+.tag_description {
+	font-size: 0.6em;
+}
+
+.ui-slider .ui-slider-handle {
+    height:1em;
+    width:1em;
+}
+
+
+label {
+  float:left;
+  width:25%;
+  margin-right:0.5em;
+  padding-top:0.2em;
+  text-align:right;
+  font-weight:bold;
+  }
+
+
+
+
+
+
+
