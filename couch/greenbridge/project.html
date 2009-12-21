@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <link type="text/css" href="styles/base/ui.all.css" rel="stylesheet" />
+    <style type="text/css" media="screen">
+        @import url("styles/gb.css");
+		@import url("styles/autocomplete/jquery.autocomplete.css");
+    </style>
+    <script type="text/javascript" src="scripts/jquery.min.js "></script>
+    <script type="text/javascript" src="scripts/jquery.parsequery.js" ></script>
+    <script type="text/javascript" src="scripts/jquery-jtemplates.js"></script>
+    <script type="text/javascript" src="scripts/jquery.corner.js"></script>
+    <script type="text/javascript" src="scripts/ui/jquery-ui-1.7.2.custom.js"></script>
+    <script type="text/javascript" src="scripts/ui/ui.datepicker.js"></script>
+    <script type="text/javascript" src="scripts/flowplayer/flowplayer-3.1.1.min.js"></script>
+    <script type="text/javascript" src="scripts/date.js"></script>
+	<script type="text/javascript" src="scripts/jquery.autocomplete.min.js"></script>
+	<script type="text/javascript" src="scripts/navigation.js"></script>
+    <script type="text/javascript" src="scripts/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
+    <script type="text/javascript">
+        var query_vars;
+
+
+        $(function() {
+           query_vars = $.parseQuery();
+           $('#c_name').text(query_vars.name);
+
+           $.getJSON("/conversations/" + query_vars.name + "/?callback=?", function(data){
+                 $('#c_description').text(data.description);
+				 $('#template_link').attr('href', '/conversations/_design/test/_list/freemind/project?project='+query_vars.name+'&name=template');
+				 if (data.availableTags != null) {
+					 $('#available_tags_table').setTemplateElement("available_tags_table_template");
+					 // process the template
+					$("#available_tags_table").processTemplate(data);		 
+				 }
+           });
+           $.getJSON("/conversations/_design/project/_view/tags_by_project?key=%22"+ query_vars.name +"%22&callback=?", function(data){
+			// attach the template
+			$("#tags_table").setTemplateElement("tags_table_template");
+			
+			// process the template
+			$("#tags_table").processTemplate(data);
+           });
+        });
+    </script>
+  </head>
+  <body class="primary-4">
+	<div id="header"></div>
+    <div id="content" data-corner="left right 20px">
+        <div id="conversation">
+            <div id="conversation_details">
+                <div class="font-2"><span id="c_name"></span></div>
+                <span id="c_description"></span>
+				<a href="" id="template_link">Template</a>
+            </div>
+        </div>
+		<div id="available_tags_table"></div>
+		<div id="tags_table"></div>
+    </div>
+
+    <!-- Templates content (Valid XHTML 1.1) -->
+    <p style="display: none;"><textarea id="available_tags_table_template" rows="0" cols="0">
+            <table class="tagtable" >
+			<tr>
+				<td>Tag</td>
+				<td>Actions</td>
+			</tr>
+			{#foreach $T.availableTags as tag}
+                        <tr>
+							<td>{$T.tag}</td>
+                        </tr>
+			{#/for}
+            </table>
+    </textarea></p>
+    <!-- End Of templates-->
+
+
+
+    <!-- Templates content (Valid XHTML 1.1) -->
+    <p style="display: none;"><textarea id="tags_table_template" rows="0" cols="0">
+            <table class="tagtable" >
+			<tr>
+				<td>Date</td>
+				<td>Conversation</td>
+				<td>Tag</td>
+				<td>Duration</td>
+			</tr>
+			{#foreach $T.rows as row}
+                        <tr>
+							<td>{$T.row.value.start}</td>
+                            <td><a href="conversation.html?name={$T.row.value.conversation}&time={$T.row.value.mediaOffset}">{$T.row.value.conversation}</a></td>
+							<td>{$T.row.value.tag}</td>
+							<td>{$T.row.value.duration}</td>
+                        </tr>
+			{#/for}
+            </table>
+    </textarea></p>
+    <!-- End Of templates-->
+
+  </body>
+</html>

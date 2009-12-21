@@ -1,0 +1,463 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <link type="text/css" href="styles/base/ui.all.css" rel="stylesheet" />
+    <style type="text/css" media="screen">
+        @import url("styles/gb.css");
+		@import url("styles/autocomplete/jquery.autocomplete.css");
+    </style>
+    <script type="text/javascript" src="scripts/jquery.min.js "></script>
+    <script type="text/javascript" src="scripts/jquery.parsequery.js" ></script>
+    <script type="text/javascript" src="scripts/jquery-jtemplates.js"></script>
+    <script type="text/javascript" src="scripts/jquery.corner.js"></script>
+    <script type="text/javascript" src="scripts/ui/jquery-ui-1.7.2.custom.js"></script>
+    <script type="text/javascript" src="scripts/ui/ui.datepicker.js"></script>
+    <script type="text/javascript" src="scripts/flowplayer/flowplayer-3.1.1.min.js"></script>
+    <script type="text/javascript" src="scripts/date.js"></script>
+	<script type="text/javascript" src="scripts/jquery.autocomplete.min.js"></script>
+	<script type="text/javascript" src="scripts/navigation.js"></script>
+    <script type="text/javascript" src="scripts/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
+	<script type="text/javascript" src="/_utils/script/json2.js"></script>
+    <script type="text/javascript">
+        var query_vars;
+		var conversation;
+		var conversation_tags;
+		var tag_to_remove;
+        function play(time) {
+            var state = $f("fms").getState();
+            // if paused or ended
+            if (state == 4 || state == 5) {
+                $f("fms").play();
+            }
+            $f("fms").seek(time);
+        }
+
+        setInterval("updateScrubber()", 450);
+        var disableScrubberUpdates = false;
+
+        function updateScrubber() {
+			if ($("fms").size() == 0) return;
+            if (!disableScrubberUpdates) {
+                var playerStatus = $f("fms").getStatus();
+                $("#scrubber").slider('option', 'value', playerStatus.time );
+                updatePlayhead();
+            }
+        }
+        function updatePlayhead() {
+            var scrubber_offset = $('#scrubber a').offset();
+            scrubber_offset.top += 18;
+            var height = $('#tags_table').css('height');
+            $("#playhead").css({top: scrubber_offset.top, left: scrubber_offset.left, height: height});
+        }
+
+        function windowResize() {
+            updatePlayhead();
+        }
+
+        function parseAttachments(attachments) {
+            var map;
+            var images = new Array();
+            jQuery.each(attachments, function(name, info) {
+                if (name.search(".*\\.mm") != -1) {
+                    map = name;
+                }
+                if (name.search(".*\\.(png|jpg)") != -1) {
+                    var image = {};
+                    image.name = name;
+                    images.push(image);
+                }
+               
+            });
+            if (map) showMap(map);
+            showImages(images);
+        }
+
+
+        function showMap(name) {
+            
+            // attach the template
+            $("#map").setTemplateElement("map_template");
+
+            var data ={};
+            data.url = "/conversations/" + query_vars.name + "/" + name;
+            //data.url = "map.mm";
+            // process the template
+            $("#map").processTemplate(data);
+        }
+
+
+        function showImages(images) {
+            jQuery.each(images, function(i, image) {
+                image.url = "/conversations/" + query_vars.name + "/" + image.name;
+            });
+            var data = {};
+            data.images = images;
+            $("#images_table").setTemplateElement("images_table_template");
+            $("#images_table").processTemplate(data);
+        }
+
+	function finishLoadingAudio() {
+            $('#loading').hide();
+	}
+
+        function findRequestedStartTime() {
+            var time = query_vars.time;
+            if (time == null) time = 0;
+            return time;
+        }
+
+        $(function() {
+
+            $(window).resize(windowResize);
+
+			$('#newTagDialog').dialog({
+			    	autoOpen: false,
+			    	resizable: false,
+		            modal: true,
+					buttons: {
+						'Ok': function() {
+							var mediaOffset = $('#newTagTime').val();
+							var tagName = $('#newTagInput').val();
+							var tagDescription = $('#newTagDescription').val();
+						    addTag(tagName, mediaOffset, tagDescription )
+							$(this).dialog('close');
+						},
+						'Cancel' : function() {
+							$(this).dialog('close');
+						}
+					},
+					close: function() {
+
+					}
+		    });
+			$('#removeTagDialog').dialog({
+			    	autoOpen: false,
+			    	resizable: false,
+		            modal: true,
+					buttons: {
+						'Ok': function() {
+						   $(this).dialog('close');
+						   var doc = {};
+						   doc._id = conversation_tags.rows[tag_to_remove].value._id;
+						   doc._rev    = conversation_tags.rows[tag_to_remove].value._rev;
+						   var data = JSON.stringify(doc);
+							$.ajax({
+							   type: "DELETE",
+							   url: "/conversations/" + doc._id + "?rev=" + doc._rev,
+							   success: function(msg){
+								 $('#row-' + tag_to_remove ).hide();
+							   }
+							});
+						},
+						'Cancel' : function() {
+							$(this).dialog('close');
+						}
+					},
+					close: function() {}
+		    });
+			
+			
+			$('#newTagInput').autocomplete('/conversations/_design/tags/_view/by_tag_grouped', {
+				multiple: false,
+				minChars: 1,
+				max: 300,
+				selectFirst: false,
+				dataType: "json",
+				extraParams: {
+					startkey: function() {return '"' + $('#tagsearch').val() + '"'},
+					group: 'true'
+				},
+				parse: function(data) {
+					var arr = new Array();
+					for (var i=0; i < data.rows.length;i++) {
+						arr[i] = {
+							data: data.rows[i],
+							value: data.rows[i].key,
+							result: data.rows[i].key
+						};
+					}
+					return arr;
+				},
+				formatItem: function(item) {
+					return item.key + " (" + item.value + ")" ;
+				}
+
+			});
+			
+			
+
+           query_vars = $.parseQuery();
+           $('#c_name').text(query_vars.name);
+
+           $('#tabs').tabs();
+
+           
+
+           $.getJSON("/conversations/" + query_vars.name + "/?callback=?", function(data){
+                 conversation = data;
+                 $('#c_description').text(data.description);
+                 var d = Date.parse(data.media.startdate);
+                 $('#calendar').datepicker({ defaultDate: d, minDate: d, maxDate: d });
+                 $('.ui-datepicker').css('width', '13em');
+                 $('.ui-datepicker-next span').hide();
+                 $('.ui-datepicker-prev span').hide();
+				 $('.futon').attr('href', '/_utils/document.html?conversations/' + query_vars.name);
+                 installFlowplayer(data.media.url, data.media.media, findRequestedStartTime());
+
+                 parseAttachments(data._attachments);
+				 // create the scrubber
+				$("#scrubber").slider({
+						range: false,
+						min: 0,
+						max: conversation.media.mediaLength,
+						value: 0,
+						start: function(event, ui) {
+							disableScrubberUpdates = true;
+						},
+						stop:  function(event, ui) {
+							var time = $('#scrubber').slider('option', 'value');
+							$f("fms").seek(time);
+							disableScrubberUpdates = false;
+						}
+				});
+				updateTagList();
+
+           });
+
+			$('#addTagButton').bind('click', function() {
+				var currTime = $("#scrubber").slider('option', 'value');
+				$('#newTagTime').val(currTime);
+				$('#newTagInput').val("");
+				$('#newTagDescription').val("");
+				$('#newTagDialog').dialog("open");
+			});
+        });
+		
+		function updateTagList() {
+		   $("#tags_table").empty();
+           $.getJSON("/conversations/_design/tags/_view/by_conversation_ordered?startkey=[%22"+ query_vars.name +"%22]&endkey=[%22"+ query_vars.name +"%22,{}]&callback=?", function(data){
+				conversation_tags = data;
+				// attach the template
+				$("#tags_table").setTemplateElement("tags_table_template");
+				
+				// process the template
+				$("#tags_table").processTemplate(data);
+				windowResize();
+				updatePlayhead();
+				jQuery.each(data.rows, function() {
+					 var mediaEndOffset = this.value.mediaOffset + this.value.duration
+					 $("#mt-"+ this.id).slider({
+						range: true,
+						min: 0,
+						max: conversation.media.mediaLength,
+						values: [this.value.mediaOffset, mediaEndOffset],
+						change: function(event, ui) {
+							   //console.log("moved: " + this.id + " to " + ui.values[0]);
+						}
+					});
+					$(".ui-slider").bind("click", function() {
+						alert('click');
+					});
+				});
+				$('.ui-slider-horizontal').css('border','1px solid FFFFFF');
+				$('#tags_table tr:even').css('background-color', '#E2E2E2');
+				$('#tags_table .tagdiv:even').css({'background-color':'#E2E2E2', "border":"0px solid #F2F2F2","background":"none"});
+           });		
+		}
+		
+		function addTag(tagName, mediaOffset, tagDescription ) {
+			var tag = {};
+			tag.tag = tagName;
+			tag.conversation = query_vars.name;
+			tag.duration = 20;
+			tag.mediaOffset = parseInt(mediaOffset) ;
+			tag.type = 'tag';
+			tag.start =  Date.parse(conversation.media.startdate).add({seconds: mediaOffset});
+			if (tagDescription != null) tag.description = tagDescription;
+			var data = JSON.stringify(tag);
+			$.ajax({
+			   type: "POST",
+			   url: "/conversations/",
+			   data: data,
+			   success: function(msg){
+				 updateTagList();
+			   }
+			 });
+
+		}
+		
+		function deleteTag(tagId) {
+		    tag_to_remove = tagId;
+		    $('#removeTagDialog').dialog('open');
+			
+			//
+			return false;
+		}
+		
+    </script>
+  </head>
+  <body class="primary-4">
+	<div id="header"></div>
+  
+    <div id="content" data-corner="left right 20px">
+        <div id="calendar_bounds">
+            <div id='calendar'></div>
+			<a class="futon" title="View in Futon">Futon</a>
+        </div>
+        
+        <div id="conversation">
+            <div id="conversation_details">
+                <div class="font-2"><span id="c_name"></span></div>
+                <span id="c_description"></span>
+            </div>
+             <div id="fms"></div>
+            <div id="loading" style="position: relative; z-index: 30; top: -70px; left: 200px;">
+                    <img src="images/ajax-loader.gif" /> <span style="">Loading Audio...</span>
+            </div>
+             <div id="tabs">
+                 <ul>
+                     <li><a href="#tags-tab">Tags</a></li>
+                     <li><a href="#attendees-tab">Attendees</a></li>
+                     <li><a href="#images-tab">Images</a></li>
+                     <li><a href="#map-tab">Map</a></li>
+                 </ul>
+                 <div id="tags-tab">
+				     <table class="tagtable" >
+					    <thead>
+							<tr class="scrubber_row">
+								<td ><button id="addTagButton">Add</button></td>
+								<td><div id="scrubber" class="tagdiv"></div></td>
+							</tr>
+						</thead>
+						<tbody id="tags_table"></tbody>
+					</table>
+                    <div id="playhead" ></div>
+                 </div>
+                 <div id="attendees-tab">
+                     <div id="attendees"></div>
+                 </div>
+                 <div id="images-tab">
+                     <div id="images_table"></div>
+                 </div>
+                 <div id="map-tab">
+                     <div id="map"></div>
+                 </div>
+             </div>
+
+
+
+        </div>
+    </div>
+
+	<div id="newTagDialog" style="display: none;" title="Add A Tag...">
+			<label for="newTagInput">Tag</label>
+			<input id="newTagInput" type="text" name="newTagInput" />
+			<label for="newTagDescription">Description</label>
+			<textarea name="newTagDescription" id="newTagDescription"></textarea>
+			<input id="newTagTime" type="hidden" name="newTagTime" />
+	</div>
+
+	<div id="removeTagDialog" style="display: none;" title="Remove Tag...">
+		Are you sure you want to remove this tag?
+	</div>
+
+
+    <!-- Templates content (Valid XHTML 1.1) -->
+    <p style="display: none;"><textarea id="tags_table_template" rows="0" cols="0">
+					
+                    {#foreach $T.rows as row}
+                    <tr class="tagrow" id="row-{$T.row$index}">
+                        <td class="taginfo">{$T.row.value.tag}
+                          <a href="tag.html?tag={$T.row.value.tag}"><img src="images/tag-light.png"   title="Show {$T.row.value.tag} tags from all conversations." alt="Show {$T.row.value.tag} tags from all conversations."      onmouseover="this.src='images/tag.png'"  onmouseout="this.src='images/tag-light.png'"/></a>
+						  <a href="#" onclick="return deleteTag({$T.row$index});"><img src="images/cross-light.png"   title="Delete this tag instance." alt="Delete this tag instance."      onmouseover="this.src='images/cross.png'"  onmouseout="this.src='images/cross-light.png'"/></a>
+						  {#if $T.row.value.description !=null}<div class="tag_description">{$T.row.value.description}</div>{#/if}
+						  {#if $T.row.value.icons}
+							<div class="tag_icons">
+						      {#foreach $T.row.value.icons as icon}
+							     <img src="images/fm/{$T.icon}.png" title="{$T.icon}" />
+						      {#/for}
+						     </div>
+						   {#/if}
+                        </td>
+                        <td class="tagbar"><div id="mt-{$T.row.id}" class="tagdiv"></div></td>
+                    </tr>
+                    {#/for}
+
+    </textarea></p>
+
+    <p style="display: none;"><textarea id="images_table_template" rows="0" cols="0">
+        <table>
+            {#foreach $T.images as image}
+            <tr>
+                <td><img src="{$T.image.url}"/></td>
+            </tr>
+            {#/for}
+        </table>
+    </textarea></p>
+    <p style="display: none;"><textarea id="map_template" rows="0" cols="0">
+         <div id="freemind" >
+            <button onclick="inspectApplet()">Play Selected</button> <span>This is the original upload. It does not reflect the changes made after upload.</span>
+            <applet name="freemindApplet" code="freemind.main.FreeMindApplet.class" archive="scripts/freemind/freemindbrowser.jar" width="100%" height="100%" >
+                <param name="type" value="application/x-java-applet;version=1.4"/>
+                <param name="scriptable" value="true"/>
+                <param name="modes" value="freemind.modes.browsemode.BrowseMode"/>
+                <param name="browsemode_initial_map" value="{$T.url}"/>
+                <param name="initial_mode" value="Browse"/>
+                <param name="selection_method" value="selection_method_direct"/>
+            </applet>
+        </div>
+    </textarea></p>
+    <!-- End Of templates-->
+
+
+    <!-- this will install flowplayer inside previous A- tag. -->
+    <script type="text/javascript">
+        function installFlowplayer(url, media, startTime) {
+            $f("fms", {src: 'scripts/flowplayer/flowplayer-3.1.1.swf', wmode: 'transparent'}, {
+                    clip: {
+                            provider: 'influxis',
+                            onStart: function(clip) {finishLoadingAudio();},
+                            streams: [
+                                    { url: media, start: startTime }
+                            ]
+                    },
+                    // streaming plugins are configured under the plugins node
+                    plugins: {
+                         controls: {
+                           fullscreen: false,
+                           backgroundColor: '#FFFFFF',
+                           backgroundGradient: 'low',
+                           all: false,
+                           scrubber: false,
+                           mute: false,
+                           height: 30,
+                           borderRadius: '2px'
+                         },
+                         time: {
+                             url: 'scripts/flowplayer/flowplayer.controls-3.1.1.swf',
+                             backgroundColor: '#FFFFFF',
+                             backgroundGradient: 'low',
+                             top: 0,
+                             all: false,
+                             play: true,
+                             time: true,
+                             volume: true,
+                             mute: true,
+                             height: 30
+                         },
+                        // here is our rtpm plugin configuration
+                        influxis: {
+                                url: 'scripts/flowplayer/flowplayer.rtmp-3.1.0.swf',
+                                // netConnectionUrl defines where the streams are found
+                                netConnectionUrl: url
+                        }
+                    }
+            });
+        }
+        </script>
+
+  </body>
+</html>
