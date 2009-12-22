@@ -20,11 +20,14 @@
 	<script type="text/javascript" src="scripts/navigation.js"></script>
     <script type="text/javascript" src="scripts/jquery.easing.min.js"></script>
     <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery.timers.js"></script>
+	<script type="text/javascript" src="scripts/jquery.jeditable.mini.js"></script>
 	<script type="text/javascript" src="/_utils/script/json2.js"></script>
     <script type="text/javascript">
         var query_vars;
 		var conversation;
 		var conversation_tags;
+		var tag_id_to_row = new Array();
 		var tag_to_remove;
         function play(time) {
             var state = $f("fms").getState();
@@ -141,8 +144,8 @@
 						'Ok': function() {
 						   $(this).dialog('close');
 						   var doc = {};
-						   doc._id = conversation_tags.rows[tag_to_remove].value._id;
-						   doc._rev    = conversation_tags.rows[tag_to_remove].value._rev;
+						   doc._id = tag_id_to_row[tag_to_remove].value._id;
+						   doc._rev    = tag_id_to_row[tag_to_remove].value._rev;
 						   var data = JSON.stringify(doc);
 							$.ajax({
 							   type: "DELETE",
@@ -247,7 +250,8 @@
 				$("#tags_table").processTemplate(data);
 				windowResize();
 				updatePlayhead();
-				jQuery.each(data.rows, function() {
+				jQuery.each(data.rows, function(i, val) {
+					 tag_id_to_row[this.id] = val;
 					 var mediaEndOffset = this.value.mediaOffset + this.value.duration
 					 $("#mt-"+ this.id).slider({
 						range: true,
@@ -255,17 +259,59 @@
 						max: conversation.media.mediaLength,
 						values: [this.value.mediaOffset, mediaEndOffset],
 						change: function(event, ui) {
+						        var id = this.id.substring(3);
+								//console.log("moved: " + id + " to " + ui.values[0] + " " + ui.values[1]);
+						        var tag = tag_id_to_row[id].value;
+								var duration = ui.values[1] - ui.values[0];
+								tag.duration = duration;
+								tag.mediaOffset = parseInt(ui.values[0]) ;
+								tag.start =  Date.parse(conversation.media.startdate).add({seconds: tag.mediaOffset});
+								requestTagChange(id);
 							   //console.log("moved: " + this.id + " to " + ui.values[0]);
 						}
 					});
 					$(".ui-slider").bind("click", function() {
 						alert('click');
 					});
-				});
+				}); // end of each
+				$('.tag_description').editable(function(value, settings) { 
+					 var tag_id = this.id.substring(5);
+					 var tag = tag_id_to_row[tag_id].value;
+					 tag.description = value;		
+					 requestTagChange(tag_id);
+					 return(value);
+				  }, { 
+					 type    : 'textarea',
+					 submit  : 'OK',
+				 });
 				$('.ui-slider-horizontal').css('border','1px solid FFFFFF');
 				$('#tags_table tr:even').css('background-color', '#E2E2E2');
 				$('#tags_table .tagdiv:even').css({'background-color':'#E2E2E2', "border":"0px solid #F2F2F2","background":"none"});
            });		
+		}
+		
+		function requestTagChange(tagId) {
+			$(document).stopTime(tagId);
+			console.log('a tagId: ' + tagId);
+			$(document).oneTime(1000, tagId, function() {
+			      console.log('tagId: ' + tagId);
+			      putTag(tagId);
+			});
+		}
+		
+		function putTag(tagId) {
+			var tag = tag_id_to_row[tagId].value;
+			var data = JSON.stringify(tag);
+			$.ajax({
+			   type: "PUT",
+			   url: "/conversations/" + tag._id,
+			   data: data,
+			   processData: false,
+			   dataType: "json",
+			   success: function(msg){
+					tag._rev = msg.rev;
+			   }
+			 });
 		}
 		
 		function addTag(tagName, mediaOffset, tagDescription ) {
@@ -369,17 +415,27 @@
     <p style="display: none;"><textarea id="tags_table_template" rows="0" cols="0">
 					
                     {#foreach $T.rows as row}
-                    <tr class="tagrow" id="row-{$T.row$index}">
+                    <tr class="tagrow" id="row-{$T.row.id}">
                         <td class="taginfo">{$T.row.value.tag}
                           <a href="tag.html?tag={$T.row.value.tag}"><img src="images/tag-light.png"   title="Show {$T.row.value.tag} tags from all conversations." alt="Show {$T.row.value.tag} tags from all conversations."      onmouseover="this.src='images/tag.png'"  onmouseout="this.src='images/tag-light.png'"/></a>
-						  <a href="#" onclick="return deleteTag({$T.row$index});"><img src="images/cross-light.png"   title="Delete this tag instance." alt="Delete this tag instance."      onmouseover="this.src='images/cross.png'"  onmouseout="this.src='images/cross-light.png'"/></a>
-						  {#if $T.row.value.description !=null}<div class="tag_description">{$T.row.value.description}</div>{#/if}
+						  <a href="#" onclick="return deleteTag('{$T.row.id}');"><img src="images/cross-light.png"   title="Delete this tag instance." alt="Delete this tag instance."      onmouseover="this.src='images/cross.png'"  onmouseout="this.src='images/cross-light.png'"/></a>
+						  {#if $T.row.value.description !=null}<div class="tag_description" id="desc-{$T.row.id}">{$T.row.value.description}</div>{#/if}
 						  {#if $T.row.value.icons}
 							<div class="tag_icons">
 						      {#foreach $T.row.value.icons as icon}
 							     <img src="images/fm/{$T.icon}.png" title="{$T.icon}" />
 						      {#/for}
 						     </div>
+						   {#/if}
+						   {#if $T.row.value.attendees}
+						     <ul class="tag_attendees">
+							  {#foreach $T.row.value.attendees as attendee}
+							     {#if $T.attendee.id}
+							     <li><a href="person.html?name={$T.attendee.id}">{$T.attendee.id}</a></li>
+								 {#/if}
+						      {#/for}
+			   
+							 </ul>
 						   {#/if}
                         </td>
                         <td class="tagbar"><div id="mt-{$T.row.id}" class="tagdiv"></div></td>
