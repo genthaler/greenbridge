@@ -1,0 +1,12 @@
+{
+   "_id": "_design/person",
+   "language": "javascript",
+   "views": {
+       "by_tagAndConversation": {
+           "map": "function(doc) {\n  if (doc.attendees != null) {\n     for(i in doc.attendees) {\n          var attendee = doc.attendees[i];\n          if (attendee.id != null)\n              emit(attendee.id, doc);\n     }\n  }\n\n}"
+       },
+       "by_person": {
+           "map": "function(doc) { if(doc.type == 'person') { emit(doc._id, doc); }}"
+       }
+   }
+}

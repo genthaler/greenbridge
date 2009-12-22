@@ -1,0 +1,15 @@
+{
+   "_id": "_design/project",
+   "language": "javascript",
+   "views": {
+       "tags_by_project": {
+           "map": "function(doc) {\n  var tokens;\n  if(doc.type == 'tag') {\n     tokens = doc.tag.split(':');\n     emit(tokens[1],doc);\n  }\n}"
+       },
+       "by_project": {
+           "map": "function(doc) {\n    if(doc.type == 'project') {\n        emit(doc._id,doc);\n  }\n}"
+       }
+   },
+   "shows": {
+       "zoom": "function (doc, req) { return {   'headers' : {'Content-Type' : 'application/x-freemind', 'Content-disposition':'attachment; filename=test.mm'},   'body' : new XML('<xml><node/></xml>')}}"
+   }
+}
