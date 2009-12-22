@@ -431,9 +431,11 @@
 						     <ul class="tag_attendees">
 							  {#foreach $T.row.value.attendees as attendee}
 							     {#if $T.attendee.id}
-							     <li><a href="person.html?name={$T.attendee.id}">{$T.attendee.id}</a></li>
-								 {#/if}
+							     <li>
+								   <a href="person.html?name={$T.attendee.id}">{$T.attendee.id}</a>
+								 </li>
 						      {#/for}
+								 {#/if}
 			   
 							 </ul>
 						   {#/if}
