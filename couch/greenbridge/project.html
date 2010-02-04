@@ -22,13 +22,14 @@
     <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
     <script type="text/javascript">
         var query_vars;
-
+		var db_name;
 
         $(function() {
            query_vars = $.parseQuery();
+		   db_name = findDBName();
            $('#c_name').text(query_vars.name);
 
-           $.getJSON("/conversations/" + query_vars.name + "/?callback=?", function(data){
+           $.getJSON("/"+db_name+"/" + query_vars.name + "/?callback=?", function(data){
                  $('#c_description').text(data.description);
 				 $('#template_link').attr('href', '/conversations/_design/test/_list/freemind/project?project='+query_vars.name+'&name=template');
 				 if (data.availableTags != null) {
@@ -37,7 +38,7 @@
 					$("#available_tags_table").processTemplate(data);		 
 				 }
            });
-           $.getJSON("/conversations/_design/project/_view/tags_by_project?key=%22"+ query_vars.name +"%22&callback=?", function(data){
+           $.getJSON("/"+db_name+"/_design/project/_view/tags_by_project?key=%22"+ query_vars.name +"%22&callback=?", function(data){
 			// attach the template
 			$("#tags_table").setTemplateElement("tags_table_template");
 			
