@@ -2,10 +2,13 @@ class FreeMindNodeDocumentStorage implements  com.mycompany.conversation.Documen
 	
 	def formatter = new java.text.SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 	def node;
+	def storage;
+    def converter = new com.mycompany.conversation.converter.FreemindXMLConverter();
 
 	
-	public FreeMindNodeDocumentStorage(node) {
+	public FreeMindNodeDocumentStorage(node, storage) {
 		this.node = node;
+		this.storage = storage;
 		node.createAttributeTableModel();
 	}
 	public void setStartDate(Date date) {
@@ -43,7 +46,16 @@ class FreeMindNodeDocumentStorage implements  com.mycompany.conversation.Documen
 	public String getUploadURL(){
 		return node.getAttribute("uploadURL");
 	}
-	
+	public com.mycompany.conversation.domain.Conversation convertToConversation() {
+            def fis = new java.io.FileInputStream(getFileLocation());
+			try {
+				converter.setStartTagOffset(Integer.parseInt(storage.loadProperty("tagStartOffset")));
+				converter.setDefaultTagDuration(Integer.parseInt(storage.loadProperty("tagDuration")));
+			} catch (Exception e) {}
+            def c = converter.parseConversation(fis);
+            return c;
+
+        }
 
 
 }
@@ -98,9 +110,10 @@ class AudioListener implements com.mycompany.conversation.AudioRecordingListener
 
 
 p_storage = new FreeMindPropertiesStorage(c);
-d_storage = new FreeMindNodeDocumentStorage(node);
+d_storage = new FreeMindNodeDocumentStorage(node, p_storage);
+cu = new com.mycompany.conversation.upload.CouchTagsUploader();
 listener = new AudioListener(c);
-c_controller = new com.mycompany.conversation.ConversationControllerImpl(d_storage, p_storage);
+c_controller = new com.mycompany.conversation.ConversationControllerImpl(d_storage, p_storage, cu);
 c_controller.addAudioRecordingListener(listener);
 dialog = new com.mycompany.conversation.gui.RecordingStatusDialog(c_controller, p_storage,  null, false);
 dialog.setLocationRelativeTo(null);

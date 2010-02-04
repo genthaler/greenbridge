@@ -5,27 +5,37 @@
 
 package com.mycompany.conversation;
 
+import com.mycompany.conversation.domain.Conversation;
+import com.mycompany.conversation.domain.Media;
+import com.mycompany.conversation.upload.MediaUploader;
+import com.mycompany.conversation.upload.PostMediaUploader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.sound.sampled.LineUnavailableException;
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.util.JSONBuilder;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpParams;
 
-import com.drew.imaging.jpeg.JpegMetadataReader;
-import com.drew.imaging.jpeg.JpegProcessingException;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.MetadataException;
-import com.drew.metadata.exif.ExifDirectory;
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 
 
 /**
@@ -38,13 +48,18 @@ public class ConversationControllerImpl implements ConversationController {
     private DocumentStorage documentStorage;
     private List<AudioRecordingListener> audioListeners;
     private UploadListener uploadListener;
+    private TagsUploader tagsUploader;
+    private MediaUploader mediaUploader;
+    private Pattern serverPattern;
 
 
-    public ConversationControllerImpl(DocumentStorage storage, PropertiesStorage properties) {
+    public ConversationControllerImpl(DocumentStorage storage, PropertiesStorage properties, TagsUploader tagsUploader) {
         this.documentStorage = storage;
         this.properties = properties;
         this.audioListeners = new ArrayList<AudioRecordingListener>();
-        
+        this.tagsUploader = tagsUploader;
+        this.mediaUploader = new PostMediaUploader();
+        serverPattern = Pattern.compile("(https?://[^/]+)/(\\w+)");
     }
 
 
@@ -87,66 +102,67 @@ public class ConversationControllerImpl implements ConversationController {
         fireAudioChange(state);
     }
 
+    @Override
     public String uploadConversation(String server) throws InterruptedException, IOException {
         File outputFile =  getFileForDocument(documentStorage.getFileLocation(), ".wav");
-        fireUploadChange("Coverting to MP3...", 60);
-        File mp3 = convertToMP3(outputFile);
-        fireUploadChange("Saving document...", 70);
-        documentStorage.saveCurrentDocument();
-        fireUploadChange("Uploading to Server...", 90);
 
-        String location = uploadData(server, mp3, documentStorage.getFileLocation());
+        fireUploadChange("Saving document...", 10);
+
+        documentStorage.saveCurrentDocument();
+        String server_url = findServerURL(server);
+        String db     = findDB(server);
+        Conversation c = documentStorage.convertToConversation();
+        
+        fireUploadChange("Coverting to MP3...", 20);
+        File mp3 = convertToMP3(outputFile);
+        try {
+            fireUploadChange("Uploading MP3...", 50);
+            Media media = uploadMedia(mp3, "");
+            media.setStartdate(documentStorage.getStartDate());
+            int mediaLength = (int)(documentStorage.getEndDate().getTime() - documentStorage.getStartDate().getTime()) / 1000;
+            media.setMediaLength(mediaLength);
+            c.setMedia(media);
+
+        } catch (Exception ex) {
+            Logger.getLogger(ConversationControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        fireUploadChange("Uploading Tags..", 70);
+        tagsUploader.upload(server_url, db, c);
+        
+
+        //String location = uploadData(server, mp3, documentStorage.getFileLocation());
+        String location = server_url + "/_" + db + "/conversation.html?" + c.getId();
         documentStorage.setUploadURL(location);
         return location;
     }
 
 
-    protected String uploadData(String server, File mp3, File document) throws FileNotFoundException, IOException {
-        PostMethod post = new PostMethod(server);
+    public Media uploadMedia(File mp3, String server) throws Exception {
 
-        FilePart[] fileparts = new FilePart[] {
-          new FilePart("audio", mp3),
-          new FilePart("document", document)
-        };
-
-        NameValuePair[] params =  new NameValuePair[2];
-        String tagStartOffset = properties.loadProperty("tagStartOffset");
-        if (tagStartOffset != null) {
-            NameValuePair offset = new NameValuePair("tagStartOffset", tagStartOffset);
-            params[0] = offset;
-        } else {
-            NameValuePair offset = new NameValuePair("tagStartOffset", "10");
-            params[0] = offset;
-        }
-        String tagDuration = properties.loadProperty("tagDuration");
-        if (tagDuration != null) {
-            NameValuePair duration = new NameValuePair("tagDuration", tagDuration);
-            params[1] = duration;
-        } else {
-            NameValuePair duration = new NameValuePair("tagDuration", "20");
-            params[1] = duration;
-        }
-
-        post.setQueryString(params);
-
-
-        post.setRequestEntity(new MultipartRequestEntity(fileparts, post.getParams()));
-
-        HttpClient client = new HttpClient();
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(60000);
-        int status = client.executeMethod(post);
-        String location;
-        Header locationHeader = post.getResponseHeader("location");
-        if (locationHeader != null) {
-            location = locationHeader.getValue();
-            return location;
-        }
-        if (status == HttpStatus.SC_OK) {
-            return "/success";
-        }
-        else return null;
+        // find server base to upload to
+        server = "http://localhost:8080/simple-upload/upload";
+        Map properties = new HashMap();
+        properties.put(PostMediaUploader.POST_URL, server);
+        return mediaUploader.upload(mp3, properties);
     }
 
+
+    protected String findServerURL(String string) {
+        Matcher m = serverPattern.matcher(string);
+        if (m.find()) {
+            return m.group(1);
+        }
+        return "";
+    }
+
+    protected String findDB(String string) {
+        Matcher m = serverPattern.matcher(string);
+        if (m.find()) {
+            return m.group(2);
+        }
+        return "";
+    }
 
     private File convertToMP3(File outputFile) throws InterruptedException, IOException {
         String ffmpegcmd = properties.loadProperty("ffmpegcmd");
@@ -171,36 +187,36 @@ public class ConversationControllerImpl implements ConversationController {
         return mp3;
     }
 
-    protected List<File> findPicturesInDirBetweenDates(File dir, Date start, Date end) {
-        assert(dir.exists() && dir.isDirectory());
-        ArrayList result = new ArrayList<File>();
-        File[] children = dir.listFiles();
-        for (File child : children) {
-           if (child.getName().endsWith(".jpg") || child.getName().endsWith(".jpeg") || child.getName().endsWith(".JPG")) {
-               if (isPictureBetweenDates(child, start, end)) {
-                   result.add(child);
-               }
-            }
-        }
-        return result;
-    }
+//    protected List<File> findPicturesInDirBetweenDates(File dir, Date start, Date end) {
+//        assert(dir.exists() && dir.isDirectory());
+//        ArrayList result = new ArrayList<File>();
+//        File[] children = dir.listFiles();
+//        for (File child : children) {
+//           if (child.getName().endsWith(".jpg") || child.getName().endsWith(".jpeg") || child.getName().endsWith(".JPG")) {
+//               if (isPictureBetweenDates(child, start, end)) {
+//                   result.add(child);
+//               }
+//            }
+//        }
+//        return result;
+//    }
 
 
-    protected boolean isPictureBetweenDates(File picture, Date start, Date end) {
-        Date picDate = null;
-        try {
-            Metadata metadata = JpegMetadataReader.readMetadata(picture);
-            Directory exifDirectory = metadata.getDirectory(ExifDirectory.class);
-            picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME_ORIGINAL) ;
-            if (picDate == null) picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME);
-        } catch (JpegProcessingException e) {
-        } catch (MetadataException e) {
-        }
-        if (picDate == null) picDate = new Date(picture.lastModified());
-        if (picDate.after(start) && picDate.before(end)) return true;
-
-        return false;
-    }
+//    protected boolean isPictureBetweenDates(File picture, Date start, Date end) {
+//        Date picDate = null;
+//        try {
+//            Metadata metadata = JpegMetadataReader.readMetadata(picture);
+//            Directory exifDirectory = metadata.getDirectory(ExifDirectory.class);
+//            picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME_ORIGINAL) ;
+//            if (picDate == null) picDate = exifDirectory.getDate(ExifDirectory.TAG_DATETIME);
+//        } catch (JpegProcessingException e) {
+//        } catch (MetadataException e) {
+//        }
+//        if (picDate == null) picDate = new Date(picture.lastModified());
+//        if (picDate.after(start) && picDate.before(end)) return true;
+//
+//        return false;
+//    }
 
 
     private File getFileForDocument(File file, String newExtenstion) {

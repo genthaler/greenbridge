@@ -33,6 +33,9 @@ public class AppTest
      */
     public void testApp()
     {
+        int nl = '\n';
+
+        System.out.println("new line: " + nl);
         assertTrue( true );
     }
 }
