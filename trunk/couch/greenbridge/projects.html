@@ -22,12 +22,13 @@
     <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
 	<script>
         var query_vars;
+		var db_name;
         $(function() {
 
            $('#content').corner();
            query_vars = $.parseQuery();
-
-           $.getJSON("/conversations/_design/project/_view/by_project/?callback=?", function(data){
+		   db_name = findDBName();
+           $.getJSON("/"+db_name+"/_design/project/_view/by_project/?callback=?", function(data){
     			// attach the template
 			$("#list_table").setTemplateElement("list_table_template");
 			

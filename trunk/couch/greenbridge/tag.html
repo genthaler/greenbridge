@@ -22,9 +22,11 @@
     <script type="text/javascript" src="scripts/jquery.lavalamp.min.js"></script>
 	<script>
         var query_vars;
+		var db_name;
         $(function() {
 
            query_vars = $.parseQuery();
+		   db_name = findDBName();
 		   var tag_proj = query_vars.tag.split(":", 2);
 		   var tag_name = tag_proj[0];
 		   var project_name = tag_proj[1];
@@ -37,7 +39,7 @@
 				.attr('href', 'project.html?name=' + project_name);
 				
 		   }
-           $.getJSON("/conversations/_design/tags/_view/by_tag/?key=%22"+ query_vars.tag +"%22&callback=?", function(data){
+           $.getJSON("/"+db_name+"/_design/tags/_view/by_tag/?key=%22"+ query_vars.tag +"%22&callback=?", function(data){
     			// attach the template
 				$("#list_table").setTemplateElement("list_table_template");
 		

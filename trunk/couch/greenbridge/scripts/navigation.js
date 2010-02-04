@@ -28,6 +28,11 @@ $(function() {
 		});
 	 });
 	 $('#content').corner();
-	 
-	 
 });
+
+function findDBName() {
+	var match = /\/_(\w+)\//.exec(window.location);
+    var db_name = match[1];
+	return db_name;
+}
+

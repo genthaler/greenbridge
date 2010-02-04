@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "f-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
     <title></title>
@@ -25,6 +25,7 @@
 	<script type="text/javascript" src="/_utils/script/json2.js"></script>
     <script type="text/javascript">
         var query_vars;
+		var db_name;
 		var conversation;
 		var conversation_tags;
 		var tag_id_to_row = new Array();
@@ -42,8 +43,13 @@
         var disableScrubberUpdates = false;
 
         function updateScrubber() {
-			if ($("fms").size() == 0) return;
+			//console.log("Update Scrubber!");
+			if ($("fms").size() == 0) {
+				//console.log("FMS == 0!");
+				//return;
+			}
             if (!disableScrubberUpdates) {
+				//console.log("Ready to update scrub");
                 var playerStatus = $f("fms").getStatus();
                 $("#scrubber").slider('option', 'value', playerStatus.time );
                 updatePlayhead();
@@ -85,7 +91,7 @@
             $("#map").setTemplateElement("map_template");
 
             var data ={};
-            data.url = "/conversations/" + query_vars.name + "/" + name;
+            data.url = "http://localhost:5984/" + db_name + "/" + query_vars.name + "/" + name;
             //data.url = "map.mm";
             // process the template
             $("#map").processTemplate(data);
@@ -94,7 +100,7 @@
 
         function showImages(images) {
             jQuery.each(images, function(i, image) {
-                image.url = "/conversations/" + query_vars.name + "/" + image.name;
+                image.url = "/" + db_name + "/" + query_vars.name + "/" + image.name;
             });
             var data = {};
             data.images = images;
@@ -115,7 +121,7 @@
         $(function() {
 
             $(window).resize(windowResize);
-
+			db_name = findDBName();
 			$('#newTagDialog').dialog({
 			    	autoOpen: false,
 			    	resizable: false,
@@ -149,7 +155,7 @@
 						   var data = JSON.stringify(doc);
 							$.ajax({
 							   type: "DELETE",
-							   url: "/conversations/" + doc._id + "?rev=" + doc._rev,
+							   url: "/" + db_name + "/" + doc._id + "?rev=" + doc._rev,
 							   success: function(msg){
 								 $('#row-' + tag_to_remove ).hide();
 							   }
@@ -163,7 +169,7 @@
 		    });
 			
 			
-			$('#newTagInput').autocomplete('/conversations/_design/tags/_view/by_tag_grouped', {
+			$('#newTagInput').autocomplete('/' + db_name + '/_design/tags/_view/by_tag_grouped', {
 				multiple: false,
 				minChars: 1,
 				max: 300,
@@ -193,13 +199,19 @@
 			
 
            query_vars = $.parseQuery();
+		   if (!query_vars.name) {
+		      jQuery.each(query_vars, function(name, value) {
+				  if (value == 'undefined') query_vars.name = name;
+			  });
+		   }
+		   
            $('#c_name').text(query_vars.name);
 
            $('#tabs').tabs();
 
            
 
-           $.getJSON("/conversations/" + query_vars.name + "/?callback=?", function(data){
+           $.getJSON("/" + db_name + "/" + query_vars.name + "/?callback=?", function(data){
                  conversation = data;
                  $('#c_description').text(data.description);
                  var d = Date.parse(data.media.startdate);
@@ -207,10 +219,11 @@
                  $('.ui-datepicker').css('width', '13em');
                  $('.ui-datepicker-next span').hide();
                  $('.ui-datepicker-prev span').hide();
-				 $('.futon').attr('href', '/_utils/document.html?conversations/' + query_vars.name);
+				 $('.futon').attr('href', '/_utils/document.html?' + db_name + '/' + query_vars.name);
                  installFlowplayer(data.media.url, data.media.media, findRequestedStartTime());
 
-                 parseAttachments(data._attachments);
+				 if (data._attachments)
+					parseAttachments(data._attachments);
 				 // create the scrubber
 				$("#scrubber").slider({
 						range: false,
@@ -241,7 +254,7 @@
 		
 		function updateTagList() {
 		   $("#tags_table").empty();
-           $.getJSON("/conversations/_design/tags/_view/by_conversation_ordered?startkey=[%22"+ query_vars.name +"%22]&endkey=[%22"+ query_vars.name +"%22,{}]&callback=?", function(data){
+           $.getJSON("/" + db_name + "/_design/tags/_view/by_conversation_ordered?startkey=[%22"+ query_vars.name +"%22]&endkey=[%22"+ query_vars.name +"%22,{}]&callback=?", function(data){
 				conversation_tags = data;
 				// attach the template
 				$("#tags_table").setTemplateElement("tags_table_template");
@@ -304,7 +317,7 @@
 			var data = JSON.stringify(tag);
 			$.ajax({
 			   type: "PUT",
-			   url: "/conversations/" + tag._id,
+			   url: "/" + db_name + "/" + tag._id,
 			   data: data,
 			   processData: false,
 			   dataType: "json",
@@ -326,7 +339,7 @@
 			var data = JSON.stringify(tag);
 			$.ajax({
 			   type: "POST",
-			   url: "/conversations/",
+			   url: "/" + db_name + "/",
 			   data: data,
 			   success: function(msg){
 				 updateTagList();
@@ -363,7 +376,7 @@
             <div id="loading" style="position: relative; z-index: 30; top: -70px; left: 200px;">
                     <img src="images/ajax-loader.gif" /> <span style="">Loading Audio...</span>
             </div>
-             <div id="tabs">
+             <div id="tabs" style="margin-top: 42px;">
                  <ul>
                      <li><a href="#tags-tab">Tags</a></li>
                      <li><a href="#attendees-tab">Attendees</a></li>
