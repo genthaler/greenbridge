@@ -231,7 +231,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         jLabel5.setText("Server");
 
         serverComboBox.setEditable(true);
-        serverComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "http://localhost:8080/greenbridge/conversation/upload/freemind" }));
+        serverComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "http://localhost:5984/greenbridge" }));
         serverComboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 serverComboBoxActionPerformed(evt);

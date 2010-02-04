@@ -5,8 +5,11 @@
 
 package com.mycompany.conversation;
 
+import com.mycompany.conversation.domain.Conversation;
+import com.mycompany.conversation.domain.Tag;
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -28,6 +31,7 @@ public interface DocumentStorage {
     public void setUploadURL(String url);
     public String getUploadURL();
 
+    public Conversation convertToConversation();
 
 
 

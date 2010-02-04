@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <plugin label="plugins/ScriptingEngine">
-	<plugin_classpath jar="script/scripting_plugin.jar"/>
-	<plugin_classpath jar="script/groovy-all-1.5.6.jar"/>
-	<plugin_classpath jar="script/conversation-recorder-0.9.0.jar"/>
-	<plugin_classpath jar="script/commons-logging-1.0.4.jar"/>
-	<plugin_classpath jar="script/commons-codec-1.2.jar"/>
-	<plugin_classpath jar="script/commons-httpclient-3.1.jar"/>
-	<plugin_classpath jar="script/swingx-0.9.7.jar" />
+		<plugin_classpath jar="script/scripting_plugin.jar"/>
+		<plugin_classpath jar="script/groovy-all-1.6.7.jar"/>
+		<plugin_classpath jar="script/conversation-recorder-0.9.0.jar"/>
+		<plugin_classpath jar="script/commons-beanutils-1.8.0.jar"/>
+		<plugin_classpath jar="script/commons-collections-3.2.1.jar"/>
+        <plugin_classpath jar="script/commons-lang-2.4.jar"/>
+		<plugin_classpath jar="script/ezmorph-1.0.6.jar"/>
+        <plugin_classpath jar="script/httpcore-4.0.1.jar"/>
+        <plugin_classpath jar="script/httpclient-4.0.jar"/>
+        <plugin_classpath jar="script/json-lib-2.3-jdk15.jar"/>
+        <plugin_classpath jar="script/commons-logging-1.1.jar"/>
+        <plugin_classpath jar="script/xml-resolver-1.2.jar"/>
+		<plugin_classpath jar="script/swingx-0.9.7.jar" />
+		<plugin_classpath jar="script/dom4j-1.6.1.jar" />
+        <plugin_classpath jar="script/jaxen-1.1.jar" />
+		<plugin_classpath jar="script/httpmime-4.0.1.jar" />
+		<plugin_classpath jar="script/apache-mime4j-0.6.jar" />
+
 	<plugin_registration class_name="plugins.script.ScriptingRegistration" isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
