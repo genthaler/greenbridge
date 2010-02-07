@@ -33,9 +33,15 @@ public class AppTest
      */
     public void testApp()
     {
-        int nl = '\n';
+        double current = 10;
+        double total   = 180;
 
-        System.out.println("new line: " + nl);
-        assertTrue( true );
+        
+        double cur = current / total;
+        long rounded = Math.round(cur * 100);
+
+        System.out.println("Cur: " + rounded);
+        assertEquals(18, rounded);
+        
     }
 }

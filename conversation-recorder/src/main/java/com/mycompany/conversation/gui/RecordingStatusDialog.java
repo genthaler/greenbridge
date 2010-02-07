@@ -11,6 +11,8 @@
 
 package com.mycompany.conversation.gui;
 
+import com.mycompany.conversation.AudioPlayer;
+import com.mycompany.conversation.AudioPlayerListener;
 import com.mycompany.conversation.AudioRecordingListener;
 import com.mycompany.conversation.AudioRecordingState;
 import com.mycompany.conversation.ConversationController;
@@ -42,7 +44,7 @@ import org.jdesktop.swingx.JXErrorPane;
  *
  * @author ryan
  */
-public class RecordingStatusDialog extends javax.swing.JDialog implements AudioRecordingListener, UploadListener{
+public class RecordingStatusDialog extends javax.swing.JDialog implements AudioRecordingListener, UploadListener, AudioPlayerListener{
 
     private ConversationController controller;
     private PropertiesStorage propStorage;
@@ -67,6 +69,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         initComponents();
         controller.addAudioRecordingListener(this);
         controller.addUploadListener(this);
+        controller.getAudioPlayer().addListener(this);
         uploadURLEditorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent hle) {
@@ -99,6 +102,10 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         recordingStartButton.setEnabled(true);
         recordingLengthLabel.setText("");
         recordingStopButton.setEnabled(false);
+        playButton.setEnabled(false);
+        stopPlayButton.setEnabled(false);
+        mediaLengthSlider.setEnabled(false);
+        adjustMediaLengthSlider(0);
         serverComboBox.setEnabled(false);
         uploadButton.setEnabled(false);
         taskProgressBar.setEnabled(false);
@@ -115,6 +122,10 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         recordingStartButton.setEnabled(false);
         recordingLengthLabel.setText("");
         recordingStopButton.setEnabled(true);
+        playButton.setEnabled(false);
+        stopPlayButton.setEnabled(false);
+        mediaLengthSlider.setEnabled(false);
+        adjustMediaLengthSlider(0);
         serverComboBox.setEnabled(false);
         uploadButton.setEnabled(false);
         taskProgressBar.setEnabled(false);
@@ -134,6 +145,10 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         // TODO
         recordingLengthLabel.setText("");
         recordingStopButton.setEnabled(false);
+        playButton.setEnabled(true);
+        stopPlayButton.setEnabled(true);
+        mediaLengthSlider.setEnabled(true);
+        adjustMediaLengthSlider(0);
         serverComboBox.setEnabled(true);
         uploadButton.setEnabled(true);
         taskProgressBar.setEnabled(false);
@@ -143,6 +158,11 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         uploadPanel.setEnabled(true);
     }
 
+    private boolean internalMediaLengthChange = false;
+    private void adjustMediaLengthSlider(int value) {
+        internalMediaLengthChange = true;
+        mediaLengthSlider.setValue(value);
+    }
 
 
     public void uploadChange(UploadState state) {
@@ -173,6 +193,33 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
     private String formatMillisecs(long milli) {
         return (milli/1000) + "";
+    }
+
+    @Override
+    public void started() {
+       playButton.setText("Pause");
+
+    }
+
+    @Override
+    public void stopped() {
+        playButton.setText("Play");
+        currentTimeLabel.setText(formatMillisecs(0));
+        adjustMediaLengthSlider(0);
+    }
+
+    private long mediaDuration;
+
+    @Override
+    public void playing(long currentSecond, long totalSeconds) {
+        mediaDuration = totalSeconds;
+        currentTimeLabel.setText(currentSecond + "");
+        totalDurationLabel.setText(totalSeconds + "");
+        if (!mediaLengthSlider.getValueIsAdjusting()) {
+            long pos = Math.round(((double)currentSecond / (double)totalSeconds) * 100);
+            adjustMediaLengthSlider((int)(pos));
+        }
+
     }
 
 
@@ -219,6 +266,13 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         recordingStartButton = new javax.swing.JButton();
         recordingStopButton = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        stopPlayButton = new javax.swing.JButton();
+        mediaLengthSlider = new javax.swing.JSlider();
+        playButton = new javax.swing.JButton();
+        totalDurationLabel = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        currentTimeLabel = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         editSettingsMenu = new javax.swing.JMenu();
         editSettingsMenuItem = new javax.swing.JMenuItem();
@@ -365,7 +419,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                         .addGap(18, 18, 18)
                         .addComponent(otherRecordingLabel))
                     .addComponent(recordingStopButton))
-                .addContainerGap(472, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -391,6 +445,73 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Audio Playback"));
+
+        stopPlayButton.setText("Stop");
+        stopPlayButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopPlayButtonActionPerformed(evt);
+            }
+        });
+
+        mediaLengthSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                mediaLengthSliderStateChanged(evt);
+            }
+        });
+
+        playButton.setText("Play");
+        playButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                playButtonActionPerformed(evt);
+            }
+        });
+
+        totalDurationLabel.setText("00:00");
+
+        jLabel4.setText("/");
+
+        currentTimeLabel.setText("00:00");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mediaLengthSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(playButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(stopPlayButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 157, Short.MAX_VALUE)
+                        .addComponent(currentTimeLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalDurationLabel)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(mediaLengthSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(stopPlayButton)
+                            .addComponent(playButton)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(totalDurationLabel)
+                            .addComponent(jLabel4)
+                            .addComponent(currentTimeLabel))
+                        .addContainerGap())))
+        );
+
         editSettingsMenu.setText("Settings");
 
         editSettingsMenuItem.setText("Edit settings...");
@@ -414,15 +535,20 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(uploadPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(closeButton)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(55, 55, 55)
                 .addComponent(uploadPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(closeButton)
@@ -514,6 +640,37 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
         // TODO add your handling code here:
     }//GEN-LAST:event_serverComboBoxActionPerformed
 
+    private void stopPlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopPlayButtonActionPerformed
+        controller.stopPlayback();
+        paused = false;
+    }//GEN-LAST:event_stopPlayButtonActionPerformed
+
+    private boolean paused = false;
+
+    private void playButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_playButtonActionPerformed
+        if (playButton.getText().equals("Play") && !paused) {
+            controller.startPlayback();
+            paused = false;
+        } else {
+            controller.pausePlayback();
+            if (paused) {
+                playButton.setText("Pause");
+            } else {
+                playButton.setText("Play");
+            }
+            paused = !paused;
+        }
+    }//GEN-LAST:event_playButtonActionPerformed
+
+    private void mediaLengthSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_mediaLengthSliderStateChanged
+        if (!mediaLengthSlider.getValueIsAdjusting() && !internalMediaLengthChange) {
+            int value = mediaLengthSlider.getValue();
+            double pos = ((double)value / 100d) * mediaDuration;
+            controller.seekPlayback((long) pos);
+        }
+        if (internalMediaLengthChange) internalMediaLengthChange = false;
+    }//GEN-LAST:event_mediaLengthSliderStateChanged
+
     /**
     * @param args the command line arguments
     */
@@ -534,25 +691,32 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeButton;
+    private javax.swing.JLabel currentTimeLabel;
     private javax.swing.JMenu editSettingsMenu;
     private javax.swing.JMenuItem editSettingsMenuItem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSlider mediaLengthSlider;
     private javax.swing.JLabel otherRecordingLabel;
     private javax.swing.JProgressBar overallProgressBar;
+    private javax.swing.JButton playButton;
     private javax.swing.JLabel recordingLengthLabel;
     private javax.swing.JButton recordingStartButton;
     private javax.swing.JLabel recordingStartedLabel;
     private javax.swing.JButton recordingStopButton;
     private javax.swing.JComboBox serverComboBox;
+    private javax.swing.JButton stopPlayButton;
     private javax.swing.JProgressBar taskProgressBar;
+    private javax.swing.JLabel totalDurationLabel;
     private javax.swing.JButton uploadButton;
     private javax.swing.JButton uploadCancelButton;
     private javax.swing.JPanel uploadPanel;
