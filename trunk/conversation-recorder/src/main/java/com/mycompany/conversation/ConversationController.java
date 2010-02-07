@@ -26,6 +26,16 @@ public interface ConversationController {
 
     void stopRecording();
 
+    void startPlayback();
+
+    void pausePlayback();
+
+    void stopPlayback();
+
+    void seekPlayback(long seconds);
+
+
     String uploadConversation(String server) throws InterruptedException, IOException;
 
+    AudioPlayer getAudioPlayer();
 }

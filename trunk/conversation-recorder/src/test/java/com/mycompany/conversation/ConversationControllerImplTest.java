@@ -22,7 +22,7 @@ public class ConversationControllerImplTest extends TestCase {
 
     public void testFindServerURL() {
         String test = "http://localhost:5984/parking_tickets";
-        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null);
+        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null,null);
         System.out.println("The test: " + test);
 
         String result = impl.findServerURL(test);
@@ -32,7 +32,7 @@ public class ConversationControllerImplTest extends TestCase {
 
     public void testFindDatabase() {
         String test = "http://localhost:5984/parking_tickets";
-        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null);
+        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null, null);
         System.out.println("The test: " + test);
 
         String result = impl.findDB(test);
@@ -44,7 +44,7 @@ public class ConversationControllerImplTest extends TestCase {
     public void nottestUploadMedia() throws Exception {
         String server = "http://localhost:5984/conversations";
         File mp3 = new File("C://rtemp/TechLead-2009.mm.wav");
-        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null);
+        ConversationControllerImpl impl = new ConversationControllerImpl(null, null, null, null);
         impl.uploadMedia(mp3, server);
     }
 

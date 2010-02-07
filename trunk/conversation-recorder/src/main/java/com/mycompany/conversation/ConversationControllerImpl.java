@@ -51,18 +51,22 @@ public class ConversationControllerImpl implements ConversationController {
     private TagsUploader tagsUploader;
     private MediaUploader mediaUploader;
     private Pattern serverPattern;
+    private AudioPlayer audioPlayer;
 
 
-    public ConversationControllerImpl(DocumentStorage storage, PropertiesStorage properties, TagsUploader tagsUploader) {
+    public ConversationControllerImpl(DocumentStorage storage, PropertiesStorage properties, TagsUploader tagsUploader, AudioPlayer audioPlayer) {
         this.documentStorage = storage;
         this.properties = properties;
         this.audioListeners = new ArrayList<AudioRecordingListener>();
         this.tagsUploader = tagsUploader;
         this.mediaUploader = new PostMediaUploader();
+        this.audioPlayer = audioPlayer;
         serverPattern = Pattern.compile("(https?://[^/]+)/(\\w+)");
     }
 
-
+    public AudioPlayer getAudioPlayer() {
+        return audioPlayer;
+    }
 
 
     private AudioRecordingState findPersistedAudioRecordingState() {
@@ -295,5 +299,29 @@ public class ConversationControllerImpl implements ConversationController {
             uploadListener.uploadChange(state);
         }
     }
+
+
+
+
+    @Override
+    public void startPlayback() {
+        audioPlayer.play(getFileForDocument(documentStorage.getFileLocation(), ".wav"));
+    }
+
+    @Override
+    public void pausePlayback() {
+        audioPlayer.pause();
+    }
+
+    @Override
+    public void stopPlayback() {
+        audioPlayer.stop();
+    }
+
+    @Override
+    public void seekPlayback(long seconds) {
+        audioPlayer.seek(seconds);
+    }
+
 
 }

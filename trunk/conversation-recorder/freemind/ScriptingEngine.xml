@@ -17,6 +17,11 @@
         <plugin_classpath jar="script/jaxen-1.1.jar" />
 		<plugin_classpath jar="script/httpmime-4.0.1.jar" />
 		<plugin_classpath jar="script/apache-mime4j-0.6.jar" />
+		<plugin_classpath jar="script/basicplayer3.0.jar" />
+		<plugin_classpath jar="script/jl1.0.jar" />
+		<plugin_classpath jar="script/kj_dsp1.1.jar" />
+		<plugin_classpath jar="script/mp3spi1.9.4.jar" />
+		<plugin_classpath jar="script/tritonus_share.jar" />
 
 	<plugin_registration class_name="plugins.script.ScriptingRegistration" isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
