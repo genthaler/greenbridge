@@ -139,6 +139,10 @@ class Player implements javazoom.jlgui.basicplayer.BasicPlayerListener, com.myco
     void pause() {
 		control.pause();
 	}
+	
+	void resume() {
+		control.resume();
+	}
 
     void stop() {
 		control.stop();
@@ -171,7 +175,7 @@ class Player implements javazoom.jlgui.basicplayer.BasicPlayerListener, com.myco
 	//Basic Player ***********************
 	public void opened(Object stream, Map properties) {
 		audioInfo = properties;
-		 for (def apl : listeners) {
+		 for (apl in listeners) {
 			apl.started();
 		}
     }
@@ -202,13 +206,18 @@ class Player implements javazoom.jlgui.basicplayer.BasicPlayerListener, com.myco
             secondsAmount = (long) Math.round(microseconds / 1000000);
         }
         if (secondsAmount < 0) secondsAmount = (long) Math.round(microseconds / 1000000);
-		for (def apl : listeners) {
+		for (apl in listeners) {
             apl.playing(secondsAmount, total);
         }
     }
 
 
     public void stateUpdated(javazoom.jlgui.basicplayer.BasicPlayerEvent event) {
+		if (event.code == javazoom.jlgui.basicplayer.BasicPlayerEvent.STOPPED) {
+			for (apl in listeners) {
+				apl.stopped();
+			}
+		}
     }
     public void setController(javazoom.jlgui.basicplayer.BasicController controller) {
 		this.control = controller;
@@ -270,9 +279,16 @@ class Player implements javazoom.jlgui.basicplayer.BasicPlayerListener, com.myco
 		
 		long seconds = (date.getTime() - startDate.getTime()) / 1000;
 		
+		int tagStartOffset = 15;
+		try {
+			tagStartOffset = Integer.parseInt(controller.getProperty("tagStartOffset"));
+			if (seconds > tagStartOffset) seconds = seconds - tagStartOffset;
+		} catch (Exception e) {}
+		
 		System.out.println("Start: " + start);
 		System.out.println("node : " + date);
 		System.out.println("Seconds: " + seconds);
+		System.out.println("offset: " + tagStartOffset);
 		seek(seconds);
 		
 		
@@ -280,27 +296,26 @@ class Player implements javazoom.jlgui.basicplayer.BasicPlayerListener, com.myco
 	void onUpdateNodeHook(freemind.modes.MindMapNode node) {}
     void onDeselectHook(freemind.view.mindmapview.NodeView node){}
 	void onSaveNode(freemind.modes.MindMapNode node){}
-	
-	
-	
-
 }
 
 
+if (com.mycompany.conversation.gui.AudioControlPanel.PANEL_CREATED) {
+	println("There is something");
+   return; // there is something there!
+}
+
+println("creating a new one!");
 p_storage = new FreeMindPropertiesStorage(c);
 d_storage = new FreeMindNodeDocumentStorage(node, p_storage);
 cu = new com.mycompany.conversation.upload.CouchTagsUploader();
-//ap = new com.mycompany.conversation.AudioPlayerMock();
 ap = new Player(c);
 listener = new AudioListener(c);
 c_controller = new com.mycompany.conversation.ConversationControllerImpl(d_storage, p_storage, cu,ap);
 c_controller.addAudioRecordingListener(listener);
-dialog = new com.mycompany.conversation.gui.RecordingStatusDialog(c_controller, p_storage,  null, false);
-dialog.setLocationRelativeTo(null);
-dialog.setVisible(true);
-        
-      
-
+control_panel = new com.mycompany.conversation.gui.AudioControlPanel(c_controller, p_storage);    
+split_pane = c.getFrame().insertComponentIntoSplitPane(control_panel);    
+split_pane.resetToPreferredSizes();
+a = 1;
 
 
 
