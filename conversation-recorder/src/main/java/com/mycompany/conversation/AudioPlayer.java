@@ -25,6 +25,8 @@ public interface AudioPlayer {
 
     void stop();
 
+    void resume();
+
     /**
      * Seek to to seconds into track
      * @param percent

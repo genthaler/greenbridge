@@ -85,6 +85,7 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
     }
 
 
+    @Override
     public void recordingChanged(AudioRecordingState state) {
         if (state.getRecordingStarted() == null) {
             notStartedRecording();
@@ -198,14 +199,16 @@ public class RecordingStatusDialog extends javax.swing.JDialog implements AudioR
     @Override
     public void started() {
        playButton.setText("Pause");
-
+       paused = false;
     }
 
     @Override
     public void stopped() {
+        System.out.println("Stopped !!");
         playButton.setText("Play");
         currentTimeLabel.setText(formatMillisecs(0));
         adjustMediaLengthSlider(0);
+        paused = false;
     }
 
     private long mediaDuration;

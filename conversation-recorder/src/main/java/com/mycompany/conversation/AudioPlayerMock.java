@@ -34,6 +34,10 @@ public class AudioPlayerMock implements AudioPlayer {
 
     }
 
+    public void resume() {
+        tick.pause();
+    }
+
     @Override
     public void stop() {
         tick.stopTime();
