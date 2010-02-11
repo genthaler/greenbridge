@@ -314,6 +314,11 @@ public class ConversationControllerImpl implements ConversationController {
     }
 
     @Override
+    public void resumePlayback() {
+        audioPlayer.resume();
+    }
+
+    @Override
     public void stopPlayback() {
         audioPlayer.stop();
     }

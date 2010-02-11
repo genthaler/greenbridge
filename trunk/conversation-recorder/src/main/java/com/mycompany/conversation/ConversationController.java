@@ -30,6 +30,8 @@ public interface ConversationController {
 
     void pausePlayback();
 
+    void resumePlayback();
+
     void stopPlayback();
 
     void seekPlayback(long seconds);
