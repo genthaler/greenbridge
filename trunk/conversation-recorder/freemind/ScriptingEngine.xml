@@ -50,7 +50,7 @@
 		name="Manage Conversation" 
 		documentation="Start/stop recording the conversation. Upload to server." 
 		label="plugins/GroovyScript1" 
-		key_stroke="control PRINTSCREEN"
+		key_stroke="control PAUSE"
 		base="freemind.extensions.ModeControllerHookAdapter" 
 		class_name="plugins.script.ScriptingEngine">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
