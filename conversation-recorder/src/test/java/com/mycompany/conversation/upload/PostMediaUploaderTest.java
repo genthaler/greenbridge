@@ -21,13 +21,14 @@ public class PostMediaUploaderTest extends TestCase {
         super(testName);
     }
 
+
     public void testUpload() throws Exception {
         PostMediaUploader uploader = new PostMediaUploader();
         Map props = new HashMap();
         props.put(PostMediaUploader.POST_URL, "http://localhost:8080/simple-upload/upload");
-        Media m = uploader.upload(new File("D:\\rtemp\\wake.mp3"), props);
-        System.out.println("media: " + m.getMedia());
-        System.out.println("url:   " + m.getUrl());
+        //Media m = uploader.upload(new File("D:\\rtemp\\wake.mp3"), props);
+        //System.out.println("media: " + m.getMedia());
+        //System.out.println("url:   " + m.getUrl());
     }
 
 }
