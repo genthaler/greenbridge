@@ -2,7 +2,7 @@
 <plugin label="plugins/Conversations">
 		<plugin_classpath jar="script/scripting_plugin.jar"/>
 		<plugin_classpath jar="script/groovy-all-1.5.6.jar"/>
-		<plugin_classpath jar="conversations/conversation-recorder-0.9.0.jar"/>
+		<plugin_classpath jar="conversations/conversation-recorder-${version}.jar"/>
 		<plugin_classpath jar="conversations/commons-beanutils-1.8.0.jar"/>
 		<plugin_classpath jar="conversations/commons-collections-3.2.1.jar"/>
                 <plugin_classpath jar="conversations/commons-lang-2.4.jar"/>

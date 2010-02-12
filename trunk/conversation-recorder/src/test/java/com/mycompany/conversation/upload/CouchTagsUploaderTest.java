@@ -77,7 +77,7 @@ public class CouchTagsUploaderTest extends TestCase {
     }
 
 
-     public void testPostConversation() {
+     public void ignoreTestPostConversation() {
         Conversation c = new Conversation();
         c.setId("conversation" + System.currentTimeMillis());
         c.setDescription("Test");
