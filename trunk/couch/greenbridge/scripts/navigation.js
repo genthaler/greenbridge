@@ -1,7 +1,7 @@
 $(function() {
 	 $.get("_header.html", function(resp) {
 		$("#header").append(resp);
-		$('#tagsearch').autocomplete('/conversations/_design/tags/_view/by_tag_grouped', {
+		$('#tagsearch').autocomplete('/' + db_name +  '/_design/tags/_view/by_tag_grouped', {
 			multiple: false,
 			minChars: 1,
 			max: 300,
