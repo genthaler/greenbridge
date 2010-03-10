@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>greenbridge-core</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>Greenbride Core</name>
   <url>http://code.google.com/p/greenbridge/</url>
   <description>A behaviour driven development tool bridging confluence, maven and junit. This is the core module.</description>
@@ -18,7 +18,7 @@
     <dependency>
         <groupId>com.googlecode.greenbridge</groupId>
         <artifactId>greenbridge-junit</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </dependency>
     <dependency>
         <groupId>org.codehaus.swizzle</groupId>
