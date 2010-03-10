@@ -50,6 +50,7 @@ public class StoryListener extends RunListener {
 	 */
     @Override
 	public void testStarted(Description description) throws Exception {
+        System.out.println("Test Started: " + description);
         ScenarioResult result = new ScenarioResult();
         result.setScenario(getScenario(description));
         result.setStartTime(new Date());
