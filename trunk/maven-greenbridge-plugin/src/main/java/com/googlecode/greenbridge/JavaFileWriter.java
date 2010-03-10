@@ -29,6 +29,7 @@ import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
  */
 public class JavaFileWriter {
 
+    public static final String ABSTRACT_SCENARIO_CLASS_TEMPLATE = "AbstractScenarioTemplate.ftl";
     public static final String SCENARIO_CLASS_TEMPLATE = "ScenarioTemplate.ftl";
     public static final String SCENARIO_REF_TEMPLATE   = "ScenarioRef.ftl";
     public static final String STORY_CLASS_TEMPLATE    = "StoryTemplate.ftl";
@@ -63,6 +64,7 @@ public class JavaFileWriter {
         List<ScenarioNarrative> scenarios = buildScenarioList(stories);
         for (Iterator<ScenarioNarrative> it = scenarios.iterator(); it.hasNext();) {
             ScenarioNarrative scenarioNarrative = it.next();
+            writeScenarioAbstractClass(scenarioNarrative);
             writeScenarioClass(scenarioNarrative);
             writtenCount++;
         }
@@ -77,6 +79,25 @@ public class JavaFileWriter {
         
         Template t = config.getTemplate(STORY_CLASS_TEMPLATE);
         File storyFile = new File(storyDirectory, story.getId() + "_" + story.getVersion() + ".java");
+        FileWriter writer = new FileWriter(storyFile);
+        try {
+            t.process(root, writer);
+        } catch (TemplateException ex) {
+            Logger.getLogger(JavaFileWriter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IOException(ex);
+        }
+        writer.flush();
+        writer.close();
+        return storyFile;
+    }
+
+    public File writeScenarioAbstractClass(ScenarioNarrative scenario) throws IOException {
+        Map root = new HashMap();
+        root.put("packageName", packageName + ".scenarios");
+        root.put("scenario", scenario);
+        root.put("methods", convertNarrativeToMethodNames(scenario));
+        Template t = config.getTemplate(ABSTRACT_SCENARIO_CLASS_TEMPLATE);
+        File storyFile = new File(scenarioDirectory, scenario.getId()  +  ".java");
         FileWriter writer = new FileWriter(storyFile);
         try {
             t.process(root, writer);

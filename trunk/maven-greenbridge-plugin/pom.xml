@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>maven-greenbridge-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>maven-greenbridge-plugin Maven Mojo</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -16,7 +16,7 @@
     <dependency>
       <groupId>com.googlecode.greenbridge</groupId>
       <artifactId>greenbridge-core</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
     <dependency>
           <groupId>com.googlecode.greenbridge</groupId>
