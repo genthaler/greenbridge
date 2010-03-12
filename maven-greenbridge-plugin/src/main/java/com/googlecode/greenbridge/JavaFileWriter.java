@@ -29,6 +29,8 @@ import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
  */
 public class JavaFileWriter {
 
+    public static final String STORY_PACKAGE_TEMPLATE = "StoryPackageTemplate.ftl";
+
     public static final String ABSTRACT_SCENARIO_CLASS_TEMPLATE = "AbstractScenarioTemplate.ftl";
     public static final String SCENARIO_CLASS_TEMPLATE = "ScenarioTemplate.ftl";
     public static final String SCENARIO_REF_TEMPLATE   = "ScenarioRef.ftl";
@@ -38,14 +40,46 @@ public class JavaFileWriter {
     private File scenarioDirectory;
     private File storyDirectory;
     private String packageName;
+    private String projectArtifactId;
+    private String projectGroupId;
+    private String projectVersion;
 
-    public JavaFileWriter(String templatePath, File storyDirectory, File scenarioDirectory, String packageName) throws IOException {
+    public JavaFileWriter(String templatePath, File storyDirectory, File scenarioDirectory, String packageName, String projectArtifactId, String projectGroupId, String projectVersion) throws IOException {
         config = new Configuration();
         config.setClassForTemplateLoading(JavaFileWriter.class, templatePath);
         config.setObjectWrapper(new DefaultObjectWrapper());
         this.packageName = packageName;
         this.storyDirectory = storyDirectory;
         this.scenarioDirectory = scenarioDirectory;
+        this.projectArtifactId = projectArtifactId;
+        this.projectGroupId = projectGroupId;
+        this.projectVersion = projectVersion;
+    }
+
+
+    public void writePackageClass(List<StoryNarrative> stories) throws IOException {
+        System.out.println("------------------- PACKAGE! ");
+        Map root = new HashMap();
+        root.put("packageName", packageName + ".stories");
+        root.put("scenariopackageName", packageName + ".scenarios");
+        root.put("storyNarratives", stories);
+        String javaStoryPackageName = JavaLanguageSupport.makeJavaIdentifier(projectArtifactId);
+        root.put("javaStoryPackageName", javaStoryPackageName);
+        root.put("storyPackageName", projectGroupId + "-" + projectArtifactId);
+        root.put("storyPackageVersion", projectVersion);
+
+        Template t = config.getTemplate(STORY_PACKAGE_TEMPLATE);
+        File storyFile = new File(storyDirectory, javaStoryPackageName + ".java");
+        FileWriter writer = new FileWriter(storyFile);
+        try {
+            t.process(root, writer);
+        } catch (TemplateException ex) {
+            Logger.getLogger(JavaFileWriter.class.getName()).log(Level.SEVERE, null, ex);
+            throw new IOException(ex);
+        }
+        writer.flush();
+        writer.close();
+        
     }
 
 

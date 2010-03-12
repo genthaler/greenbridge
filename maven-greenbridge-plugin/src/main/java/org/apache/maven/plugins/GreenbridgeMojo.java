@@ -96,7 +96,7 @@ public class GreenbridgeMojo
             setStoryPackage(stories);
 
             String srcDir = (String)roots.get(0);
-            CodeGenerator generator = new CodeGenerator("/", srcDir, packageName);
+            CodeGenerator generator = new CodeGenerator("/", srcDir, packageName, projectArtifactId, projectGroupId, projectVersion);
             generator.generateRequrementsJavaCode(stories);
         } catch (Exception ex) {
             Logger.getLogger(GreenbridgeMojo.class.getName()).log(Level.SEVERE, null, ex);
