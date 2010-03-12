@@ -11,7 +11,7 @@
       <dependency>
           <groupId>com.googlecode.greenbridge</groupId>
           <artifactId>greenbridge-junit</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
       </dependency>
   </dependencies>
   <build>
@@ -26,7 +26,7 @@
             <plugin>
                 <groupId>com.googlecode.greenbridge</groupId>
                 <artifactId>maven-greenbridge-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>
@@ -36,8 +36,8 @@
                         <configuration>
                             <packageName>${packageQualifier}</packageName>
                             <storyHarvester implementation="com.googlecode.greenbridge.storyharvester.impl.TiddlyWikiStoryHarvester">
-                                <tiddlyWikiFile>stories.html</tiddlyWikiFile>
-                                <tiddlyWikiRemoteURL>file:///D:/devel/greenbridge/test-greenbridge/stories.html</tiddlyWikiRemoteURL>
+                                <tiddlyWikiFile>${basedir}/stories.html</tiddlyWikiFile>
+                                <!--<tiddlyWikiRemoteURL>http://integration.server/test-greenbridge/stories.html</tiddlyWikiRemoteURL> -->
                             </storyHarvester>
                         </configuration>
                     </execution>
