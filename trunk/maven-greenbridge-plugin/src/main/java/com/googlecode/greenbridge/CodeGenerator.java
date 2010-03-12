@@ -26,18 +26,17 @@ public class CodeGenerator {
     private File scenarioFolder;
     private File storyFolder;
 
-
     /**
      * Constructor.
      * @param templatePath the freemarker template root
      * @param tempDir the directory we can use to write and store the jar
      * @param packageName the package name used to prefix all generated classes
      */
-    public CodeGenerator(String templatePath, String srcDir, String packageName) throws IOException {
+    public CodeGenerator(String templatePath, String srcDir, String packageName,String projectArtifactId, String projectGroupId, String projectVersion) throws IOException {
         this.srcDir = srcDir;
         this.packageName = packageName;
         createFileStructure();
-        writer = new JavaFileWriter(templatePath,  storyFolder, scenarioFolder, packageName);
+        writer = new JavaFileWriter(templatePath,  storyFolder, scenarioFolder, packageName, projectArtifactId, projectGroupId, projectVersion);
     }
 
     protected File createFileStructure() {
@@ -90,6 +89,7 @@ public class CodeGenerator {
     public void generateRequrementsJavaCode(List<StoryNarrative> stories) throws IOException {
         writer.writeScenarioClasses(stories);
         writer.writeStoryClasses(stories);
+        writer.writePackageClass(stories);
     }
 
     public String timestamp() {
