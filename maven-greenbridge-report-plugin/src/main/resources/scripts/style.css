@@ -1,0 +1,329 @@
+/*
+    Document   : gb
+    Created on : Nov 26, 2009, 4:43:27 PM
+    Author     : ryan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+.neutral-1 { background-color: #FFFFFF }
+.primary-1 { background-color: #00B74A }
+.primary-2 { background-color: #228A4C }
+.primary-3 { background-color: #007730 }
+.primary-4 { background-color: #37DB79 }
+.primary-5 { background-color: #63DB93 }
+
+.font-1 { color: #00B74A }
+.font-2 { color: #228A4C }
+.font-3 { color: #007730 }
+.font-4 { color: #37DB79 }
+.font-5 { color: #63DB93 }
+
+root {
+    display: block;
+}
+
+body {
+	margin: 0 0 0 0;
+
+}
+
+#header {
+	height: 65px;
+	background-color: #37DB79;
+        margin-bottom: 15px;
+}
+
+#main_menu {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	height: 58px;
+	position: absolute;
+	top: 0px;
+	left: 123px;
+	width: 100%;
+}
+
+#main_menu_title {
+	background-color: #37DB79;
+	height: 34px;
+	font-family: HELVETICA;
+	font-size: 1.45em;
+	padding-left: 20px;
+}
+
+#main_menu_img {
+	padding-top: 13px;
+}
+
+#menu {
+	background-color: #228A4C;
+	height: 29px;
+    padding-left: 20px;
+    padding-top: 5px;
+}
+
+#menu a {
+	color: white;
+	text-decoration: none;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+#menu a:hover{
+	color: white;
+	text-decoration: underline;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+
+#search{
+	position: absolute;
+	top: 39px;
+	right: 150px;
+}
+
+#bar {
+   background-color:#8E7E54 !important;
+}
+
+#bar #bar_menu {
+    height:26px;
+    position:relative;
+}
+
+#bar #brand, #bar #gyo_link, #bar #bar_menu_branding {
+    float:left;
+}
+
+
+.story {
+    margin-left: 26px;
+    margin-right: 26px;
+    margin-top: 4px;
+    padding: .3em .5em .5em .5em;
+}
+
+.storyName {
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+}
+
+.storyDescription {
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: lighter;
+    font-size: 0.8em;
+
+}
+
+.passed {
+    background-color: #37DB79;
+}
+
+.failed {
+    background-color: #941300;
+}
+
+.pending {
+    background-color: yellow;
+}
+.storyCount {
+    padding-left: 0;
+    padding-right: 9px;
+    margin-top: 0;
+    position: relative;
+    top: -25px;
+    margin-bottom: 0px;
+
+}
+
+.storyCount li {
+    float: right;
+    margin-left: 20px;
+    list-style: none;
+    border: 1px solid #666666;
+    padding: 2px 2px 2px 2px;
+
+    width: 25px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    text-align: right;
+}
+
+.pass {
+    background-color: #37DB79;
+}
+
+.pass-zero {
+    background-color: transparent;
+}
+
+.fail {
+    background-color: #941300;
+}
+
+.fail-zero {
+
+    background-color: transparent;
+}
+
+.pend {
+    background-color: yellow;
+}
+
+.pend-zero {
+    background-color: transparent;
+}
+
+.scenario {
+    border: 1px solid #EEEEEE;
+    padding: 0.3em 0.5em 0.5em 0.3em;
+    margin-bottom: 5px;
+    margin-top: 4px;
+}
+
+.scenarioName {
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.1em;
+}
+
+.scenarioCount {
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    top: -25px;
+    text-align: right;
+}
+
+
+.scenarioCount li {
+    float: right;
+    margin-left: 20px;
+    list-style: none;
+    border: 1px solid #EEEEEE;
+    padding: 2px 2px 2px 2px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+        width: 25px;
+}
+
+.scenarioDescription {
+    margin-left: 1em;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: lighter;
+    font-size: 0.8em;
+}
+
+.scenarioTable {
+    margin-left: 1.5em;
+    width: 100%;
+}
+
+#calendar_bounds {
+    position: absolute;
+    right: 3em;
+}
+
+ui-datepicker {
+    width: 13em;
+}
+.ui-datepicker td span, .ui-datepicker td a {
+    display:block;
+    padding:0.0em;
+    text-align:right;
+    text-decoration:none;
+
+}
+
+#calendar {
+   font-size:62.5%;
+}
+
+#conversation {
+
+}
+
+#c_name {
+    font-size: 3em;
+}
+
+#conversation_details{
+
+}
+
+#fms {
+    width: 300px;
+    height: 60px;
+    margin-top: 30px;
+
+}
+
+
+.ui-tabs .ui-tabs-nav li a {
+    padding:0.15em 1em;
+}
+
+#playhead {
+    position: absolute;
+    width: 18px;
+    background-color:#63DB93;
+    z-index: 1;
+}
+
+.tagrow {
+    height: 3em;
+}
+
+.tagtable {
+    width: 100%;
+
+}
+
+.taginfo {
+    width: 30%;
+    margin-right: 0;
+    padding-right: 0;
+}
+.taginfo a img {
+    border:none;
+}
+.tagbar {
+    width: 70%;
+    margin-left: 0;
+    padding-left: 0;
+    z-index: 2;
+}
+.tagdiv {
+   border: 1px solid white;
+}
+
+.tag_description {
+	font-size: 0.6em;
+}
+
+.ui-slider .ui-slider-handle {
+    height:1em;
+    width:1em;
+}
+
+
+label {
+  float:left;
+  width:25%;
+  margin-right:0.5em;
+  padding-top:0.2em;
+  text-align:right;
+  font-weight:bold;
+  }
+
+
+
+
+
+
+
