@@ -31,7 +31,9 @@ public class TiddlyWikiStoryHarvesterTest {
     @Test
     public void testGather() throws Exception {
         TiddlyWikiStoryHarvester harvester = new TiddlyWikiStoryHarvester();
-        harvester.setTiddlyWikiFile("src/test/resources/mptw.html");
+        File f = new File("src/test/resources/mptw.html");
+
+        harvester.setTiddlyWikiFile(f.toURI().toURL().toString());
         List<StoryNarrative> stories = harvester.gather();
         assertEquals(3, stories.size());
 

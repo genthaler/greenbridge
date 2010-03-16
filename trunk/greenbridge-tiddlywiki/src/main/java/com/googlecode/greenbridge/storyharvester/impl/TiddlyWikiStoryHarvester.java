@@ -12,12 +12,15 @@ import com.googlecode.greenbridge.util.JavaLanguageSupport;
 import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -29,6 +32,8 @@ import org.dom4j.io.SAXReader;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -41,23 +46,40 @@ public class TiddlyWikiStoryHarvester implements StoryHarvester {
 
     @Override
     public List<StoryNarrative> gather() throws Exception {
-        List<Element> divs = getDivs(getWikiURL());
+        URL url = getSourceWikiURL();
+        System.out.println("Story url: " + url.toString());
+        List<Element> divs = getDivs(getSourceWikiURL());
         Map<String,StoryHolder> storyTitleToElement = convertToStoryHolderMap(divs);
         List<StoryNarrative> narratives = covnvertToStoryNarratives(storyTitleToElement);
         return narratives;
     }
 
-    protected URL getWikiURL() throws MalformedURLException {
-        if (tiddlyWikiFile  != null) {
-            File f = new File(tiddlyWikiFile);
-            return f.toURI().toURL();
+    protected URL getSourceWikiURL() throws MalformedURLException {
+        URL url = null;
+        try {
+            url = new URL(tiddlyWikiFile);
+        } catch (Exception e) {
+            url = new URL("file:/" + tiddlyWikiFile);
         }
-        return new URL(tiddlyWikiRemoteURL);
+        return url;
+
     }
 
-    protected String getLinkURL() {
-        if (tiddlyWikiRemoteURL != null) return tiddlyWikiRemoteURL;
-        else return tiddlyWikiFile;
+    protected String getLinkWikiURL()  {
+        if (tiddlyWikiFile != null) return tiddlyWikiRemoteURL;
+        try {
+            URL url = new URL(tiddlyWikiFile);
+            return tiddlyWikiFile;
+        } catch (Exception e) {
+            try {
+                URL url = new URL("file://" + tiddlyWikiFile);
+                return url.toURI().toURL().toString();
+            } catch (Exception ex) {
+                return "file://" + tiddlyWikiFile;
+            }
+            
+        }
+
     }
 
 
@@ -70,7 +92,7 @@ public class TiddlyWikiStoryHarvester implements StoryHarvester {
             narrative.setStoryNarrative(parseStoryNarrative(storyHolder.getSource()));
             narrative.setVersion(getChangeCount(storyHolder.getSource()));
             narrative.setLinkName("See Scenario on the Wiki");
-            narrative.setLinkUrl(getLinkURL() + "#" + storyHolder.getName());
+            narrative.setLinkUrl(getLinkWikiURL() + "#" + storyHolder.getName());
             narrative.setScenarios(harvestScenarios(storyHolder, narrative));
             storyNarratives.add(narrative);
         }
@@ -95,7 +117,7 @@ public class TiddlyWikiStoryHarvester implements StoryHarvester {
         String title = source.attributeValue("title");
         scenario.setId(safeID(title));
         scenario.setLinkName("See Scenario on the Wiki");
-        scenario.setLinkUrl(getLinkURL() + "#" + title);
+        scenario.setLinkUrl(getLinkWikiURL() + "#" + title);
         scenario.setVersion(getChangeCount(source));
         parsePossibleTable(scenario, source);
         return scenario;
