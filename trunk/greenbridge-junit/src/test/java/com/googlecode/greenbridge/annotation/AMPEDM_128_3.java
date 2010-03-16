@@ -40,4 +40,19 @@ public class AMPEDM_128_3 implements ScenarioRef {
         return 3;
     }
 
+    @Override
+    public Class<? extends StoryRef> getStoryRef() {
+        return Story2121.class;
+    }
+
+    @Override
+    public String linkUrl() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String linkName() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

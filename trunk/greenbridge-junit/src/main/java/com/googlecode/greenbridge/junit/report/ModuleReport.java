@@ -5,14 +5,41 @@
 
 package com.googlecode.greenbridge.junit.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author ryan
  */
-public class StorySource {
+public class ModuleReport {
 
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public static enum STATE {passed, failed, pending};
+
+    private STATE state = STATE.pending;
+    private String name;
+    private String version;
+
+    private  List<StoryReport> storyReports = new ArrayList<StoryReport>();
+
+
+    private int total_passing;
+    private int total_failing;
+    private int total_pending;
     /**
      * @return the total_passing
      */
@@ -44,56 +71,46 @@ public class StorySource {
     /**
      * @return the total_incomplete
      */
-    public int getTotal_incomplete() {
-        return total_incomplete;
+    public int getTotal_pending() {
+        return total_pending;
     }
 
     /**
      * @param total_incomplete the total_incomplete to set
      */
-    public void setTotal_incomplete(int total_incomplete) {
-        this.total_incomplete = total_incomplete;
+    public void setTotal_pending(int total_pending) {
+        this.total_pending = total_pending;
     }
-    public static enum SOURCE_STATE {PASSED, FAILED, INCOMPLETE};
 
-    private SOURCE_STATE state;
-    private String sourceName;
-
-    private transient List<StoryReport> storyReports;
-
-
-    private int total_passing;
-    private int total_failing;
-    private int total_incomplete;
 
 
 
     /**
      * @return the state
      */
-    public SOURCE_STATE getState() {
+    public STATE getState() {
         return state;
     }
 
     /**
      * @param state the state to set
      */
-    public void setState(SOURCE_STATE state) {
+    public void setState(STATE state) {
         this.state = state;
     }
 
     /**
      * @return the sourceName
      */
-    public String getSourceName() {
-        return sourceName;
+    public String getName() {
+        return name;
     }
 
     /**
      * @param sourceName the sourceName to set
      */
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**

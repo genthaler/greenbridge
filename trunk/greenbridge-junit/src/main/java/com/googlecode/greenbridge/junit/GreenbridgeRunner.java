@@ -12,6 +12,7 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 import com.googlecode.greenbridge.annotation.Story;
+import com.googlecode.greenbridge.annotation.StoryModule;
 import com.googlecode.greenbridge.annotation.StoryRef;
 import java.lang.reflect.Constructor;
 import org.junit.internal.runners.JUnit4ClassRunner;

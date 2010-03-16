@@ -5,7 +5,7 @@
 
 package com.googlecode.greenbridge.junit.report;
 
-import com.googlecode.greenbridge.annotation.StoryRef;
+import com.googlecode.greenbridge.junit.report.ModuleReport.STATE;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +14,18 @@ import java.util.List;
  * @author ryan
  */
 public class StoryReport {
+
+    private STATE state = STATE.pending;
+    private String id;
+    private String description;
+    private String wikiLink;
+
+    private  List<ScenarioReport> scenarioReports = new ArrayList<ScenarioReport>();
+
+
+    private int total_passing;
+    private int total_failing;
+    private int total_pending;
 
     /**
      * @return the total_passing
@@ -43,89 +55,93 @@ public class StoryReport {
         this.total_failing = total_failing;
     }
 
-    /**
-     * @return the total_ignored
-     */
-    public int getTotal_ignored() {
-        return total_ignored;
-    }
-
-    /**
-     * @param total_ignored the total_ignored to set
-     */
-    public void setTotal_ignored(int total_ignored) {
-        this.total_ignored = total_ignored;
-    }
 
     /**
      * @return the total_incomplete
      */
-    public int getTotal_incomplete() {
-        return total_incomplete;
+    public int getTotal_pending() {
+        return total_pending;
     }
 
     /**
      * @param total_incomplete the total_incomplete to set
      */
-    public void setTotal_incomplete(int total_incomplete) {
-        this.total_incomplete = total_incomplete;
+    public void setTotal_pending(int total_pending) {
+        this.total_pending = total_pending;
     }
-    public static enum STORY_STATE {PASSED, FAILED, INCOMPLETE};
 
-    private STORY_STATE state;
-    private StoryRef storyRef;
-    private transient List<ScenarioReport> scenario_reports = new ArrayList<ScenarioReport>();
-
-
-    private int total_passing;
-    private int total_failing;
-    private int total_ignored;
-    private int total_incomplete;
 
 
 
     /**
      * @return the state
      */
-    public STORY_STATE getState() {
+    public STATE getState() {
         return state;
     }
 
     /**
      * @param state the state to set
      */
-    public void setState(STORY_STATE state) {
+    public void setState(STATE state) {
         this.state = state;
     }
 
     /**
      * @return the scenario_reports
      */
-    public List<ScenarioReport> getScenario_reports() {
-        return scenario_reports;
+    public List<ScenarioReport> getScenarioReports() {
+        return scenarioReports;
     }
 
     /**
      * @param scenario_reports the scenario_reports to set
      */
-    public void setScenario_reports(List<ScenarioReport> scenario_reports) {
-        this.scenario_reports = scenario_reports;
+    public void setScenarioReports(List<ScenarioReport> scenarioReports) {
+        this.scenarioReports = scenarioReports;
     }
 
     /**
-     * @return the storyRef
+     * @return the id
      */
-    public StoryRef getStoryRef() {
-        return storyRef;
+    public String getId() {
+        return id;
     }
 
     /**
-     * @param storyRef the storyRef to set
+     * @param id the id to set
      */
-    public void setStoryRef(StoryRef storyRef) {
-        this.storyRef = storyRef;
+    public void setId(String id) {
+        this.id = id;
     }
 
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the wikiLink
+     */
+    public String getWikiLink() {
+        return wikiLink;
+    }
+
+    /**
+     * @param wikiLink the wikiLink to set
+     */
+    public void setWikiLink(String wikiLink) {
+        this.wikiLink = wikiLink;
+    }
 
     
     

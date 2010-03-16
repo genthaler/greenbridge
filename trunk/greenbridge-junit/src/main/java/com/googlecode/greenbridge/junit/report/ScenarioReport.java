@@ -5,13 +5,28 @@
 
 package com.googlecode.greenbridge.junit.report;
 
-import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.junit.report.ModuleReport.STATE;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author ryan
  */
 public class ScenarioReport {
+
+    private STATE state = STATE.pending;
+
+    private String id;
+    private String description;
+    private String wikiLink;
+
+    private List<ScenarioResult> results = new ArrayList<ScenarioResult>();
+
+    private int total_passing;
+    private int total_failing;
+    private int total_pending;
+
 
     /**
      * @return the total_passing
@@ -42,74 +57,89 @@ public class ScenarioReport {
     }
 
     /**
-     * @return the total_ignored
-     */
-    public int getTotal_ignored() {
-        return total_ignored;
-    }
-
-    /**
-     * @param total_ignored the total_ignored to set
-     */
-    public void setTotal_ignored(int total_ignored) {
-        this.total_ignored = total_ignored;
-    }
-
-    /**
      * @return the total_incomplete
      */
-    public int getTotal_incomplete() {
-        return total_incomplete;
+    public int getTotal_pending() {
+        return total_pending;
     }
 
     /**
      * @param total_incomplete the total_incomplete to set
      */
-    public void setTotal_incomplete(int total_incomplete) {
-        this.total_incomplete = total_incomplete;
+    public void setTotal_pending(int total_pending) {
+        this.total_pending = total_pending;
     }
-    public static enum TEST_STATE {PASSED, FAILED, IGNORED, NO_TEST};
-
-    private TEST_STATE scenario_state;
-    private ScenarioRef scenario;
-
-
-    private int total_passing;
-    private int total_failing;
-    private int total_ignored;
-    private int total_incomplete;
 
 
     /**
      * @return the scenario_state
      */
-    public TEST_STATE getScenario_state() {
-        return scenario_state;
+    public STATE getState() {
+        return state;
     }
 
     /**
      * @param scenario_state the scenario_state to set
      */
-    public void setScenario_state(TEST_STATE scenario_state) {
-        this.scenario_state = scenario_state;
+    public void setScenarioState(STATE state) {
+        this.state = state;
     }
 
     /**
-     * @return the scenario
+     * @return the id
      */
-    public ScenarioRef getScenario() {
-        return scenario;
+    public String getId() {
+        return id;
     }
 
     /**
-     * @param scenario the scenario to set
+     * @param id the id to set
      */
-    public void setScenario(ScenarioRef scenario) {
-        this.scenario = scenario;
+    public void setId(String id) {
+        this.id = id;
     }
 
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
 
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    /**
+     * @return the results
+     */
+    public List<ScenarioResult> getResults() {
+        return results;
+    }
+
+    /**
+     * @param results the results to set
+     */
+    public void setResults(List<ScenarioResult> results) {
+        this.results = results;
+    }
+
+    /**
+     * @return the wikiLink
+     */
+    public String getWikiLink() {
+        return wikiLink;
+    }
+
+    /**
+     * @param wikiLink the wikiLink to set
+     */
+    public void setWikiLink(String wikiLink) {
+        this.wikiLink = wikiLink;
+    }
 
 
 }
