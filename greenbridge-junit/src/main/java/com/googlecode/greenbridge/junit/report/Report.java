@@ -17,20 +17,20 @@ public class Report {
     private int total_failing;
     private int total_incomplete;
 
-    private transient List<StorySource> storySources;
+    private transient List<ModuleReport> storySources;
 
 
     /**
      * @return the storySources
      */
-    public List<StorySource> getStorySources() {
+    public List<ModuleReport> getStorySources() {
         return storySources;
     }
 
     /**
      * @param storySources the storySources to set
      */
-    public void setStorySources(List<StorySource> storySources) {
+    public void setStorySources(List<ModuleReport> storySources) {
         this.storySources = storySources;
     }
 

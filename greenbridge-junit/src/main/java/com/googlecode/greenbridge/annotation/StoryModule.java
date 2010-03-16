@@ -3,10 +3,8 @@
  * and open the template in the editor.
  */
 
-package com.googlecode.greenbridge.registration;
+package com.googlecode.greenbridge.annotation;
 
-import com.googlecode.greenbridge.annotation.ScenarioRef;
-import com.googlecode.greenbridge.annotation.StoryRef;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
  *
  * @author ryan
  */
-public interface StoryPackage {
+public interface StoryModule {
     public String getName();
     public String getVersion();
     public Map<StoryRef,List<ScenarioRef>> getStories();

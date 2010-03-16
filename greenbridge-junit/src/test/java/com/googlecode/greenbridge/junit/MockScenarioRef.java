@@ -6,6 +6,7 @@
 package com.googlecode.greenbridge.junit;
 
 import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
  *
@@ -30,6 +31,21 @@ public class MockScenarioRef implements ScenarioRef {
     @Override
     public int version() {
         return 1;
+    }
+
+    @Override
+    public Class<? extends StoryRef> getStoryRef() {
+        return MockStoryRef.class;
+    }
+
+    @Override
+    public String linkUrl() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public String linkName() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

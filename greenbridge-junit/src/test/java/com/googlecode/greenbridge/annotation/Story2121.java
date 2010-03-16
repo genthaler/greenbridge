@@ -46,4 +46,9 @@ public class Story2121 implements StoryRef {
     public String linkName() {
         return "Wiki Link";
     }
+
+    @Override
+    public Class<? extends StoryModule> getStoryModule() {
+        return SampleStoryModule.class;
+    }
 }

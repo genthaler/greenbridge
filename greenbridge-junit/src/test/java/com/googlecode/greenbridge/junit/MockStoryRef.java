@@ -5,6 +5,7 @@
 
 package com.googlecode.greenbridge.junit;
 
+import com.googlecode.greenbridge.annotation.StoryModule;
 import com.googlecode.greenbridge.annotation.StoryRef;
 
 /**
@@ -45,6 +46,11 @@ public class MockStoryRef implements StoryRef {
     @Override
     public String linkName() {
         return "wiki-source";
+    }
+
+    @Override
+    public Class<? extends StoryModule> getStoryModule() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

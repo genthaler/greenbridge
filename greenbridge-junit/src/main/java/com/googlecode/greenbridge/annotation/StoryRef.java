@@ -13,4 +13,5 @@ public  interface StoryRef {
     public String[] narrative();
     public String name();
     public int version();
+    public Class<? extends StoryModule> getStoryModule();
 }
