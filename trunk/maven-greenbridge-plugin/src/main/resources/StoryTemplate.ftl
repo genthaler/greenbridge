@@ -1,6 +1,6 @@
 package ${packageName};
 
-import com.googlecode.greenbridge.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.*;
 
 /**
  * <#list story.storyNarrative as narrative>${narrative}<p>
@@ -41,6 +41,11 @@ public class ${story.id}_${story.version} implements StoryRef {
     @Override
     public String linkName() {
         return "${story.linkName}";
+    }
+
+    @Override
+    public Class<? extends StoryModule> getStoryModule() {
+        return ${storyModule}.class;
     }
 
 }

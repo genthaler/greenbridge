@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import com.googlecode.greenbridge.util.JavaLanguageSupport;
 import com.googlecode.greenbridge.storyharvester.StoryNarrative;
 import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -29,7 +30,7 @@ import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
  */
 public class JavaFileWriter {
 
-    public static final String STORY_PACKAGE_TEMPLATE = "StoryPackageTemplate.ftl";
+    public static final String STORY_MODULE_TEMPLATE = "StoryModuleTemplate.ftl";
 
     public static final String ABSTRACT_SCENARIO_CLASS_TEMPLATE = "AbstractScenarioTemplate.ftl";
     public static final String SCENARIO_CLASS_TEMPLATE = "ScenarioTemplate.ftl";
@@ -43,6 +44,7 @@ public class JavaFileWriter {
     private String projectArtifactId;
     private String projectGroupId;
     private String projectVersion;
+    private String moduleName;
 
     public JavaFileWriter(String templatePath, File storyDirectory, File scenarioDirectory, String packageName, String projectArtifactId, String projectGroupId, String projectVersion) throws IOException {
         config = new Configuration();
@@ -54,22 +56,23 @@ public class JavaFileWriter {
         this.projectArtifactId = projectArtifactId;
         this.projectGroupId = projectGroupId;
         this.projectVersion = projectVersion;
+        moduleName = JavaLanguageSupport.makeJavaIdentifier(projectArtifactId);
+        moduleName = StringUtils.capitalize(moduleName);
     }
 
 
-    public void writePackageClass(List<StoryNarrative> stories) throws IOException {
-        System.out.println("------------------- PACKAGE! ");
+    public void writeModuleClass(List<StoryNarrative> stories) throws IOException {
         Map root = new HashMap();
         root.put("packageName", packageName + ".stories");
         root.put("scenariopackageName", packageName + ".scenarios");
         root.put("storyNarratives", stories);
-        String javaStoryPackageName = JavaLanguageSupport.makeJavaIdentifier(projectArtifactId);
-        root.put("javaStoryPackageName", javaStoryPackageName);
+        
+        root.put("moduleName", moduleName);
         root.put("storyPackageName", projectGroupId + "-" + projectArtifactId);
         root.put("storyPackageVersion", projectVersion);
 
-        Template t = config.getTemplate(STORY_PACKAGE_TEMPLATE);
-        File storyFile = new File(storyDirectory, javaStoryPackageName + ".java");
+        Template t = config.getTemplate(STORY_MODULE_TEMPLATE);
+        File storyFile = new File(storyDirectory, moduleName + ".java");
         FileWriter writer = new FileWriter(storyFile);
         try {
             t.process(root, writer);
@@ -95,12 +98,14 @@ public class JavaFileWriter {
 
     public int writeScenarioClasses(List<StoryNarrative> stories) throws IOException {
         int writtenCount = 0;
-        List<ScenarioNarrative> scenarios = buildScenarioList(stories);
-        for (Iterator<ScenarioNarrative> it = scenarios.iterator(); it.hasNext();) {
-            ScenarioNarrative scenarioNarrative = it.next();
-            writeScenarioAbstractClass(scenarioNarrative);
-            writeScenarioClass(scenarioNarrative);
-            writtenCount++;
+        for (StoryNarrative storyNarrative : stories) {
+            if (storyNarrative.getScenarios() != null) {
+                for (ScenarioNarrative scenarioNarrative : storyNarrative.getScenarios()) {
+                    writeScenarioAbstractClass(scenarioNarrative);
+                    writeScenarioClass(storyNarrative, scenarioNarrative);
+                    writtenCount++;
+                }
+            }
         }
         return writtenCount;
     }
@@ -110,6 +115,7 @@ public class JavaFileWriter {
         Map root = new HashMap();
         root.put("packageName", packageName + ".stories");
         root.put("story", story);
+        root.put("storyModule", moduleName);
         
         Template t = config.getTemplate(STORY_CLASS_TEMPLATE);
         File storyFile = new File(storyDirectory, story.getId() + "_" + story.getVersion() + ".java");
@@ -144,10 +150,12 @@ public class JavaFileWriter {
         return storyFile;
     }
 
-    public File writeScenarioClass(ScenarioNarrative scenario) throws IOException {
+    public File writeScenarioClass(StoryNarrative story, ScenarioNarrative scenario) throws IOException {
         Map root = new HashMap();
         root.put("packageName", packageName + ".scenarios");
+        root.put("storiesPackageName", packageName + ".stories");
         root.put("scenario", scenario);
+        root.put("story", story.getId() + "_" + story.getVersion());
         root.put("methods", convertNarrativeToMethodNames(scenario));
         Template t = config.getTemplate(SCENARIO_CLASS_TEMPLATE);
         File storyFile = new File(scenarioDirectory, scenario.getId()  + "_" + scenario.getVersion() +  ".java");
@@ -173,15 +181,5 @@ public class JavaFileWriter {
         return methods;
     }
 
-
-    protected List<ScenarioNarrative> buildScenarioList(List<StoryNarrative> stories) {
-        List<ScenarioNarrative> scenarioNarratives = new ArrayList<ScenarioNarrative>();
-        for (StoryNarrative storyNarrative : stories) {
-            if (storyNarrative.getScenarios() != null) {
-                scenarioNarratives.addAll(storyNarrative.getScenarios());
-            }
-        }
-        return scenarioNarratives;
-    }
 
 }

@@ -2,8 +2,7 @@ package ${packageName};
 
 import ${scenariopackageName}.*;
 import com.googlecode.greenbridge.registration.*;
-import com.googlecode.greenbridge.annotation.ScenarioRef;
-import com.googlecode.greenbridge.annotation.StoryRef;
+import com.googlecode.greenbridge.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,14 +10,13 @@ import java.util.Map;
 
 
 
-public class ${javaStoryPackageName} implements StoryPackage {
+public class ${moduleName} implements StoryModule {
 
-    {
+    private Map<StoryRef,List<ScenarioRef>> map = new HashMap<StoryRef,List<ScenarioRef>>();
+
+    public ${moduleName}() {
         registerStories();
-        StoryRegistration.registerStoryPackage(${javaStoryPackageName}.class);
     }
-
-    private static Map<StoryRef,List<ScenarioRef>> map = new HashMap<StoryRef,List<ScenarioRef>>();
 
     public String getName() {
         return "${storyPackageName}";
@@ -31,7 +29,7 @@ public class ${javaStoryPackageName} implements StoryPackage {
         return map;
     }
 
-    public static void registerStories() {
+    public void registerStories() {
         <#list storyNarratives as storyNarrative>
         {
             StoryRef storyRef = new ${storyNarrative.id}_${storyNarrative.version}();

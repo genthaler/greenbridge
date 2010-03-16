@@ -47,10 +47,17 @@ public abstract class ${scenario.id}  {
                      </#list>""
         };
     }
-
+   
     public String name() {
         return "${scenario.id}";
     }
 
+    public String linkUrl() {
+        return "${scenario.linkUrl}";
+    }
+
+    public String linkName() {
+       return "${scenario.linkName}";
+    }
 
 }

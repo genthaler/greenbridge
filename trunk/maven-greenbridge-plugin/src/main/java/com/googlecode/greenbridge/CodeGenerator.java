@@ -89,7 +89,7 @@ public class CodeGenerator {
     public void generateRequrementsJavaCode(List<StoryNarrative> stories) throws IOException {
         writer.writeScenarioClasses(stories);
         writer.writeStoryClasses(stories);
-        writer.writePackageClass(stories);
+        writer.writeModuleClass(stories);
     }
 
     public String timestamp() {

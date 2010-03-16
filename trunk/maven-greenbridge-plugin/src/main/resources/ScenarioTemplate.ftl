@@ -1,7 +1,8 @@
 package ${packageName};
 
-import com.googlecode.greenbridge.annotation.ScenarioRef;
+import com.googlecode.greenbridge.annotation.*;
 import com.googlecode.greenbridge.junit.ParameterizableList;
+import ${storiesPackageName}.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,11 @@ public class ${scenario.id}_${scenario.version} extends ${scenario.id} implement
     @Override
     public int version() {
         return ${scenario.version};
+    }
+
+    @Override
+    public Class<? extends StoryRef> getStoryRef() {
+        return ${story}.class;
     }
 
 
