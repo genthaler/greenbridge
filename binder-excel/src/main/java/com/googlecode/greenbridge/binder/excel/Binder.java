@@ -15,6 +15,7 @@ import java.util.List;
 import jxl.BooleanCell;
 import jxl.Cell;
 import jxl.DateCell;
+import jxl.LabelCell;
 import jxl.NumberCell;
 import jxl.Sheet;
 import org.springframework.beans.BeanWrapperImpl;
@@ -123,6 +124,7 @@ public class Binder {
             if (cellType == DateCell.class) return ((DateCell)cell).getDate();
             if (cellType == NumberCell.class) return ((NumberCell)cell).getValue();
             if (cellType == BooleanCell.class) return ((BooleanCell)cell).getValue();
+            if (cellType == LabelCell.class) return ((LabelCell)cell).getContents();
         }
         PropertyEditor pe = findPropertyEditor(wrap, path);
         if (pe != null) {
