@@ -25,6 +25,7 @@ import com.googlecode.greenbridge.storyharvester.StoryNarrative;
 import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.Date;
 import org.apache.commons.io.CopyUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -53,6 +54,9 @@ public class ReportFileWriter {
 
         Map root = new HashMap();
         root.put("module", module);
+
+        root.put("generationDate", new Date());
+        root.put("properties", System.getProperties());
 
         Template t = config.getTemplate(REPORT_TEMPLATE);
         File reportFile = new File(reportDirectory, "report.html");

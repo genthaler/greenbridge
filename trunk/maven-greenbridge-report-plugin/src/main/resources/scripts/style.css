@@ -123,7 +123,7 @@ body {
 }
 
 .failed {
-    background-color: #941300;
+    background-color: #FE7766;
 }
 
 .pending {
@@ -161,7 +161,7 @@ body {
 }
 
 .fail {
-    background-color: #941300;
+    background-color: #FE7766;
 }
 
 .fail-zero {
@@ -224,102 +224,25 @@ body {
     width: 100%;
 }
 
-#calendar_bounds {
-    position: absolute;
-    right: 3em;
-}
-
-ui-datepicker {
-    width: 13em;
-}
-.ui-datepicker td span, .ui-datepicker td a {
-    display:block;
-    padding:0.0em;
-    text-align:right;
-    text-decoration:none;
+.footer {
+	margin-top: 40px;
+	border-top: 1px solid #228A4C;
 
 }
 
-#calendar {
-   font-size:62.5%;
+#properties-table {
+	display: none;
 }
 
-#conversation {
-
+.errorMessage {
+    padding-left: 30px;
 }
 
-#c_name {
-    font-size: 3em;
+.errorTrace {
+    padding-left: 10px;
+    display: none;
 }
 
-#conversation_details{
-
-}
-
-#fms {
-    width: 300px;
-    height: 60px;
-    margin-top: 30px;
-
-}
-
-
-.ui-tabs .ui-tabs-nav li a {
-    padding:0.15em 1em;
-}
-
-#playhead {
-    position: absolute;
-    width: 18px;
-    background-color:#63DB93;
-    z-index: 1;
-}
-
-.tagrow {
-    height: 3em;
-}
-
-.tagtable {
-    width: 100%;
-
-}
-
-.taginfo {
-    width: 30%;
-    margin-right: 0;
-    padding-right: 0;
-}
-.taginfo a img {
-    border:none;
-}
-.tagbar {
-    width: 70%;
-    margin-left: 0;
-    padding-left: 0;
-    z-index: 2;
-}
-.tagdiv {
-   border: 1px solid white;
-}
-
-.tag_description {
-	font-size: 0.6em;
-}
-
-.ui-slider .ui-slider-handle {
-    height:1em;
-    width:1em;
-}
-
-
-label {
-  float:left;
-  width:25%;
-  margin-right:0.5em;
-  padding-top:0.2em;
-  text-align:right;
-  font-weight:bold;
-  }
 
 
 
