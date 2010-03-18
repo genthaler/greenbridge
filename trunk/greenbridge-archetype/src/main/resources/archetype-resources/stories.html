@@ -612,6 +612,57 @@ Also note, for the Greenbridge parsing to work the following should be adhered t
 * All things tagged with [[Scenario]] also have to be tagged with the story name. Eg [[SampleStory1]].
 </pre>
 </div>
+<div title="GreenbridgeReportLocation" modifier="Ryan" created="200911062022" modified="200911090959" changecount="3">
+<pre>${greenbridgeReportLocation}</pre>
+</div>
+<div title="StoryReportCommand" modifier="Ryan" created="200911061929" modified="200911100415" tags="systemConfig" changecount="41">
+<pre>/***
+|Name:|StoryReportCommand|
+|Description:|Opens a link to the a greenbridge report|
+|Version:|3.0 ($Rev: 5502 $)|
+|Date:|$Date: 2008-06-10 23:31:39 +1000 (Tue, 10 Jun 2008) $|
+|Source:|http://mptw.tiddlyspot.com/#SaveCloseTiddlerPlugin|
+|Author:|Ryan Ramage &lt;ryan.ramage@gmail.com&gt;|
+|License:|http://mptw.tiddlyspot.com/#TheBSDLicense|
+To use these you must add them to the tool bar in your EditTemplate
+***/
+//{{{
+merge(config.commands,{
+
+	storyReportTiddler: {
+		text: 'report',
+		tooltip: 'Open the Greenbridge report',
+		handler: function(ev,src,title) {
+			var location = store.getTiddlerText(&quot;GreenbridgeReportLocation&quot;);
+			var json =  location  + title + &quot;.json&quot;;
+                        var link =  location  + &quot;?&quot; + title 
+
+			jQuery.getJSON(json, function(data) {
+				var pending = data.total_ignored + data.total_incomplete;
+				var table = '&lt;div id=&quot;tiddler'+title+'Report&quot; style=&quot;display:none;&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Status&lt;/b&gt;&lt;/td&gt;&lt;td&gt;'+data.state+'&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Pending&lt;/b&gt;&lt;/td&gt;&lt;td&gt;'+pending+'&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Passing&lt;/b&gt;&lt;/td&gt;&lt;td&gt;'+data.total_passing+'&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Failing&lt;/b&gt;&lt;/td&gt;&lt;td&gt;'+data.total_failing+'&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;Report&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;a href=&quot;'+link+'&quot;&gt;View&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;';
+
+				//var report_node = jQuery('#tiddler' + title + 'Report');
+				//if (report_node == null) {
+				//	alert('null');
+				//	jQuery('#tiddler' + title).append(table);
+				//}				
+				//else {
+				//	report_node.html(table);
+				//}
+				jQuery('#tiddler' + title).append(table);
+				jQuery('#tiddler' + title + 'Report').show(1000);
+			});
+
+			window.location.href = link;
+			
+			//console.dir(test);
+			return false;
+		}
+	}
+});
+
+//}}}</pre>
+</div>
 <div title="HideWhenPlugin" modifier="MPTW" created="200901131132" modified="200906031203" tags="systemConfig">
 <pre>/***
 |Name:|HideWhenPlugin|
@@ -1190,7 +1241,7 @@ http://mptw.tiddlyspot.com/${symbol_pound}MptwTheme (${symbol_dollar}Rev: 1829 $
 	&lt;span macro=&quot;showWhenTagged systemPalette&quot;&gt;&lt;span macro=&quot;applyPalette&quot;&gt;&lt;/span&gt;&lt;/span&gt;
 	&lt;span macro=&quot;showWhen tiddler.tags.contains('css') || tiddler.title == 'StyleSheet'&quot;&gt;&lt;span macro=&quot;refreshAll&quot;&gt;&lt;/span&gt;&lt;/span&gt;
 	&lt;span style=&quot;padding:1em;&quot;&gt;&lt;/span&gt;
-	&lt;span macro='toolbar closeTiddler closeOthers +editTiddler deleteTiddler &gt; fields syncing permalink references jump'&gt;&lt;/span&gt; &lt;span macro='newHere label:&quot;new here&quot;'&gt;&lt;/span&gt;
+	&lt;span macro='toolbar closeTiddler closeOthers +editTiddler deleteTiddler storyReportTiddler &gt; fields syncing permalink references jump'&gt;&lt;/span&gt; &lt;span macro='newHere label:&quot;new here&quot;'&gt;&lt;/span&gt;
 	&lt;span macro='newJournalHere {{config.mptwJournalFormat?config.mptwJournalFormat:&quot;MM/0DD/YY&quot;}}'&gt;&lt;/span&gt;
 &lt;/div&gt;
 &lt;!--}}}--&gt;
