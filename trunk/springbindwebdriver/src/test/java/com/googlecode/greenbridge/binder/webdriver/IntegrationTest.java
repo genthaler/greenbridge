@@ -15,7 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -63,7 +66,7 @@ public class IntegrationTest {
     public static void tearDownClass() throws Exception {
         wd.close();
     }
-
+    @Ignore
     @Test
     public void testBindingIndividualProperties() throws FileNotFoundException, ParseException {
         String testId = "test1";
@@ -107,7 +110,7 @@ public class IntegrationTest {
 
     }
 
-
+    @Ignore
     @Test
     public void bindBean() throws FileNotFoundException, ParseException {
         startTest("bindBean", wd);
@@ -132,7 +135,7 @@ public class IntegrationTest {
 
         verifyBinding("bindBean", bean);
     }
-
+    @Ignore
     @Test
     public void testLoopAsRequestedOnFieldMissingOnForm() throws ParseException, FileNotFoundException {
          startTest("loopOnMissingField", wd);
@@ -159,6 +162,64 @@ public class IntegrationTest {
         verifyBinding("bindBean", bean);
         assertEquals(2, binder.seenMarkerCount);
     }
+    @Ignore
+    @Test
+    public void testIgnore() throws ParseException, FileNotFoundException {
+         startTest("ignore", wd);
+
+        // Setup the binder
+        Binder binder = new Binder();
+        registerCustomEditors(binder);
+        binder.addPathsToIgnore(Arrays.asList("notShown"));
+        // add a listener to the path so the addRow button will be clicked, so
+        // a new table row will be created in prep for the list binding.
+        binder.addPathListener("subbean\\.date1", new AbstractPathListener() {
+            public void afterPathDataBind(String path, Object pathValue, WebDriver wd) {
+                wd.findElement(By.id("addRow")).click();
+            }
+        });
+
+        // bind the bean!
+        FormBean bean = createFormBean();
+        bean.setNotShown("Not on screen, now should ignore");
+        binder.bindOrdered(bean, "inputText", wd, 1);
+
+        wd.findElement(By.id("next")).click();
+        assertEquals("Done", wd.findElement(By.id("done")).getText());
+
+        verifyBinding("bindBean", bean);
+        assertEquals(1, binder.seenMarkerCount);
+    }
+
+
+    @Test
+    public void testSimpleBinder() {
+        startTest("simpleBinder", wd);
+        Map<String,String> data = new HashMap<String,String>();
+        data.put("inputText","A test");
+        data.put("checkbox1","c");
+        data.put("radio1","c");
+        data.put("select1","c");
+        data.put("inputText2","Y");
+        data.put("radio2","Y");
+        data.put("select2","Y");
+        data.put("inputText3","5");
+        data.put("radio3","2");
+        data.put("select3","3");
+        data.put("inputText4","02/02/2001");
+        data.put("radio4","31/12/2009");
+        data.put("select4","31/12/2009");
+        data.put("subbean.prop1","Sub 1");
+        data.put("subbean.date1","01/01/2006");
+        data.put("list[0].prop1","A1");
+        data.put("list[0].date1","01/01/2006");
+        SimpleBinder simple = new SimpleBinder();
+        simple.bindOrdered(data, "inputText", wd);
+        wd.findElement(By.id("next")).click();
+        assertEquals("Done", wd.findElement(By.id("done")).getText());
+    }
+
+
 
     protected void registerCustomEditors(Binder binder) {
         CustomBooleanEditor boolEdit = new CustomBooleanEditor("Y", "N", true);
