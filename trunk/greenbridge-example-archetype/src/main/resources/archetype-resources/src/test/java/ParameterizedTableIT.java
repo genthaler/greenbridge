@@ -24,7 +24,7 @@ import static ${packageQualifier}.scenarios.TestTable.*;
 @RunWith(GreenbridgeRunner.class)
 @RunWithDelegate(Parameterized.class)
 @Story(${packageQualifier}.stories.SampleStory1_2.class)
-public class ParameterizedTableTest {
+public class ParameterizedTableIT {
     private BigDecimal prevBalance;
     private BigDecimal deposit;
     private BigDecimal newBalance;
@@ -35,7 +35,7 @@ public class ParameterizedTableTest {
         return DATA_TABLE.generateParameters();
     }
 
-    public ParameterizedTableTest(String prevBalance, String deposit, String newBalance) {
+    public ParameterizedTableIT(String prevBalance, String deposit, String newBalance) {
         this.prevBalance = new BigDecimal(prevBalance);
         this.deposit = new BigDecimal(deposit);
         this.newBalance = new BigDecimal(newBalance);
