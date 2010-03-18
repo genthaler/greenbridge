@@ -28,7 +28,9 @@
                 $('#tagsearch').autocomplete(buildAutoComplete()).result(function(event, data, formatted){
                    showOnlyStoryOrScenarioById(data);
                 });
-
+                $('.errorExpand').click(function() {
+                    $(this).next('.errorTrace').toggle();
+                });
             })
 
             function buildAutoComplete() {
@@ -133,7 +135,7 @@
             <div class="story ${story.state}" id="${story.id}">
                 <div class="storyName">
                     ${story.id}
-                    <a href="${story.wikiLink}"><img src="images/external.png" /></a>
+                    <a href="${story.wikiLink}"><img src="images/external.png" border="0" /></a>
                 </div>
                 <ul class="storyCount">
                     <#if story.total_failing = 0>
@@ -160,7 +162,10 @@
                 </div>
                 <#list story.scenarioReports as scenario>
                     <div class="scenario ${scenario.state}" id="${scenario.id}">
-                        <div class="scenarioName">${scenario.id}</div>
+                        <div class="scenarioName">
+                            ${scenario.id}
+                            <a href="${scenario.wikiLink}"><img src="images/external.png"  border="0" /></a>
+                        </div>
                         <ul class="scenarioCount">
                             <#if scenario.total_failing = 0>
                                 <li class="fail-zero">&nbsp;</li>
@@ -193,7 +198,19 @@
                                 </tr>
                                 <#if result.state = "failed">
                                     <tr>
-                                      <td colspan='3'>${result.errorMessage}</td>
+                                      <td colspan='3'>
+                                         <div class="errorMessage">
+                                             <#if result.errorTrace??>
+                                                <a href="#" class="errorExpand">+</a>
+                                             </#if>
+                                             ${result.errorMessage}
+                                             <#if result.errorTrace??>
+                                                 <div class="errorTrace">
+                                                    ${result.errorTrace}
+                                                 </div>
+                                             </#if>
+                                         </div>
+                                      </td>
                                     </tr>
                                 </#if>
                             </#list>
@@ -203,5 +220,25 @@
                 </#list>
             </div>
         </#list>
+        <div class="footer">
+            Report Generated: ${generationDate?datetime?string.medium} by <a href="http://code.google.com/p/greenbridge/">Greenbridge</a>
+            <div class="properties">
+                <a href="#" id="prop-expand">+</a> System Properties
+                <script type="text/javascript">
+                        $(function() {
+                                $('#prop-expand').click(function() {
+                                        $('#properties-table').toggle();
+                                });
+                        });
+                </script>
+                <table id="properties-table">
+                   <tr><th>Property</th><th>Value</th></tr>
+                <#assign keys = properties?keys>
+                <#list keys as key>
+                    <tr><td>${key}</td><td>${properties[key]}</td></tr>
+                </#list>
+                </table>
+            </div>
+        </div>
     </body>
 </html>
