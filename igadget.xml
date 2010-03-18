@@ -49,8 +49,8 @@ fieldset input {
 <script>
 
 	var baseCoord = "<dependency>\n\t<groupId>GROUPID</groupId>\n\t<artifactId>ARTIFACTID</artifactId>\n\t<version>VERSION</version>\n</dependency>";
-	var baseCmd      = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
-	var baseOtherCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=example-greenbridge-archetype -DarchetypeVersion=1.0-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+	var baseCmd      = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=greenbridge-archetype -DarchetypeVersion=1.1-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DgreenbridgeReportLocation=\"GREENBRIDGEREPORTLOCATION\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
+	var baseOtherCmd = "mvn archetype:generate -DgroupId=GROUPID -DartifactId=ARTIFACTID -Dversion=VERSION -DpackageName=PACKAGENAME -DpackageQualifier=PACKAGENAME -DarchetypeGroupId=com.googlecode.greenbridge -DarchetypeArtifactId=example-greenbridge-archetype -DarchetypeVersion=1.1-SNAPSHOT -DapplicationName=\"APPLICATIONNAME\" -DarchetypeRepository=http://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo/ -DinteractiveMode=false";
 	google.load("jquery", "1");
 
 
@@ -83,6 +83,7 @@ fieldset input {
 		cmd = cmd.replace("PACKAGENAME", jQuery.trim($('#packageName').val()));
 		cmd = cmd.replace("GROUPID", getGroupID());
 		cmd = cmd.replace("VERSION", getVersion());
+		cmd = cmd.replace("GREENBRIDGEREPORTLOCATION", "../" + getExampleArtifactID() + "/target/greenbridge/report/report.html" );
 		return cmd;
 		
 	}
@@ -166,7 +167,7 @@ fieldset input {
  <li><div id="cmd4" class="command" style="display: none;">cd ..</div></li>
  <li><div id="cmd5" class="command" style="display: none;"></div></li>
  <li><div id="cmd6" class="command" style="display: none;">cd <span id="cd_example_artifact"></span></div></li>
- <li><div id="cmd3" class="command" style="display: none;">mvn test</div></li>
+ <li><div id="cmd3" class="command" style="display: none;">mvn clean verify</div></li>
 <ul>
 
 <div id="coordUsed" style="display: none;">
