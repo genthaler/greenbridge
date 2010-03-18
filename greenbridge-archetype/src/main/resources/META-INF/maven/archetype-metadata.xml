@@ -26,7 +26,8 @@
     </fileSet>
   </fileSets>
   <requiredProperties>
-    <requiredProperty key="applicationName"/>
-	<requiredProperty key="packageQualifier"/>
+    <requiredProperty key="applicationName" />
+    <requiredProperty key="packageQualifier"/>
+    <requiredProperty key="greenbridgeReportLocation" />
   </requiredProperties>
 </archetype-descriptor>
