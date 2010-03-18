@@ -10,27 +10,21 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
-import static ${packageQualifier}.scenarios.TestTable.*;
+import static ${packageQualifier}.scenarios.Scenario1.*;
+
 
 /**
  * Unit test for simple App.
  */
 @RunWith(GreenbridgeRunner.class)
 @Story(${packageQualifier}.stories.SampleStory1_2.class)
-public class AppTest 
-{
+public class UnitLevelTest {
 
-
-    /**
-     * Rigourous Test :-)
-     */
-     @Test @Scenario(${packageQualifier}.scenarios.TestTable_4.class)
-    public void testApp()
-    {
-        Given_a_tiddler_with_a_table();
-        When_the_scenario_is_parsed();
-        It_should_have_a_table_attached_to_it_();
-        String prevBalance = DATA_TABLE.get(0).get("PrevBalance");
-        assertEquals("0.00", prevBalance);
+    @Test @Scenario(${packageQualifier}.scenarios.Scenario1_1.class)
+    public void test1() {
+        Given_a_user_has_a_tiddlywiki();
+        When_it_is_parsed();
+        They_will_get_a_maven_jar();
     }
+
 }
