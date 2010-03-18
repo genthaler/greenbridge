@@ -42,7 +42,7 @@
             <extension>
                 <groupId>org.jvnet.wagon-svn</groupId>
                 <artifactId>wagon-svn</artifactId>
-                <version>1.8</version>
+                <version>1.9</version>
             </extension>
       </extensions>
       <pluginManagement>
@@ -61,11 +61,11 @@
       <distributionManagement>
         <repository>
             <id>greenbridge-googlecode</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
         </repository>
         <snapshotRepository>
             <id>greenbridge-googlecode-snapshot</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
