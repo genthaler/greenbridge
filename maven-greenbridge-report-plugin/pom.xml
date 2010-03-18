@@ -75,11 +75,11 @@
     <distributionManagement>
         <repository>
             <id>greenbridge-googlecode</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
         </repository>
         <snapshotRepository>
             <id>greenbridge-googlecode-snapshot</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
