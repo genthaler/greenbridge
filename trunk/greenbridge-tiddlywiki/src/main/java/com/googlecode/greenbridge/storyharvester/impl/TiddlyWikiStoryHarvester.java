@@ -66,7 +66,7 @@ public class TiddlyWikiStoryHarvester implements StoryHarvester {
     }
 
     protected String getLinkWikiURL()  {
-        if (tiddlyWikiFile != null) return tiddlyWikiRemoteURL;
+        if (tiddlyWikiRemoteURL != null) return tiddlyWikiRemoteURL;
         try {
             URL url = new URL(tiddlyWikiFile);
             return tiddlyWikiFile;
