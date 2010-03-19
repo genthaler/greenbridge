@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>example-greenbridge</id>
+  <sources>
+    <source>src\main\java\com\mycompany\greenbridge\App.java</source>
+  </sources>
+  <testSources>
+    <source>src\test\java\com\mycompany\greenbridge\AppTest.java</source>
+  </testSources>
+</archetype>
