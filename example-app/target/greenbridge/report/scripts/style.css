@@ -1,0 +1,252 @@
+/*
+    Document   : gb
+    Created on : Nov 26, 2009, 4:43:27 PM
+    Author     : ryan
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+.neutral-1 { background-color: #FFFFFF }
+.primary-1 { background-color: #00B74A }
+.primary-2 { background-color: #228A4C }
+.primary-3 { background-color: #007730 }
+.primary-4 { background-color: #37DB79 }
+.primary-5 { background-color: #63DB93 }
+
+.font-1 { color: #00B74A }
+.font-2 { color: #228A4C }
+.font-3 { color: #007730 }
+.font-4 { color: #37DB79 }
+.font-5 { color: #63DB93 }
+
+root {
+    display: block;
+}
+
+body {
+	margin: 0 0 0 0;
+
+}
+
+#header {
+	height: 65px;
+	background-color: #37DB79;
+        margin-bottom: 15px;
+}
+
+#main_menu {
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+	height: 58px;
+	position: absolute;
+	top: 0px;
+	left: 123px;
+	width: 100%;
+}
+
+#main_menu_title {
+	background-color: #37DB79;
+	height: 34px;
+	font-family: HELVETICA;
+	font-size: 1.45em;
+	padding-left: 20px;
+}
+
+#main_menu_img {
+	padding-top: 13px;
+}
+
+#menu {
+	background-color: #228A4C;
+	height: 29px;
+    padding-left: 20px;
+    padding-top: 5px;
+}
+
+#menu a {
+	color: white;
+	text-decoration: none;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+#menu a:hover{
+	color: white;
+	text-decoration: underline;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+
+#search{
+	position: absolute;
+	top: 39px;
+	right: 150px;
+}
+
+#bar {
+   background-color:#8E7E54 !important;
+}
+
+#bar #bar_menu {
+    height:26px;
+    position:relative;
+}
+
+#bar #brand, #bar #gyo_link, #bar #bar_menu_branding {
+    float:left;
+}
+
+
+.story {
+    margin-left: 26px;
+    margin-right: 26px;
+    margin-top: 4px;
+    padding: .3em .5em .5em .5em;
+}
+
+.storyName {
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+}
+
+.storyDescription {
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: lighter;
+    font-size: 0.8em;
+
+}
+
+.passed {
+    background-color: #37DB79;
+}
+
+.failed {
+    background-color: #FE7766;
+}
+
+.pending {
+    background-color: yellow;
+}
+.storyCount {
+    padding-left: 0;
+    padding-right: 9px;
+    margin-top: 0;
+    position: relative;
+    top: -25px;
+    margin-bottom: 0px;
+
+}
+
+.storyCount li {
+    float: right;
+    margin-left: 20px;
+    list-style: none;
+    border: 1px solid #666666;
+    padding: 2px 2px 2px 2px;
+
+    width: 25px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+    text-align: right;
+}
+
+.pass {
+    background-color: #37DB79;
+}
+
+.pass-zero {
+    background-color: transparent;
+}
+
+.fail {
+    background-color: #FE7766;
+}
+
+.fail-zero {
+
+    background-color: transparent;
+}
+
+.pend {
+    background-color: yellow;
+}
+
+.pend-zero {
+    background-color: transparent;
+}
+
+.scenario {
+    border: 1px solid #EEEEEE;
+    padding: 0.3em 0.5em 0.5em 0.3em;
+    margin-bottom: 5px;
+    margin-top: 4px;
+}
+
+.scenarioName {
+    font-weight: bold;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.1em;
+}
+
+.scenarioCount {
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    position: relative;
+    top: -25px;
+    text-align: right;
+}
+
+
+.scenarioCount li {
+    float: right;
+    margin-left: 20px;
+    list-style: none;
+    border: 1px solid #EEEEEE;
+    padding: 2px 2px 2px 2px;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: bold;
+        width: 25px;
+}
+
+.scenarioDescription {
+    margin-left: 1em;
+    font-family: Arial,Helvetica,sans-serif;
+    font-weight: lighter;
+    font-size: 0.8em;
+}
+
+.scenarioTable {
+    margin-left: 1.5em;
+    width: 100%;
+}
+
+.footer {
+	margin-top: 40px;
+	border-top: 1px solid #228A4C;
+
+}
+
+#properties-table {
+	display: none;
+}
+
+.errorMessage {
+    padding-left: 30px;
+}
+
+.errorTrace {
+    padding-left: 10px;
+    display: none;
+}
+
+
+
+
+
+
+
+

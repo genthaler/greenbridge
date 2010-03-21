@@ -1,0 +1,186 @@
+To use Greenbridge:
+
+1. Prerequisites
+
+-Greenbridge requires Maven2
+-Currently the only story repository is Confluence. More will be added as requested.
+
+
+2. Setup a story repository
+
+2.a Confluence
+
+Make sure that that the confluence xml-rpc interface is enabled. See here for more details.
+Setup a tree structure of pages that look like the following:
+    -ApplicationStories
+		-Story1
+			-Scenario1
+			-Scenario2
+		-Story2
+			-Scenario3
+			-Scenario4
+		-Story3
+			-Scenario5
+		-Story2
+			-Scenario6
+			-Scenario7
+			-Scenario8
+
+	Note: Since all the pages are in the same space, the titles (eg Scenario1) must be unique.
+	Note: All stories must be one and only one child level under the the application page.
+	Note: All sccenarios must be one and only one child level under the the story page it is under.
+
+Application page Markup:	
+	Here is the recommended base markup for the application root page.
+
+{children:excerpt=true|all=true}
+	
+Story page format:
+	Here is the recommended base markup for a story page.
+	
+{excerpt}
+As a User I want a widget that saves my quote in progress
+So that I can come back to it later.
+{excerpt}
+[http://akljira001:8080/browse/VOLFOUND-7]
+{children:excerpt=true}
+
+Note: All text between the excerpt is considered the story. Any outside information can be kept outside of these tags.
+
+
+Scenario Page Format:
+	Here is the recommended base markup for a scenario page.
+
+
+{excerpt}
+Given a account with a balance of (balance)
+When I deposit (deposit)
+Then the new balance will be (newBalance){excerpt}
+|| balance || deposit || newBalance ||
+| 0 | 100 | 100 |
+| 100 | 50 | 150 |
+| \-200 | 50 | \-150 |
+| \-200 | 250 | 50 |
+	
+Note: All text between the excerpt is considered the scenario. Any outside information can be kept outside of these tags.
+A scenario can have zero or exactly one table. If it has one table, this table will be added to the resulted class and provide
+for a data driven test.
+	
+3. Create a Maven Project.
+This maven project is strictly only for reading the stories and scenarios from step2. You will only need a pom. Here is what it should look like:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.your.application</groupId>
+  <artifactId>application-name</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>Application Stories</name>
+  <packaging>jar</packaging>
+  <dependencies>
+      <dependency>
+          <groupId>com.googlecode.greenbridge</groupId>
+          <artifactId>greenbridge-junit</artifactId>
+          <version>1.0-SNAPSHOT</version>
+      </dependency>
+  </dependencies>
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.0.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-greenbridge-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>stories</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.test</packageName>
+                            <storyHarvester implementation="com.googlecode.greenbridge.DefaultConfluenceStoryHarverster">
+                                <confluenceEndpoint>http://fg5664/rpc/xmlrpc</confluenceEndpoint>
+                                <confluenceUsername>confluence_application</confluenceUsername>
+                                <confluencePassword>password</confluencePassword>
+                                <confluenceSpace>~ryan_ramage</confluenceSpace>
+                                <confluencePage>ApplicationStories</confluencePage>
+                            </storyHarvester>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                    <goal>jar</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+Notes
+
+The four elements below should be changed to reflect your application. The version is a very handy way to control
+what stories your application is working on, and released on. When you release you should make sure you do a maven
+release and up the version.
+
+  <groupId>com.your.application</groupId>
+  <artifactId>application-name</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>Application Stories</name>
+
+The following section should be set to your confluence setup from 2a.
+<configuration>
+	<packageName>com.test</packageName>
+	<storyHarvester implementation="com.googlecode.greenbridge.DefaultConfluenceStoryHarverster">
+		<confluenceEndpoint>http://fg5664/rpc/xmlrpc</confluenceEndpoint>
+		<confluenceUsername>confluence_application</confluenceUsername>
+		<confluencePassword>password</confluencePassword>
+		<confluenceSpace>~ryan_ramage</confluenceSpace>
+		<confluencePage>ApplicationStories</confluencePage>
+	</storyHarvester>
+</configuration>
+
+The packageName is the package where the generated classes will live.
+
+
+4. Create a Hudson Job (Optional)
+
+We have created a build trigger for hudson that will monitor for changes in confluence. 
+
+
+
+
+
+5. Create JUnit tests
+
+
+
+

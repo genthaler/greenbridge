@@ -1,0 +1,83 @@
+<com.googlecode.greenbridge.junit.report.ModuleReport>
+  <state>pending</state>
+  <name>com.gc.gb-example-app-stories</name>
+  <version>1.0-SNAPSHOT</version>
+  <storyReports>
+    <com.googlecode.greenbridge.junit.report.StoryReport>
+      <state reference="../../../state"/>
+      <id>SampleStory3</id>
+      <description>As a developer&lt;br/&gt;I want to have tables&lt;br/&gt;so that I can drive tests with data&lt;br/&gt;</description>
+      <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory3</wikiLink>
+      <scenarioReports>
+        <com.googlecode.greenbridge.junit.report.ScenarioReport>
+          <state reference="../../../../../state"/>
+          <id>TestTable</id>
+          <description>Given a tiddler with a table&lt;br/&gt;When the scenario is parsed&lt;br/&gt;It should have a table attached to it.&lt;br/&gt;</description>
+          <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#TestTable</wikiLink>
+          <results/>
+          <total__passing>0</total__passing>
+          <total__failing>0</total__failing>
+          <total__pending>0</total__pending>
+        </com.googlecode.greenbridge.junit.report.ScenarioReport>
+      </scenarioReports>
+      <total__passing>0</total__passing>
+      <total__failing>0</total__failing>
+      <total__pending>0</total__pending>
+    </com.googlecode.greenbridge.junit.report.StoryReport>
+    <com.googlecode.greenbridge.junit.report.StoryReport>
+      <state reference="../../../state"/>
+      <id>SampleStory1</id>
+      <description>As A User&lt;br/&gt;I want to store my stories in a easy to navigate wiki&lt;br/&gt;So that I can cross link ideas.&lt;br/&gt;</description>
+      <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory1</wikiLink>
+      <scenarioReports>
+        <com.googlecode.greenbridge.junit.report.ScenarioReport>
+          <state reference="../../../../../state"/>
+          <id>Scenario1</id>
+          <description>Given a user has a tiddlywiki&lt;br/&gt;When it is parsed&lt;br/&gt;They will get a maven jar&lt;br/&gt;</description>
+          <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#Scenario1</wikiLink>
+          <results/>
+          <total__passing>0</total__passing>
+          <total__failing>0</total__failing>
+          <total__pending>0</total__pending>
+        </com.googlecode.greenbridge.junit.report.ScenarioReport>
+        <com.googlecode.greenbridge.junit.report.ScenarioReport>
+          <state reference="../../../../../state"/>
+          <id>Scenario2</id>
+          <description>Given a user who is logged in&lt;br/&gt;When they do stuff&lt;br/&gt;Then other stuff will happen&lt;br/&gt;</description>
+          <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#Scenario2</wikiLink>
+          <results/>
+          <total__passing>0</total__passing>
+          <total__failing>0</total__failing>
+          <total__pending>0</total__pending>
+        </com.googlecode.greenbridge.junit.report.ScenarioReport>
+      </scenarioReports>
+      <total__passing>0</total__passing>
+      <total__failing>0</total__failing>
+      <total__pending>0</total__pending>
+    </com.googlecode.greenbridge.junit.report.StoryReport>
+    <com.googlecode.greenbridge.junit.report.StoryReport>
+      <state reference="../../../state"/>
+      <id>SampleStory2</id>
+      <description>As a user&lt;br/&gt;I want to do more&lt;br/&gt;So that I profit&lt;br/&gt;</description>
+      <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2</wikiLink>
+      <scenarioReports>
+        <com.googlecode.greenbridge.junit.report.ScenarioReport>
+          <state reference="../../../../../state"/>
+          <id>SampleStory2Scenario1</id>
+          <description>Given when then&lt;br/&gt;</description>
+          <wikiLink>file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2Scenario1</wikiLink>
+          <results/>
+          <total__passing>0</total__passing>
+          <total__failing>0</total__failing>
+          <total__pending>0</total__pending>
+        </com.googlecode.greenbridge.junit.report.ScenarioReport>
+      </scenarioReports>
+      <total__passing>0</total__passing>
+      <total__failing>0</total__failing>
+      <total__pending>0</total__pending>
+    </com.googlecode.greenbridge.junit.report.StoryReport>
+  </storyReports>
+  <total__passing>0</total__passing>
+  <total__failing>0</total__failing>
+  <total__pending>0</total__pending>
+</com.googlecode.greenbridge.junit.report.ModuleReport>

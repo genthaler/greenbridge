@@ -1,0 +1,21 @@
+<com.googlecode.greenbridge.junit.report.StoryReport>
+  <id>SampleStory1</id>
+  <scenarioReports>
+    <com.googlecode.greenbridge.junit.report.ScenarioReport>
+      <id>Scenario1</id>
+      <results>
+        <com.googlecode.greenbridge.junit.report.ScenarioResult>
+          <clazz>com.gc.gb.UnitLevelTest</clazz>
+          <method>test1</method>
+          <state>passed</state>
+        </com.googlecode.greenbridge.junit.report.ScenarioResult>
+      </results>
+      <total__passing>0</total__passing>
+      <total__failing>0</total__failing>
+      <total__pending>0</total__pending>
+    </com.googlecode.greenbridge.junit.report.ScenarioReport>
+  </scenarioReports>
+  <total__passing>0</total__passing>
+  <total__failing>0</total__failing>
+  <total__pending>0</total__pending>
+</com.googlecode.greenbridge.junit.report.StoryReport>
