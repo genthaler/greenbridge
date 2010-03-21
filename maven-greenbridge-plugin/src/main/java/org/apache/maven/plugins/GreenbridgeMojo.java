@@ -66,6 +66,17 @@ public class GreenbridgeMojo
      */
     private List roots;
 
+
+
+
+      /**
+     * The java package name
+     * @parameter
+     * @default-value="false"
+     */
+    private boolean singleProjectMode;
+
+
     /**
      * The Story harvester
      * @parameter
@@ -96,6 +107,11 @@ public class GreenbridgeMojo
             setStoryPackage(stories);
 
             String srcDir = (String)roots.get(0);
+            if (singleProjectMode) {
+                srcDir = "src/test/java";
+            }
+            log.info("Generating story classes into: " + srcDir);
+
             CodeGenerator generator = new CodeGenerator("/", srcDir, packageName, projectArtifactId, projectGroupId, projectVersion);
             generator.generateRequrementsJavaCode(stories);
         } catch (Exception ex) {
