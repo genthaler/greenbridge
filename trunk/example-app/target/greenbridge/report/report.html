@@ -1,0 +1,336 @@
+<!DOCTYPE HTML PUBLIC "f-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    <head>
+        <style type="text/css" media="screen">
+            @import url("scripts/style.css");
+            @import url("scripts/jquery.autocomplete.css");
+        </style>
+        <script type="text/javascript" src="scripts/jquery.min.js "></script>
+        <script type="text/javascript" src="scripts/jquery.parsequery.js" ></script>
+        <script type="text/javascript" src="scripts/jquery-jtemplates.js"></script>
+        <script type="text/javascript" src="scripts/jquery.corner.js"></script>
+        <script type="text/javascript" src="scripts/jquery.autocomplete.min.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                $('.story,.scenario').corner();
+                $('.storyCount li').corner();
+                $('.scenarioCount li').corner();
+                $('#_view,#_filter').change(filterStories);
+                $('#searchForm').bind('submit', function() {
+                   showOnlyStoryOrScenarioById($('#tagsearch').val());
+                   return false;
+                });
+
+                var id = findReferenceAnchor();
+                if (id != null) {
+                    showOnlyStoryOrScenarioById(id);
+                }
+                $('#tagsearch').autocomplete(buildAutoComplete()).result(function(event, data, formatted){
+                   showOnlyStoryOrScenarioById(data);
+                });
+                $('.errorExpand').click(function() {
+                    $(this).next('.errorTrace').toggle();
+                });
+            })
+
+            function buildAutoComplete() {
+                var list = new Array();
+                $('.story, .scenario').each(function() {
+                    list.push($(this).attr("id"));
+                });
+                return list;
+            }
+
+
+            function filterStories() {
+                var view = $('#_view').val();
+                var filter = $('#_filter').val();
+                // do the view first
+                doView(view);
+                doFilter(filter);
+            }
+
+            function doFilter(filter) {
+                if (filter == "") {
+                    $('.story').show();
+                } else {
+                    var selector = '.story.' + filter;
+                    $('.story').hide();
+                    $(selector).show();
+                }
+            }
+
+
+
+            function doView(view) {
+                if (view == 'sc') {
+                    $('.story').show();
+                    $('.storyDescription, .scenario').hide();
+                }
+                if (view == 'scc') {
+                    $('.story,.storyDescription,.scenario').show();
+                    $('.scenarioDescription,.scenarioTable').hide();
+                }
+                if (view == 'st') {
+                    $('.story,.storyDescription,.scenario,.scenarioDescription').show();
+                    $('.scenarioTable').hide();
+                }
+                if (view == 'se') {
+                    $('.story,.storyDescription,.scenario,.scenarioDescription,.scenarioTable').show();
+                }
+            }
+
+            function showOnlyStoryOrScenarioById(id) {
+                var ref = $('#' + id);
+                if (ref.size() == 1) {
+                    if (ref.hasClass('story')) {
+                        $('.story').hide();
+                        ref.show();
+                    }
+                    if (ref.hasClass('scenario')) {
+                        $('.story').hide();
+                        ref.parents('.story').show();
+                    }
+                    //ref.effect("highlight", {}, 3000);
+                }
+            }
+            function findReferenceAnchor() {
+                    var match = /html\?(\w+)/.exec(window.location);
+                    if (match == null) return null;
+                    return match[1];
+            }
+
+        </script>
+    </head>
+    <body>
+        <div id="header">
+            <img id="main_menu_img" src="images/logo.png" />
+            <div id="main_menu">
+                <div id="main_menu_title">com.gc.gb-example-app-stories - Greenbridge Report</div>
+                <div id="menu" >
+                    View:
+                    <select id="_view">
+                        <option value="sc">Story Collapsed</option>
+                        <option value="scc">Scenario Collapsed</option>
+                        <option value="st">Scenario Text</option>
+                        <option value="se">Scenario Expanded</option>
+                    </select>
+                    Filter:
+                    <select id="_filter">
+                        <option value="">None</option>
+                        <option value="failed">Failed</option>
+                        <option value="passed">Passed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+
+                    <div id="search">
+                        <form id="searchForm">
+                            <input type="text" id="tagsearch" name="tag" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="story passed" id="SampleStory3">
+                <div class="storyName">
+                    SampleStory3
+                    <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory3"><img src="images/external.png" border="0" /></a>
+                </div>
+                <ul class="storyCount">
+                        <li class="fail-zero">&nbsp;</li>
+                        <li class="pend-zero">&nbsp;</li>
+                        <li class="pass">3</li>
+                </ul>
+                <div class="storyDescription">
+                    As a developer<br/>I want to have tables<br/>so that I can drive tests with data<br/>
+                </div>
+                    <div class="scenario passed" id="TestTable">
+                        <div class="scenarioName">
+                            TestTable
+                            <a href="file://d:/rtemp/demo/example-app-stories/stories.html#TestTable"><img src="images/external.png"  border="0" /></a>
+                        </div>
+                        <ul class="scenarioCount">
+                                <li class="fail-zero">&nbsp;</li>
+                                <li class="pend-zero">&nbsp;</li>
+                                <li class="pass">3</li>
+                        </ul>
+                        <div class="scenarioDescription">
+                            Given a tiddler with a table<br/>When the scenario is parsed<br/>It should have a table attached to it.<br/>
+                        </div>
+                        <table class="scenarioTable">
+                                <tr>
+                                    <td><a href="../../site/xref-test/com/gc/gb/AppIT.html">com.gc.gb.AppIT</a></td>
+                                    <td><a href="../../site/xref-test/com/gc/gb/AppIT.html">testApp</a></td>
+                                    <td>passed</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="../../site/xref-test/com/gc/gb/ParameterizedTableIT.html">com.gc.gb.ParameterizedTableIT</a></td>
+                                    <td><a href="../../site/xref-test/com/gc/gb/ParameterizedTableIT.html">ensureAdeposit[0]</a></td>
+                                    <td>passed</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="../../site/xref-test/com/gc/gb/ParameterizedTableIT.html">com.gc.gb.ParameterizedTableIT</a></td>
+                                    <td><a href="../../site/xref-test/com/gc/gb/ParameterizedTableIT.html">ensureAdeposit[1]</a></td>
+                                    <td>passed</td>
+                                </tr>
+                        </table>
+
+                    </div>
+            </div>
+            <div class="story pending" id="SampleStory1">
+                <div class="storyName">
+                    SampleStory1
+                    <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory1"><img src="images/external.png" border="0" /></a>
+                </div>
+                <ul class="storyCount">
+                        <li class="fail-zero">&nbsp;</li>
+                        <li class="pend">1</li>
+                        <li class="pass">1</li>
+                </ul>
+                <div class="storyDescription">
+                    As A User<br/>I want to store my stories in a easy to navigate wiki<br/>So that I can cross link ideas.<br/>
+                </div>
+                    <div class="scenario passed" id="Scenario1">
+                        <div class="scenarioName">
+                            Scenario1
+                            <a href="file://d:/rtemp/demo/example-app-stories/stories.html#Scenario1"><img src="images/external.png"  border="0" /></a>
+                        </div>
+                        <ul class="scenarioCount">
+                                <li class="fail-zero">&nbsp;</li>
+                                <li class="pend-zero">&nbsp;</li>
+                                <li class="pass">1</li>
+                        </ul>
+                        <div class="scenarioDescription">
+                            Given a user has a tiddlywiki<br/>When it is parsed<br/>They will get a maven jar<br/>
+                        </div>
+                        <table class="scenarioTable">
+                                <tr>
+                                    <td><a href="../../site/xref-test/com/gc/gb/UnitLevelTest.html">com.gc.gb.UnitLevelTest</a></td>
+                                    <td><a href="../../site/xref-test/com/gc/gb/UnitLevelTest.html">test1</a></td>
+                                    <td>passed</td>
+                                </tr>
+                        </table>
+
+                    </div>
+                    <div class="scenario pending" id="Scenario2">
+                        <div class="scenarioName">
+                            Scenario2
+                            <a href="file://d:/rtemp/demo/example-app-stories/stories.html#Scenario2"><img src="images/external.png"  border="0" /></a>
+                        </div>
+                        <ul class="scenarioCount">
+                                <li class="fail-zero">&nbsp;</li>
+                                <li class="pend-zero">&nbsp;</li>
+                                <li class="pass-zero">&nbsp;</li>
+                        </ul>
+                        <div class="scenarioDescription">
+                            Given a user who is logged in<br/>When they do stuff<br/>Then other stuff will happen<br/>
+                        </div>
+                        <table class="scenarioTable">
+                        </table>
+
+                    </div>
+            </div>
+            <div class="story pending" id="SampleStory2">
+                <div class="storyName">
+                    SampleStory2
+                    <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2"><img src="images/external.png" border="0" /></a>
+                </div>
+                <ul class="storyCount">
+                        <li class="fail-zero">&nbsp;</li>
+                        <li class="pend">1</li>
+                        <li class="pass-zero">&nbsp;</li>
+                </ul>
+                <div class="storyDescription">
+                    As a user<br/>I want to do more<br/>So that I profit<br/>
+                </div>
+                    <div class="scenario pending" id="SampleStory2Scenario1">
+                        <div class="scenarioName">
+                            SampleStory2Scenario1
+                            <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2Scenario1"><img src="images/external.png"  border="0" /></a>
+                        </div>
+                        <ul class="scenarioCount">
+                                <li class="fail-zero">&nbsp;</li>
+                                <li class="pend-zero">&nbsp;</li>
+                                <li class="pass-zero">&nbsp;</li>
+                        </ul>
+                        <div class="scenarioDescription">
+                            Given when then<br/>
+                        </div>
+                        <table class="scenarioTable">
+                        </table>
+
+                    </div>
+            </div>
+        <div class="footer">
+            Report Generated: Mar 21, 2010 9:06:44 PM by <a href="http://code.google.com/p/greenbridge/">Greenbridge</a>
+            <div class="properties">
+                <a href="#" id="prop-expand">+</a> System Properties
+                <script type="text/javascript">
+                        $(function() {
+                                $('#prop-expand').click(function() {
+                                        $('#properties-table').toggle();
+                                });
+                        });
+                </script>
+                <table id="properties-table">
+                   <tr><th>Property</th><th>Value</th></tr>
+                    <tr><td>java.vm.version</td><td>11.2-b01</td></tr>
+                    <tr><td>sun.jnu.encoding</td><td>Cp1252</td></tr>
+                    <tr><td>java.vendor.url</td><td>http://java.sun.com/</td></tr>
+                    <tr><td>java.vm.info</td><td>mixed mode</td></tr>
+                    <tr><td>user.dir</td><td>d:\rtemp\demo\example-app</td></tr>
+                    <tr><td>sun.cpu.isalist</td><td>pentium_pro+mmx pentium_pro pentium+mmx pentium i486 i386 i86</td></tr>
+                    <tr><td>java.awt.graphicsenv</td><td>sun.awt.Win32GraphicsEnvironment</td></tr>
+                    <tr><td>sun.os.patch.level</td><td>Service Pack 3</td></tr>
+                    <tr><td>user.home</td><td>C:\Documents and Settings\ryan</td></tr>
+                    <tr><td>java.io.tmpdir</td><td>c:\DOCUME~1\ryan\LOCALS~1\Temp\</td></tr>
+                    <tr><td>java.awt.printerjob</td><td>sun.awt.windows.WPrinterJob</td></tr>
+                    <tr><td>java.version</td><td>1.6.0_12</td></tr>
+                    <tr><td>file.encoding.pkg</td><td>sun.io</td></tr>
+                    <tr><td>java.vendor.url.bug</td><td>http://java.sun.com/cgi-bin/bugreport.cgi</td></tr>
+                    <tr><td>file.encoding</td><td>Cp1252</td></tr>
+                    <tr><td>classworlds.conf</td><td>c:\bin\apache-maven-2.0.9/bin/m2.conf</td></tr>
+                    <tr><td>line.separator</td><td>
+</td></tr>
+                    <tr><td>java.vm.specification.vendor</td><td>Sun Microsystems Inc.</td></tr>
+                    <tr><td>java.vm.vendor</td><td>Sun Microsystems Inc.</td></tr>
+                    <tr><td>java.class.path</td><td>c:\bin\apache-maven-2.0.9/boot/classworlds-1.1.jar</td></tr>
+                    <tr><td>maven.home</td><td>c:\bin\apache-maven-2.0.9</td></tr>
+                    <tr><td>sun.io.unicode.encoding</td><td>UnicodeLittle</td></tr>
+                    <tr><td>user.variant</td><td></td></tr>
+                    <tr><td>user.language</td><td>en</td></tr>
+                    <tr><td>user.name</td><td>ryan</td></tr>
+                    <tr><td>os.arch</td><td>x86</td></tr>
+                    <tr><td>java.runtime.version</td><td>1.6.0_12-b04</td></tr>
+                    <tr><td>sun.boot.class.path</td><td>c:\Program Files\Java\jdk1.6.0_12\jre\lib\resources.jar;c:\Program Files\Java\jdk1.6.0_12\jre\lib\rt.jar;c:\Program Files\Java\jdk1.6.0_12\jre\lib\sunrsasign.jar;c:\Program Files\Java\jdk1.6.0_12\jre\lib\jsse.jar;c:\Program Files\Java\jdk1.6.0_12\jre\lib\jce.jar;c:\Program Files\Java\jdk1.6.0_12\jre\lib\charsets.jar;c:\Program Files\Java\jdk1.6.0_12\jre\classes</td></tr>
+                    <tr><td>sun.desktop</td><td>windows</td></tr>
+                    <tr><td>sun.cpu.endian</td><td>little</td></tr>
+                    <tr><td>awt.toolkit</td><td>sun.awt.windows.WToolkit</td></tr>
+                    <tr><td>sun.boot.library.path</td><td>c:\Program Files\Java\jdk1.6.0_12\jre\bin</td></tr>
+                    <tr><td>java.home</td><td>c:\Program Files\Java\jdk1.6.0_12\jre</td></tr>
+                    <tr><td>java.vm.name</td><td>Java HotSpot(TM) Client VM</td></tr>
+                    <tr><td>java.endorsed.dirs</td><td>c:\Program Files\Java\jdk1.6.0_12\jre\lib\endorsed</td></tr>
+                    <tr><td>sun.management.compiler</td><td>HotSpot Client Compiler</td></tr>
+                    <tr><td>java.runtime.name</td><td>Java(TM) SE Runtime Environment</td></tr>
+                    <tr><td>java.library.path</td><td>c:\Program Files\Java\jdk1.6.0_12\bin;.;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;D:\cygwin\home\ryan\bin;D:\cygwin\usr\local\bin;D:\cygwin\bin;D:\cygwin\bin;D:\cygwin\usr\X11R6\bin;c:\WINDOWS\system32;c:\WINDOWS;c:\WINDOWS\System32\Wbem;c:\Program Files\Common Files\Ulead Systems\MPEG;c:\Program Files\Groovy\Groovy-1.6.0\bin;c:\Program Files\calibre;c:\Program Files\TortoiseSVN\bin;c:\bin\apache-maven-2.0.9\bin;c:\Program Files\Java\jdk1.6.0_12\bin;d:\apps\spring-roo-1.0.0.M2\bin</td></tr>
+                    <tr><td>file.separator</td><td>\</td></tr>
+                    <tr><td>java.specification.vendor</td><td>Sun Microsystems Inc.</td></tr>
+                    <tr><td>java.vm.specification.version</td><td>1.0</td></tr>
+                    <tr><td>sun.java.launcher</td><td>SUN_STANDARD</td></tr>
+                    <tr><td>user.timezone</td><td>Pacific/Auckland</td></tr>
+                    <tr><td>os.name</td><td>Windows XP</td></tr>
+                    <tr><td>path.separator</td><td>;</td></tr>
+                    <tr><td>java.ext.dirs</td><td>c:\Program Files\Java\jdk1.6.0_12\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext</td></tr>
+                    <tr><td>sun.arch.data.model</td><td>32</td></tr>
+                    <tr><td>os.version</td><td>5.1</td></tr>
+                    <tr><td>java.specification.name</td><td>Java Platform API Specification</td></tr>
+                    <tr><td>java.class.version</td><td>50.0</td></tr>
+                    <tr><td>user.country</td><td>US</td></tr>
+                    <tr><td>java.vendor</td><td>Sun Microsystems Inc.</td></tr>
+                    <tr><td>java.vm.specification.name</td><td>Java Virtual Machine Specification</td></tr>
+                    <tr><td>java.specification.version</td><td>1.6</td></tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>
