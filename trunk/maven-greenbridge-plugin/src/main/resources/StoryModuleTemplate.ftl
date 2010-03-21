@@ -1,7 +1,6 @@
 package ${packageName};
 
 import ${scenariopackageName}.*;
-import com.googlecode.greenbridge.registration.*;
 import com.googlecode.greenbridge.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
