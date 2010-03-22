@@ -15,7 +15,7 @@ import java.util.Map;
  * Then other stuff will happen<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#Scenario2">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#Scenario2">See Scenario on the Wiki</a>
  */
 public class Scenario2_1 extends Scenario2 implements ScenarioRef {
 

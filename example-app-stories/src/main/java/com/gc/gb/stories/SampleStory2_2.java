@@ -8,7 +8,7 @@ import com.googlecode.greenbridge.annotation.*;
  * So that I profit<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory2">See Scenario on the Wiki</a>
  */
 public class SampleStory2_2 implements StoryRef {
 
@@ -39,7 +39,7 @@ public class SampleStory2_2 implements StoryRef {
 
     @Override
     public String linkUrl() {
-        return "file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2";
+        return "http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory2";
     }
 
     @Override

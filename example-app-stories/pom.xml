@@ -37,7 +37,7 @@
                             <packageName>com.gc.gb</packageName>
                             <storyHarvester implementation="com.googlecode.greenbridge.storyharvester.impl.TiddlyWikiStoryHarvester">
                                 <tiddlyWikiFile>${basedir}/stories.html</tiddlyWikiFile>
-                                <!--<tiddlyWikiRemoteURL>http://integration.server/test-greenbridge/stories.html</tiddlyWikiRemoteURL> -->
+                                <tiddlyWikiRemoteURL>http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html</tiddlyWikiRemoteURL>
                             </storyHarvester>
                         </configuration>
                     </execution>

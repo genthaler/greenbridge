@@ -12,7 +12,7 @@ import java.util.Map;
  * Given when then<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2Scenario1">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory2Scenario1">See Scenario on the Wiki</a>
  */
 public abstract class SampleStory2Scenario1  {
 
@@ -32,7 +32,7 @@ public abstract class SampleStory2Scenario1  {
     }
 
     public String linkUrl() {
-        return "file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2Scenario1";
+        return "http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory2Scenario1";
     }
 
     public String linkName() {
