@@ -13,7 +13,7 @@ import java.util.Map;
  * Given when then<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory2Scenario1">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory2Scenario1">See Scenario on the Wiki</a>
  */
 public class SampleStory2Scenario1_1 extends SampleStory2Scenario1 implements ScenarioRef {
 

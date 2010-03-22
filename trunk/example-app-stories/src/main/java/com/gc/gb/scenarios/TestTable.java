@@ -14,7 +14,7 @@ import java.util.Map;
  * It should have a table attached to it.<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#TestTable">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#TestTable">See Scenario on the Wiki</a>
  */
 public abstract class TestTable  {
 
@@ -58,7 +58,7 @@ public abstract class TestTable  {
     }
 
     public String linkUrl() {
-        return "file://d:/rtemp/demo/example-app-stories/stories.html#TestTable";
+        return "http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#TestTable";
     }
 
     public String linkName() {

@@ -14,7 +14,7 @@ import java.util.Map;
  * Then other stuff will happen<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#Scenario2">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#Scenario2">See Scenario on the Wiki</a>
  */
 public abstract class Scenario2  {
 
@@ -38,7 +38,7 @@ public abstract class Scenario2  {
     }
 
     public String linkUrl() {
-        return "file://d:/rtemp/demo/example-app-stories/stories.html#Scenario2";
+        return "http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#Scenario2";
     }
 
     public String linkName() {

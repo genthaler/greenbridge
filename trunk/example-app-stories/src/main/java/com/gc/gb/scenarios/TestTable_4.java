@@ -15,7 +15,7 @@ import java.util.Map;
  * It should have a table attached to it.<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#TestTable">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#TestTable">See Scenario on the Wiki</a>
  */
 public class TestTable_4 extends TestTable implements ScenarioRef {
 

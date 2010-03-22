@@ -8,7 +8,7 @@ import com.googlecode.greenbridge.annotation.*;
  * so that I can drive tests with data<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory3">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory3">See Scenario on the Wiki</a>
  */
 public class SampleStory3_2 implements StoryRef {
 
@@ -39,7 +39,7 @@ public class SampleStory3_2 implements StoryRef {
 
     @Override
     public String linkUrl() {
-        return "file://d:/rtemp/demo/example-app-stories/stories.html#SampleStory3";
+        return "http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#SampleStory3";
     }
 
     @Override

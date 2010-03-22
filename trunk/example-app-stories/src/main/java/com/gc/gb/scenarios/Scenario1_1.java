@@ -15,7 +15,7 @@ import java.util.Map;
  * They will get a maven jar<p>
  * 
  * 
- * @see <a href="file://d:/rtemp/demo/example-app-stories/stories.html#Scenario1">See Scenario on the Wiki</a>
+ * @see <a href="http://greenbridge.googlecode.com/svn/trunk/example-app-stories/stories.html#Scenario1">See Scenario on the Wiki</a>
  */
 public class Scenario1_1 extends Scenario1 implements ScenarioRef {
 
