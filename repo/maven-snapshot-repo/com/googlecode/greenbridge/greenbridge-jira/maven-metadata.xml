@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>com.googlecode.greenbridge</groupId>
+  <artifactId>greenbridge-jira</artifactId>
+  <version>1.0.1-SNAPSHOT</version>
+  <versioning>
+    <versions>
+      <version>1.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20100323082605</lastUpdated>
+  </versioning>
+</metadata>
