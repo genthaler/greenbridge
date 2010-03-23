@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>greenbridge-jira</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.1</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>Greenbride Jira</name>
   <url>http://code.google.com/p/greenbridge/</url>
   <description>A behaviour driven development tool bridging a wiki, maven and junit. This is the jira module.</description>
