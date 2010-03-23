@@ -18,7 +18,7 @@
     <dependency>
         <groupId>com.googlecode.greenbridge</groupId>
         <artifactId>greenbridge-core</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </dependency>
     <dependency>
         <groupId>org.easymock</groupId>
@@ -303,11 +303,11 @@
     <distributionManagement>
         <repository>
             <id>greenbridge-googlecode</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-repo</url>
         </repository>
         <snapshotRepository>
             <id>greenbridge-googlecode-snapshot</id>
-            <url>dav:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
+            <url>svn:https://greenbridge.googlecode.com/svn/repo/maven-snapshot-repo</url>
             <uniqueVersion>false</uniqueVersion>
         </snapshotRepository>
     </distributionManagement>
