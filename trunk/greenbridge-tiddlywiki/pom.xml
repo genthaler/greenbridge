@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>greenbridge-tiddlywiki</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>Greenbride Tiddlywiki</name>
   <url>http://code.google.com/p/greenbridge/</url>
   <description>A behaviour driven development tool bridging a wiki, maven and junit. This is the tiddly-wiki module.</description>
