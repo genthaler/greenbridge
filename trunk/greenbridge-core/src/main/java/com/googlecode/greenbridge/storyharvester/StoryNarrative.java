@@ -5,6 +5,7 @@
 
 package com.googlecode.greenbridge.storyharvester;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,9 +14,9 @@ import java.util.List;
  */
 public class StoryNarrative {
     private String id;
-    private int version;
+    private long version;
     private List<String> storyNarrative;
-    private List<ScenarioNarrative> scenarios;
+    private List<ScenarioNarrative> scenarios = new ArrayList<ScenarioNarrative>();
     private String linkUrl;
     private String linkName;
     private String storyPackage;
@@ -98,14 +99,14 @@ public class StoryNarrative {
     /**
      * @return the version
      */
-    public int getVersion() {
+    public long getVersion() {
         return version;
     }
 
     /**
      * @param version the version to set
      */
-    public void setVersion(int version) {
+    public void setVersion(long version) {
         this.version = version;
     }
 

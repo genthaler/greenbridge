@@ -22,7 +22,7 @@ public class ScenarioNarrative {
 	private List<String> narrative;
     private List<Map<String,String>> datatable;
     private List<String> datatableProperties;
-    private int version;
+    private long version;
 
 
 	public ScenarioNarrative(String... narrative) {
@@ -127,14 +127,14 @@ public class ScenarioNarrative {
     /**
      * @return the version
      */
-    public int getVersion() {
+    public long getVersion() {
         return version;
     }
 
     /**
      * @param version the version to set
      */
-    public void setVersion(int version) {
+    public void setVersion(long version) {
         this.version = version;
     }
 }
