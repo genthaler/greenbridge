@@ -4,7 +4,7 @@
   <groupId>com.googlecode.greenbridge</groupId>
   <artifactId>greenbridge-confluence</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>Greenbride Confluence</name>
   <url>http://code.google.com/p/greenbridge/</url>
   <description>A behaviour driven development tool bridging confluence, maven and junit. This is the confluence module.</description>
@@ -18,7 +18,7 @@
     <dependency>
         <groupId>com.googlecode.greenbridge</groupId>
         <artifactId>greenbridge-core</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </dependency>
     <dependency>
         <groupId>org.codehaus.swizzle</groupId>
@@ -46,11 +46,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.2.3</version>
         </dependency>
         <!--
     <dependency>
