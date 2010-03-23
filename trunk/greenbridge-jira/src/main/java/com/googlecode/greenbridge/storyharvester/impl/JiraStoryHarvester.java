@@ -9,36 +9,27 @@ import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
 import com.googlecode.greenbridge.storyharvester.StoryHarvester;
 import com.googlecode.greenbridge.storyharvester.StoryNarrative;
 import com.googlecode.greenbridge.util.JavaLanguageSupport;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -47,7 +38,6 @@ import org.apache.commons.lang.StringUtils;
 public class JiraStoryHarvester implements StoryHarvester {
 
     private String jiraFilterURL;
-    private String jiraProjectURL;
     private Integer scenarioTypeId;
     private Integer storyTypeId;
     private SimpleDateFormat jiraUpdatedParser;
@@ -238,19 +228,6 @@ public class JiraStoryHarvester implements StoryHarvester {
         this.jiraFilterURL = jiraFilterURL;
     }
 
-    /**
-     * @return the jiraProjectURL
-     */
-    public String getJiraProjectURL() {
-        return jiraProjectURL;
-    }
-
-    /**
-     * @param jiraProjectURL the jiraProjectURL to set
-     */
-    public void setJiraProjectURL(String jiraProjectURL) {
-        this.jiraProjectURL = jiraProjectURL;
-    }
 
     /**
      * @return the scenarioTypeId
