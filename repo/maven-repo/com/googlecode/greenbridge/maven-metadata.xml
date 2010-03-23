@@ -5,5 +5,10 @@
       <prefix>greenbridge</prefix>
       <artifactId>maven-greenbridge-plugin</artifactId>
     </plugin>
+    <plugin>
+      <name>maven-greenbridge-report-plugin Maven Mojo</name>
+      <prefix>greenbridge-report</prefix>
+      <artifactId>maven-greenbridge-report-plugin</artifactId>
+    </plugin>
   </plugins>
 </metadata>
