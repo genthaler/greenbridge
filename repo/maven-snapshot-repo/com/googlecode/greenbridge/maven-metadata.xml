@@ -10,5 +10,10 @@
       <prefix>example-greenbridge-archetype</prefix>
       <artifactId>example-greenbridge-archetype</artifactId>
     </plugin>
+    <plugin>
+      <name>example-single-greenbridge-archetype</name>
+      <prefix>example-single-greenbridge-archetype</prefix>
+      <artifactId>example-single-greenbridge-archetype</artifactId>
+    </plugin>
   </plugins>
 </metadata>
