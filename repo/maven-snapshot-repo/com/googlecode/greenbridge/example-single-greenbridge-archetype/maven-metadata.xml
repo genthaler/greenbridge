@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+  <groupId>com.googlecode.greenbridge</groupId>
+  <artifactId>example-single-greenbridge-archetype</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <versioning>
+    <latest>1.1-SNAPSHOT</latest>
+    <versions>
+      <version>1.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20100323091355</lastUpdated>
+  </versioning>
+</metadata>
