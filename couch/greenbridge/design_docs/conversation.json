@@ -1,9 +1,0 @@
-{
-   "_id": "_design/conversation",
-   "language": "javascript",
-   "views": {
-       "by_conversation": {
-           "map": "function(doc) {\n  if (doc.type == 'conversation') {\n      emit(doc._id, doc);\n  }\n}"
-       }
-   }
-}
