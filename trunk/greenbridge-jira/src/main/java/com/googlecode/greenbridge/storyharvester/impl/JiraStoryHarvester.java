@@ -120,7 +120,9 @@ public class JiraStoryHarvester implements StoryHarvester {
             Integer parentJiraId = Integer.parseInt(scenario.element("parent").attributeValue("id"));
             ScenarioNarrative narrative = convertToScenario(scenario);
             StoryNarrative story = stories.get(parentJiraId);
-            story.getScenarios().add(narrative);
+            if (story != null) {
+                story.getScenarios().add(narrative);
+            }
          }
     }
 
