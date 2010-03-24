@@ -1,9 +1,0 @@
-/{80}
-//
-// Copyright \(c\) \d\d\d\d(-\d\d\d\d)*, Suncorp Metway Limited. All rights reserved\.
-//
-// This is unpublished proprietary source code of Suncorp Metway Limited\.
-// The copyright notice above does not evidence any actual or intended
-// publication of such source code\.
-//
-/{80}
