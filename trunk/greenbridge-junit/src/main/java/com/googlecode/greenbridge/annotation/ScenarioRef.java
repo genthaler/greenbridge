@@ -9,7 +9,7 @@ public interface ScenarioRef {
 
     public String[] narrative();
     public String name();
-    public int version();
+    public long version();
     public String linkUrl();
     public String linkName();
     public Class<? extends StoryRef> getStoryRef();
