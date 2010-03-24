@@ -15,11 +15,11 @@ import java.util.Map;
  * <#if scenario.linkUrl??>
  * @see <a href="${scenario.linkUrl}">${scenario.linkName!"Here"}</a></#if>
  */
-public class ${scenario.id}_${scenario.version} extends ${scenario.id} implements ScenarioRef {
+public class ${scenario.id}_${scenario.version?c} extends ${scenario.id} implements ScenarioRef {
 
     @Override
-    public int version() {
-        return ${scenario.version};
+    public long version() {
+        return ${scenario.version?c}l;
     }
 
     @Override

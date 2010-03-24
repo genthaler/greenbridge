@@ -64,7 +64,10 @@ public class JavaFileWriter {
     public void writeModuleClass(List<StoryNarrative> stories) throws IOException {
         Map root = new HashMap();
         root.put("packageName", packageName + ".stories");
-        root.put("scenariopackageName", packageName + ".scenarios");
+
+        if (scenarioDirectory.list().length > 0) {
+            root.put("scenariopackageName", packageName + ".scenarios");
+        }
         root.put("storyNarratives", stories);
         
         root.put("moduleName", moduleName);
