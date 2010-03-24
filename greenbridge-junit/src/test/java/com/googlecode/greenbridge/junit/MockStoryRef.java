@@ -29,7 +29,7 @@ public class MockStoryRef implements StoryRef {
     }
 
     @Override
-    public int version() {
+    public long version() {
         return 1;
     }
 

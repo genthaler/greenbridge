@@ -29,7 +29,7 @@ public class MockScenarioRef implements ScenarioRef {
     }
 
     @Override
-    public int version() {
+    public long version() {
         return 1;
     }
 

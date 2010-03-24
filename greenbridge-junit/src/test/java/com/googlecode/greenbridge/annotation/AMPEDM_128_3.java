@@ -36,7 +36,7 @@ public class AMPEDM_128_3 implements ScenarioRef {
     }
 
     @Override
-    public int version() {
+    public long version() {
         return 3;
     }
 
