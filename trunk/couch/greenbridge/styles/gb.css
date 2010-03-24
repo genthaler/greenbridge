@@ -51,8 +51,7 @@ body {
 	height: 34px;
 	font-family: HELVETICA;
 	font-size: 1.45em;
-	
-	
+	padding-left: 20px;
 }
 
 #main_menu_img {
@@ -62,6 +61,20 @@ body {
 #menu {
 	background-color: #228A4C;
 	height: 34px;
+    padding-left: 20px;
+}
+
+#menu a {
+	color: white;
+	text-decoration: none;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+#menu a:hover{
+	color: white;
+	text-decoration: underline;
+	margin-left: 15px;
+	margin-top: 6px;
 }
 
 #search{
@@ -107,6 +120,7 @@ ui-datepicker {
     text-decoration:none;
     
 }
+
 #calendar {
    font-size:62.5%;
 }
