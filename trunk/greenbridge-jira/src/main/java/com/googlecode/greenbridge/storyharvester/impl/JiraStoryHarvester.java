@@ -9,11 +9,14 @@ import com.googlecode.greenbridge.storyharvester.ScenarioNarrative;
 import com.googlecode.greenbridge.storyharvester.StoryHarvester;
 import com.googlecode.greenbridge.storyharvester.StoryNarrative;
 import com.googlecode.greenbridge.util.JavaLanguageSupport;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +33,16 @@ import org.dom4j.Element;
 import org.dom4j.XPath;
 import org.dom4j.io.SAXReader;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 /**
  *
@@ -38,6 +51,9 @@ import org.apache.commons.lang.StringEscapeUtils;
 public class JiraStoryHarvester implements StoryHarvester {
 
     private String jiraFilterURL;
+    private String jiraRootUrl;
+    private String jiraUser;
+    private String jiraPassword;
     private Integer scenarioTypeId;
     private Integer storyTypeId;
     private SimpleDateFormat jiraUpdatedParser;
@@ -52,7 +68,25 @@ public class JiraStoryHarvester implements StoryHarvester {
     @Override
     public List<StoryNarrative> gather() throws Exception {
         URL url = getSourceURL();
-        Document d = parseDocument(url.openStream());
+
+        HttpClient httpClient = new DefaultHttpClient();
+        List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+        formparams.add(new BasicNameValuePair("os_username", jiraUser));
+        formparams.add(new BasicNameValuePair("os_password", jiraPassword));
+        formparams.add(new BasicNameValuePair("os_cookie", "true"));
+        UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, "UTF-8");
+        HttpPost post = new HttpPost(getJiraRootUrl() + "/secure/login.jsp");
+        post.setEntity(entity);
+        HttpResponse response = httpClient.execute(post);
+        response.getEntity().consumeContent();
+
+        String url_str = StringEscapeUtils.unescapeXml(jiraFilterURL);
+        HttpGet get = new HttpGet(url_str);
+        response =  httpClient.execute(get);
+
+        Document d = parseDocument(response.getEntity().getContent());
+
+
         List<Element> nodes = findAllNodes(d);
         List<Element> xmlstories = filterStories(nodes);
         Map<Integer,StoryNarrative> stories = convertToStories(xmlstories);
@@ -68,7 +102,10 @@ public class JiraStoryHarvester implements StoryHarvester {
         SAXReader reader = new SAXReader();
         return reader.read(stream);
     }
-
+    protected Document parseDocument(URL url) throws DocumentException {
+        SAXReader reader = new SAXReader();
+        return reader.read(url);
+    }
 
     protected List<Element> findAllNodes(Document d) {
         XPath xpath = DocumentHelper.createXPath("//item");
@@ -147,7 +184,8 @@ public class JiraStoryHarvester implements StoryHarvester {
 
     protected List<String> parseStoryNarrative(String summary, String description) {
         List<String> narrative = new ArrayList<String>();
-        narrative.add(summary);
+
+        narrative.add(StringEscapeUtils.escapeJava(summary));
         narrative.addAll(removeHtml(description));
         return narrative;
     }
@@ -255,6 +293,48 @@ public class JiraStoryHarvester implements StoryHarvester {
      */
     public void setStoryTypeId(Integer storyTypeId) {
         this.storyTypeId = storyTypeId;
+    }
+
+    /**
+     * @return the jiraRootUrl
+     */
+    public String getJiraRootUrl() {
+        return jiraRootUrl;
+    }
+
+    /**
+     * @param jiraRootUrl the jiraRootUrl to set
+     */
+    public void setJiraRootUrl(String jiraRootUrl) {
+        this.jiraRootUrl = jiraRootUrl;
+    }
+
+    /**
+     * @return the jiraUser
+     */
+    public String getJiraUser() {
+        return jiraUser;
+    }
+
+    /**
+     * @param jiraUser the jiraUser to set
+     */
+    public void setJiraUser(String jiraUser) {
+        this.jiraUser = jiraUser;
+    }
+
+    /**
+     * @return the jiraPassword
+     */
+    public String getJiraPassword() {
+        return jiraPassword;
+    }
+
+    /**
+     * @param jiraPassword the jiraPassword to set
+     */
+    public void setJiraPassword(String jiraPassword) {
+        this.jiraPassword = jiraPassword;
     }
 
 

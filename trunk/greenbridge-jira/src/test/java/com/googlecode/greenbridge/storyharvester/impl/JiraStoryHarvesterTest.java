@@ -17,6 +17,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -34,7 +35,7 @@ public class JiraStoryHarvesterTest {
     }
 
 
-    @Test
+    @Ignore @Test
     public void testGather() throws URISyntaxException, Exception {
         JiraStoryHarvester harvester = new JiraStoryHarvester();
         harvester.setJiraFilterURL(testSearchRequestURL.toURI().toString());

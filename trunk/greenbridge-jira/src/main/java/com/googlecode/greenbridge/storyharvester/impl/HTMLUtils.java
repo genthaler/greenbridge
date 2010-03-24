@@ -14,6 +14,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 import javax.swing.text.html.HTMLEditorKit.ParserCallback;
 import javax.swing.text.html.HTML.Tag;
 import javax.swing.text.MutableAttributeSet;
+import org.apache.commons.lang.StringEscapeUtils;
 
 public class HTMLUtils {
   private HTMLUtils() {}
@@ -24,7 +25,9 @@ public class HTMLUtils {
     ParserDelegator parserDelegator = new ParserDelegator();
     ParserCallback parserCallback = new ParserCallback() {
       public void handleText(final char[] data, final int pos) {
-        list.add(new String(data));
+        String dataStr = new String(data);
+        dataStr = StringEscapeUtils.escapeJava(dataStr);
+        list.add(dataStr);
       }
       public void handleStartTag(Tag tag, MutableAttributeSet attribute, int pos) { }
       public void handleEndTag(Tag t, final int pos) {  }
