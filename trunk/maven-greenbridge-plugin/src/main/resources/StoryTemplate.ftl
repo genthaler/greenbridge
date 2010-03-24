@@ -8,7 +8,7 @@ import com.googlecode.greenbridge.annotation.*;
  * <#if story.linkUrl??>
  * @see <a href="${story.linkUrl}">${story.linkName!"Here"}</a></#if>
  */
-public class ${story.id}_${story.version} implements StoryRef {
+public class ${story.id}_${story.version?c} implements StoryRef {
 
     @Override
     public String[] narrative() {
@@ -24,8 +24,8 @@ public class ${story.id}_${story.version} implements StoryRef {
     }
 
     @Override
-    public int version() {
-        return ${story.version};
+    public long version() {
+        return ${story.version?c}l;
     }
 
     @Override

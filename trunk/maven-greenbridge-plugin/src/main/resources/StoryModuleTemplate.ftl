@@ -1,6 +1,8 @@
 package ${packageName};
 
+<#if scenariopackageName??>
 import ${scenariopackageName}.*;
+</#if>
 import com.googlecode.greenbridge.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +33,10 @@ public class ${moduleName} implements StoryModule {
     public void registerStories() {
         <#list storyNarratives as storyNarrative>
         {
-            StoryRef storyRef = new ${storyNarrative.id}_${storyNarrative.version}();
+            StoryRef storyRef = new ${storyNarrative.id}_${storyNarrative.version?c}();
             List<ScenarioRef> list = new ArrayList<ScenarioRef>();
             <#list storyNarrative.scenarios as scenarioNarrative>
-            list.add(new ${scenarioNarrative.id}_${scenarioNarrative.version}());
+            list.add(new ${scenarioNarrative.id}_${scenarioNarrative.version?c}());
             </#list>
             map.put(storyRef, list);
         }
