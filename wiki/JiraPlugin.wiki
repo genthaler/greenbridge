@@ -1,0 +1,41 @@
+Greenbridge can gather its stories and scenarios from Jira.
+
+Here is an example of configuring the greenbridge plugin:
+
+{{{
+ <build>
+            <plugin>
+                <groupId>com.googlecode.greenbridge</groupId>
+                <artifactId>maven-greenbridge-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>stories</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>com.application.reference</packageName>
+                            <storyHarvester implementation="com.googlecode.greenbridge.storyharvester.impl.JiraStoryHarvester">
+                                <jiraRootUrl>http://akljira001:8080</jiraRootUrl>
+                                <jiraUser>remote_user</jiraUser>
+                                <jiraPassword>remote_password</jiraPassword>
+                                <jiraFilterURL>http://akljira001:8080/sr/jira.issueviews:searchrequest-xml/11326/SearchRequest-11326.xml?tempMax=1000</jiraFilterURL>
+                                <!-- <jiraFilterURL>file:///SearchRequest.xml</jiraFilterURL> -->
+                                <storyTypeId>9</storyTypeId>
+                                <scenarioTypeId>11</scenarioTypeId>
+                            </storyHarvester>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+}}}
+
+Some notes:
+  * The jiraUser and jiraPassword are for an actual jira user. The connection is not through the remote api.
+  * The jiraFilterURL is the link to the XML filter view for a project. This must be accessible by the above user
+  * You can link to a local xml file that adheres to the jira format.
+  * The xml jira spits out sometimes is not well formed. Just watch out for special characters.
+  * The storyTypeId and scenarioTypeId are optional. By default, parent jira's become stories and children become scenarios. You can filter this further by specifying a jira type for each. But scenarios always have to be a sub-issue.
+  * The summary and the description of the jira go into the narrative.
