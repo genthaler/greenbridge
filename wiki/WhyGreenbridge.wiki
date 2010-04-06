@@ -9,7 +9,7 @@ Many bdd tools have complicated ways of writing stories, scenarios and specs. Th
 
 ==  IDE Support ==
 Again, since every modern browser has JUnit support baked in, running Greenbridge tests is as easy as lauching JUnit tests. But that's not all. It was important to us at the code level to be able to know what the scenario was, and navigate back to the original scenario. With modern IDE code completion, when you code complete an annotation such as @Scenario(MarkedRemovedAccountForReview_2.class) you will see the scenario text, and a link to see the original wiki page.   
-http://greenbridge.googlecode.com/svn/wiki/code_complete.png
+http://2.bp.blogspot.com/_onmnwr9mXpo/S7QGQaT2PhI/AAAAAAAAA2g/j0M-0U5dZxA/s1600/unittest-cropped.jpg
 
 == BA(s) Break the Build ==
 We have new CI servers. They integrate our code changes. They tell us when someone has submitted a regression to the code. What happens when the requirements themselves change? That by itself should break the build. We wanted a way to signal this. For example lets say you had a test annotated with @Scenario(MarkedRemovedAccountForReview_2.class)
