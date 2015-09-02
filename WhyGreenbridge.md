@@ -1,0 +1,30 @@
+Why Greenbridge?
+
+Wikipedia lists about ten different bdd frameworks for java. Some include: easyb, cucumber, concordian, jdave. Why did I write another one?
+## Because It's Cool ##
+BDD frameworks are the new web frameworks. Everyone is writing one. I wanted in on the action.
+
+## Simplicity ##
+Many bdd tools have complicated ways of writing stories, scenarios and specs. This has two problems. First, it's another tool in the way. You have to learn a new dsl, or write your tests in constrained ways. Second is that it puts the stories and scenarios in the developer space, when they should be in the whole team space (Stakeholders, BAs, PMs, Testers, Developers). The team should have a common place to store the scenarios and review. Also the scenarios and stories can be in plain English. There are no constraints. Greenbridge then makes the stories and scenarios available to developers using JUnit. JUnit is a very familiar tool and every modern IDE has great support for JUnit. All Greenbridge adds is a couple of simple, additional annotations. There is no text inside the annotation as with other BDD frameworks, so there is no difference between the spec and the test.
+
+## IDE Support ##
+Again, since every modern browser has JUnit support baked in, running Greenbridge tests is as easy as lauching JUnit tests. But that's not all. It was important to us at the code level to be able to know what the scenario was, and navigate back to the original scenario. With modern IDE code completion, when you code complete an annotation such as @Scenario(MarkedRemovedAccountForReview\_2.class) you will see the scenario text, and a link to see the original wiki page.
+
+![http://2.bp.blogspot.com/_onmnwr9mXpo/S7QGQaT2PhI/AAAAAAAAA2g/j0M-0U5dZxA/s1600/unittest-cropped.jpg](http://2.bp.blogspot.com/_onmnwr9mXpo/S7QGQaT2PhI/AAAAAAAAA2g/j0M-0U5dZxA/s1600/unittest-cropped.jpg)
+
+(The annotation is in a strange spot in the example above so as to show the code completion without hiding the code itself)
+
+
+## BA(s) Break the Build ##
+We have new CI servers. They integrate our code changes. They tell us when someone has submitted a regression to the code. What happens when the requirements themselves change? That by itself should break the build. We wanted a way to signal this. For example lets say you had a test annotated with @Scenario(MarkedRemovedAccountForReview\_2.class)
+
+The scenario has a version number included in it. This is important because when someone updates the wiki for that page, it signals that requirements have changed. The only annotation that would be available would be @Scenario(MarkedRemovedAccountForReview\_3.class).
+So now the code won't compile. This signals to a developer to compare the new scenario to the existing code, make the needed changes, and update the annotation to @Scenario(MarkedRemovedAccountForReview\_3.class). They run the junit test, it now passes, and now the software meets the new requirements. The report relects this and now stakeholders know the software meets the requirements.
+
+This is especially important for longevity as scenarios will probably evolve over time. We wanted a way that the team could review the currently implemented functionality, make a change and this would break the build, and point to the spots that have to be changed in the tests and subsequent code.
+
+## Track Progress ##
+Many tools are built around the junit reports that greenbridge compiles. These can be easily used to track progress against the stories and scenarios.
+
+## Traceability and Versioning ##
+Wikis have become a fantastic tools for many users to become familiar with versioning and tracability. Thus for tracking changes to stories and scenarios it is easy for a BA or user to see how something has evolved over time (but things don't change, right?). Also, because maven is used to release the stories, it's versioning is fantastic to track what the overall set of specifications are.

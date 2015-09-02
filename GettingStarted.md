@@ -1,0 +1,13 @@
+Want to use greenbride in two minutes? Fill in the form below and hit _Generate Commands_. <br>
+You will be presented with <b>seven commands</b> that you can paste in your command line.<br>
+(Maven is required, as the commands are a maven archetype)<br>
+<br>
+<br>
+<wiki:gadget url="http://greenbridge.googlecode.com/svn/trunk/igadget.xml"  width="640" height="400"  /><br>
+<br>
+Once the commands run, have a look around the two generated maven projects.<br>
+<ul><li>Open stories.html in the first mvn project with your web browser. This is an example story wiki. You can add new stories or modify the ones in there. If you want to switch to another source for stories, see as an example, see the <a href='JiraPlugin.md'>JiraPlugin</a>
+</li><li>Look around the tests in the second mvn project. This is an example of annotating your junit tests.</li></ul>
+
+
+Practice adding and changing stories, and creating and updating unit tests. See the WhyTwoMavenProjects page on why the structure is setup this way.<br>
